@@ -3,11 +3,14 @@ package com.epam.esm.dao.impl;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class TagDaoImpl implements TagDao {
@@ -38,13 +41,25 @@ public class TagDaoImpl implements TagDao {
 
     @Override
     public Tag findTag(Long id) {
-        return  jdbcTemplate.query(FIND_TAG_BY_ID,
-                new BeanPropertyRowMapper<>(Tag.class), id).stream().findFirst().orElse(null);
+        Tag tag;
+        try{
+            tag = jdbcTemplate.query(FIND_TAG_BY_ID,
+                    new BeanPropertyRowMapper<>(Tag.class), id).stream().findFirst().orElse(null);
+        } catch (EmptyResultDataAccessException e) {
+            tag = null;
+        }
+        return tag;
     }
 
     @Override
     public Tag findTagByName(String name){
-        return jdbcTemplate.queryForObject(FIND_TAG_BY_NAME, new BeanPropertyRowMapper<>(Tag.class), name);
+        Tag tag;
+        try{
+           tag = jdbcTemplate.queryForObject(FIND_TAG_BY_NAME, new BeanPropertyRowMapper<>(Tag.class), name);
+        } catch (EmptyResultDataAccessException e) {
+            tag = null;
+        }
+        return tag;
     }
 
     @Override
@@ -68,9 +83,9 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public List<Tag> findAllTagInCertificate(Long idCertificate){
-        return jdbcTemplate.query(FIND_ALL_TAG_IN_CERTIFICATE, new BeanPropertyRowMapper<>(Tag.class),
-                idCertificate);
+    public Set<Tag> findAllTagInCertificate(Long idCertificate){
+        return new HashSet<>(jdbcTemplate.query(FIND_ALL_TAG_IN_CERTIFICATE, new BeanPropertyRowMapper<>(Tag.class),
+                idCertificate));
     }
 
     @Override

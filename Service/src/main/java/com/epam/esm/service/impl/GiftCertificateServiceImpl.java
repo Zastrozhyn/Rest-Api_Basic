@@ -4,6 +4,8 @@ import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.CertificateNotFoundException;
+import com.epam.esm.exception.NotValidCertificateDataException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.validator.GiftCertificateValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (giftCertificateValidator.isValid(giftCertificate)){
         giftCertificateDao.create(giftCertificate);
         }
+        if (!giftCertificateValidator.isValid(giftCertificate)){
+            throw new NotValidCertificateDataException();
+        }
     }
 
     @Override
@@ -49,6 +54,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         GiftCertificate giftCertificate = giftCertificateDao.findById(id);
         if (giftCertificate != null){
             giftCertificate.setTags(tagDao.findAllTagInCertificate(giftCertificate.getId()));
+        }
+        if (giftCertificate == null){
+            throw new CertificateNotFoundException();
         }
         return giftCertificate;
     }

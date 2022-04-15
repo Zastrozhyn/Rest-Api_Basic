@@ -2,7 +2,7 @@ package com.epam.esm.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 public class GiftCertificate{
     private Long id;
@@ -12,7 +12,7 @@ public class GiftCertificate{
     private LocalDateTime createDate;
     private LocalDateTime lastUpdateDate;
     private int duration;
-    private List<Tag> tags;
+    private Set<Tag> tags;
 
     public GiftCertificate() {
     }
@@ -65,11 +65,11 @@ public class GiftCertificate{
         this.lastUpdateDate = lastUpdateTime;
     }
 
-    public List<Tag> getTags() {
+    public Set<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(List<Tag> tags) {
+    public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
 
