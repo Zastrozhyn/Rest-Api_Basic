@@ -4,8 +4,9 @@ import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.CertificateNotFoundException;
-import com.epam.esm.exception.NotValidCertificateDataException;
+import com.epam.esm.exception.EntityNotFoundException;
+import com.epam.esm.exception.NotValidEntityDataException;
+import com.epam.esm.exception.WrongFindParametersException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.validator.GiftCertificateValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         giftCertificateDao.create(giftCertificate);
         }
         if (!giftCertificateValidator.isValid(giftCertificate)){
-            throw new NotValidCertificateDataException();
+            throw new NotValidEntityDataException();
         }
     }
 
@@ -51,21 +52,16 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public GiftCertificate findById(Long id) {
-        GiftCertificate giftCertificate = giftCertificateDao.findById(id);
-        if (giftCertificate != null){
-            giftCertificate.setTags(tagDao.findAllTagInCertificate(giftCertificate.getId()));
-        }
-        if (giftCertificate == null){
-            throw new CertificateNotFoundException();
-        }
-        return giftCertificate;
+        return giftCertificateDao.findById(id);
     }
 
     @Override
     @Transactional
     public void delete(long id) {
+         if (giftCertificateDao.findById(id) == null){
+             throw new EntityNotFoundException();
+         }
         giftCertificateDao.delete(id);
-        tagDao.deleteAllTagFromCertificate(id);
     }
 
     @Override
@@ -84,21 +80,23 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificate> findCertificateByName(String name){
-        return giftCertificateDao.findByName(name);
-    }
-
-    @Override
-    public List<GiftCertificate> findCertificateByDescription(String description){
-        return giftCertificateDao.findByName(description);
-    }
-
-    @Override
     public GiftCertificate update(Long id, GiftCertificate updatedGiftCertificate) {
+        if (!giftCertificateValidator.isValid(updatedGiftCertificate)){
+            throw new NotValidEntityDataException();
+        }
         GiftCertificate currentGiftCertificate = giftCertificateDao.findById(id);
         Map<String,Object> updatedFields = getUpdatedField(updatedGiftCertificate, currentGiftCertificate);
-        giftCertificateDao.update(updatedGiftCertificate, updatedFields);
-        return null;
+        giftCertificateDao.update(id, updatedFields);
+        return giftCertificateDao.findById(id);
+    }
+
+    @Override
+    public List<GiftCertificate> findByAttributes(String tagName, String searchPart, String sortingField, String orderSort) {
+        if (giftCertificateValidator.isGiftCertificateFieldListValid(sortingField)
+                && giftCertificateValidator.isOrderSortValid(orderSort)) {
+            return giftCertificateDao.findByAttributes(tagName, searchPart, sortingField, orderSort);
+        }
+        throw new WrongFindParametersException();
     }
 
     private Map<String,Object> getUpdatedField(GiftCertificate updatedGiftCertificate,

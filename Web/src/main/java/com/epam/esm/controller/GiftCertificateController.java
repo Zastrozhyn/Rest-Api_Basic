@@ -42,5 +42,17 @@ public class GiftCertificateController {
         return giftCertificateService.update(id, giftCertificate);
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void delete(@PathVariable Long id) {
+        giftCertificateService.delete(id);
+    }
 
+    @GetMapping("/search")
+    public List<GiftCertificate> findByAttributes(@RequestParam(required = false, name = "tagName") String tagName,
+                                                     @RequestParam(required = false, name = "searchPart") String searchPart,
+                                                     @RequestParam(required = false, name = "sortingField") String sortingField,
+                                                     @RequestParam(required = false, name = "orderSort") String orderSort) {
+        return giftCertificateService.findByAttributes(tagName, searchPart, sortingField, orderSort);
+    }
 }

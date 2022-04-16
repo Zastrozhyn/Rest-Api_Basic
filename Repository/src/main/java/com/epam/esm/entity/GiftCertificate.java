@@ -2,6 +2,7 @@ package com.epam.esm.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 public class GiftCertificate{
@@ -13,8 +14,14 @@ public class GiftCertificate{
     private LocalDateTime lastUpdateDate;
     private int duration;
     private Set<Tag> tags;
-
+    {
+        tags = new HashSet<Tag>();
+    }
     public GiftCertificate() {
+    }
+
+    public void addTag(Tag tag) {
+        tags.add(tag);
     }
 
     public Long getId() {
@@ -126,4 +133,5 @@ public class GiftCertificate{
         sb.append('}');
         return sb.toString();
     }
+
 }

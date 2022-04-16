@@ -4,6 +4,7 @@ import com.epam.esm.entity.GiftCertificate;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 @Component
 public class GiftCertificateValidator  {
@@ -15,6 +16,8 @@ public class GiftCertificateValidator  {
     private static final int MAX_DURATION_VALUE = 365;
     private static final BigDecimal MIN_PRICE_VALUE = BigDecimal.ONE;
     private static final BigDecimal MAX_PRICE_VALUE = BigDecimal.valueOf(10000);
+    private static final Set<String> AVAILABLE_SORT_ORDERS = Set.of("asc", "desc");
+    private static final Set<String> AVAILABLE_FIELDS = Set.of("name", "description", "duration", "price");
 
     public boolean isValid(GiftCertificate giftCertificate) {
         return isNameValid(giftCertificate.getName()) &&
@@ -46,5 +49,11 @@ public class GiftCertificateValidator  {
                 duration >= MIN_DURATION_VALUE &&
                 duration <= MAX_DURATION_VALUE;
     }
+    public boolean isGiftCertificateFieldListValid(String fieldList) {
+        return fieldList == null || AVAILABLE_FIELDS.contains(fieldList);
+    }
 
+    public boolean isOrderSortValid(String orderSort) {
+        return orderSort == null || AVAILABLE_SORT_ORDERS.contains(orderSort.toLowerCase());
+    }
 }

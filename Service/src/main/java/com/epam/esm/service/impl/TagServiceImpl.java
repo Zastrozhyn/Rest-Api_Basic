@@ -2,9 +2,8 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.NotValidTagNameException;
+import com.epam.esm.exception.EntityNotFoundException;
 import com.epam.esm.exception.TagAlreadyExistsException;
-import com.epam.esm.exception.TagNotFoundException;
 import com.epam.esm.service.TagService;
 import com.epam.esm.validator.TagValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,14 +31,14 @@ public class TagServiceImpl implements TagService {
             tagDao.create(tag);
         }
         if (!tagValidator.isValid(tag)){
-            throw  new NotValidTagNameException();
+            throw  new EntityNotFoundException();
         }
     }
 
     @Override
     public Tag findTag(Long id) {
         if (tagDao.findTag(id) == null){
-            throw new TagNotFoundException();
+            throw new EntityNotFoundException();
         }
         return tagDao.findTag(id);
     }

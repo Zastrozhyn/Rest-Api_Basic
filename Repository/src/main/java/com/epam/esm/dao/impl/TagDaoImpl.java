@@ -21,12 +21,12 @@ public class TagDaoImpl implements TagDao {
     private final static String FIND_TAG_BY_NAME = "SELECT id, name FROM tag WHERE name = ?";
     private final static String FIND_ALL_TAG = "SELECT id, name FROM tag";
     private final static String DELETE_TAG = "DELETE FROM tag WHERE id = ?";
-    private final String ADD_TAG_TO_CERTIFICATE = "INSERT INTO tags_certificate (tag, certificate_id) VALUES (?,?)";
-    private final static  String DELETE_TAG_FROM_CERTIFICATE = "DELETE FROM tags_certificate WHERE certificate_id=?" +
+    private final String ADD_TAG_TO_CERTIFICATE = "INSERT INTO tag_certificate (tag_id, certificate_id) VALUES (?,?)";
+    private final static  String DELETE_TAG_FROM_CERTIFICATE = "DELETE FROM tag_certificate WHERE certificate_id=?" +
             "AND tag=?";
-    private final static String FIND_ALL_TAG_IN_CERTIFICATE = "SELECT id, name FROM tags_certificate " +
+    private final static String FIND_ALL_TAG_IN_CERTIFICATE = "SELECT id, name FROM tag_certificate " +
             "JOIN tag ON tag_id=id WHERE certificate_id=?";
-    private final static String DELETE_ALL_TAG_FROM_CERTIFICATE = "DELETE FROM tags_certificate WHERE certificate_id=?";
+    private final static String DELETE_ALL_TAG_FROM_CERTIFICATE = "DELETE FROM tag_certificate WHERE certificate_id=?";
 
 
     @Autowired

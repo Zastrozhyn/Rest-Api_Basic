@@ -14,7 +14,6 @@ public interface GiftCertificateService {
     List<GiftCertificate> findAllCertificateByTag(String tagName);
     void addTagToCertificate(Tag tag, long idCertificate);
     void deleteTagFromCertificate(Tag tag, long idCertificate);
-    List<GiftCertificate> findCertificateByName(String name);
-    List<GiftCertificate> findCertificateByDescription(String description);
     GiftCertificate update(Long id, GiftCertificate giftCertificate);
+    List<GiftCertificate> findByAttributes(String tagName, String searchPart, String sortingField, String orderSort);
 }
