@@ -6,7 +6,7 @@ import com.epam.esm.entity.Tag;
 import java.util.List;
 
 public interface TagService {
-    void create(Tag tag);
+    Tag create(Tag tag);
     Tag findTag(Long id);
     List<Tag> findAll();
     void delete(Long id);

@@ -70,10 +70,6 @@
       <artifactId>log4j-api</artifactId>
       <version>${log4j.version}</version>
     </dependency>
-
-
-
-
     <dependency>
       <groupId>com.epam.esm</groupId>
       <artifactId>Service</artifactId>

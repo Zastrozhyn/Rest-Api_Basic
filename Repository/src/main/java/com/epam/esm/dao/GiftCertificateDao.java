@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface GiftCertificateDao {
-    void create(GiftCertificate giftCertificate);
-    boolean update(Long id, Map<String, Object> updatedFields);
+    Long create(GiftCertificate giftCertificate);
+    void update(Long id, Map<String, Object> updatedFields);
     List<GiftCertificate> findAll();
     GiftCertificate findById(Long id);
     void delete(Long id);

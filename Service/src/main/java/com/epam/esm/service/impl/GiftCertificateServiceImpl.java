@@ -9,14 +9,15 @@ import com.epam.esm.exception.NotValidEntityDataException;
 import com.epam.esm.exception.WrongFindParametersException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.validator.GiftCertificateValidator;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Log4j2
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
     private final GiftCertificateDao giftCertificateDao;
@@ -36,13 +37,17 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public void create(GiftCertificate giftCertificate) {
+    public GiftCertificate create(GiftCertificate giftCertificate) {
+        GiftCertificate createdGiftCertificate = null;
+        Long newId = null;
         if (giftCertificateValidator.isValid(giftCertificate)){
-        giftCertificateDao.create(giftCertificate);
+        newId = giftCertificateDao.create(giftCertificate);
+        createdGiftCertificate = findById(newId);
         }
         if (!giftCertificateValidator.isValid(giftCertificate)){
             throw new NotValidEntityDataException();
         }
+        return createdGiftCertificate;
     }
 
     @Override
@@ -52,21 +57,19 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public GiftCertificate findById(Long id) {
-        return giftCertificateDao.findById(id);
+        GiftCertificate giftCertificate = giftCertificateDao.findById(id);
+        if (giftCertificate == null){
+            throw new EntityNotFoundException();
+        }
+        return giftCertificate;
     }
 
     @Override
-    @Transactional
     public void delete(long id) {
          if (giftCertificateDao.findById(id) == null){
              throw new EntityNotFoundException();
          }
         giftCertificateDao.delete(id);
-    }
-
-    @Override
-    public List<GiftCertificate> findAllCertificateByTag(String tagName){
-        return giftCertificateDao.findAllCertificateByTag(tagName);
     }
 
     @Override
@@ -91,7 +94,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificate> findByAttributes(String tagName, String searchPart, String sortingField, String orderSort) {
+    public List<GiftCertificate> findByAttributes(String tagName, String searchPart, String sortingField,
+                                                  String orderSort, String search) {
+        if (search ==  null){
+            return giftCertificateDao.findAll();
+        }
         if (giftCertificateValidator.isGiftCertificateFieldListValid(sortingField)
                 && giftCertificateValidator.isOrderSortValid(orderSort)) {
             return giftCertificateDao.findByAttributes(tagName, searchPart, sortingField, orderSort);
@@ -118,7 +125,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 !updatedGiftCertificate.getPrice().equals(currentGiftCertificate.getPrice())){
             updatedFields.put(FIELD_PRICE, updatedGiftCertificate.getPrice());
         }
-
         return updatedFields;
     }
 

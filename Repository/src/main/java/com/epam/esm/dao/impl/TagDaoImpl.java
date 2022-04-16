@@ -2,6 +2,7 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.mapper.IdMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -15,8 +16,9 @@ import java.util.Set;
 @Repository
 public class TagDaoImpl implements TagDao {
     private final JdbcTemplate jdbcTemplate;
+    private final IdMapper idMapper;
 
-    private final static String CREATE_TAG = "INSERT INTO tag(name) VALUES(?)";
+    private final static String CREATE_TAG = "INSERT INTO tag(name) VALUES(?) RETURNING id AS new_id";
     private final static String FIND_TAG_BY_ID = "SELECT id, name FROM tag WHERE id = ?";
     private final static String FIND_TAG_BY_NAME = "SELECT id, name FROM tag WHERE name = ?";
     private final static String FIND_ALL_TAG = "SELECT id, name FROM tag";
@@ -28,23 +30,23 @@ public class TagDaoImpl implements TagDao {
             "JOIN tag ON tag_id=id WHERE certificate_id=?";
     private final static String DELETE_ALL_TAG_FROM_CERTIFICATE = "DELETE FROM tag_certificate WHERE certificate_id=?";
 
-
     @Autowired
-    public TagDaoImpl(JdbcTemplate jdbcTemplate) {
+    public TagDaoImpl(JdbcTemplate jdbcTemplate, IdMapper idMapper) {
         this.jdbcTemplate = jdbcTemplate;
+        this.idMapper = idMapper;
     }
 
     @Override
-    public void create(Tag tag) {
-        jdbcTemplate.update(CREATE_TAG, tag.getName());
+    public Long create(Tag tag) {
+        return jdbcTemplate.queryForObject(CREATE_TAG, idMapper, tag.getName());
     }
 
     @Override
     public Tag findTag(Long id) {
         Tag tag;
         try{
-            tag = jdbcTemplate.query(FIND_TAG_BY_ID,
-                    new BeanPropertyRowMapper<>(Tag.class), id).stream().findFirst().orElse(null);
+            tag = jdbcTemplate.queryForObject(FIND_TAG_BY_ID,
+                    new BeanPropertyRowMapper<>(Tag.class), id);
         } catch (EmptyResultDataAccessException e) {
             tag = null;
         }
