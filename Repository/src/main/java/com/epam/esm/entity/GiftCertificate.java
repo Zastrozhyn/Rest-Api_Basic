@@ -2,7 +2,7 @@ package com.epam.esm.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class GiftCertificate{
@@ -15,7 +15,7 @@ public class GiftCertificate{
     private int duration;
     private Set<Tag> tags;
     {
-        tags = new HashSet<Tag>();
+        tags = new LinkedHashSet<Tag>();
     }
     public GiftCertificate() {
     }

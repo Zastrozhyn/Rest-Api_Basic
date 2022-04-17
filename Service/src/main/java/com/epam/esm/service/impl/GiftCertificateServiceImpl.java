@@ -9,6 +9,7 @@ import com.epam.esm.exception.NotValidEntityDataException;
 import com.epam.esm.exception.WrongFindParametersException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.validator.GiftCertificateValidator;
+import com.epam.esm.validator.TagValidator;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private final GiftCertificateDao giftCertificateDao;
     private final TagDao tagDao;
     private final GiftCertificateValidator giftCertificateValidator;
+    private final TagValidator tagValidator;
     private final static String FIELD_NAME = "name";
     private final static String FIELD_DESCRIPTION = "description";
     private final static String FIELD_PRICE = "price";
@@ -30,10 +32,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Autowired
     public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao, TagDao tagDao,
-                                      GiftCertificateValidator giftCertificateValidator) {
+                                      GiftCertificateValidator giftCertificateValidator, TagValidator tagValidator) {
         this.giftCertificateDao = giftCertificateDao;
         this.tagDao = tagDao;
         this.giftCertificateValidator = giftCertificateValidator;
+        this.tagValidator = tagValidator;
     }
 
     @Override
@@ -73,13 +76,34 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public void addTagToCertificate(Tag tag, long idCertificate){
-        tagDao.addTagToCertificate(tag, idCertificate);
+    public GiftCertificate addTagToCertificate(Tag tag, long idCertificate){
+        if(giftCertificateDao.findById(idCertificate) == null){
+            throw new EntityNotFoundException();
+        }
+        if(tagDao.findTagByName(tag.getName()) == null){
+            if (!tagValidator.isValid(tag)){
+                throw new NotValidEntityDataException();
+            }
+            tagDao.create(tag);
+        }
+        tagDao.addTagToCertificate(tagDao.findTagByName(tag.getName()), idCertificate);
+        return giftCertificateDao.findById(idCertificate);
     }
 
     @Override
-    public void deleteTagFromCertificate(Tag tag, long idCertificate){
-        tagDao.deleteTagFromCertificate(tag, idCertificate);
+    public GiftCertificate deleteTagFromCertificate(Tag tag, long idCertificate){
+        if(giftCertificateDao.findById(idCertificate) == null){
+            throw new EntityNotFoundException();
+        }
+        if (!tagValidator.isValid(tag)){
+            throw new NotValidEntityDataException();
+        }
+        if(tagDao.findTagByName(tag.getName()) == null){
+            throw new EntityNotFoundException();
+        }
+
+        tagDao.deleteTagFromCertificate(tagDao.findTagByName(tag.getName()), idCertificate);
+        return giftCertificateDao.findById(idCertificate);
     }
 
     @Override

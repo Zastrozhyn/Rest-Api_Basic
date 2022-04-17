@@ -1,6 +1,7 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.Tag;
 import com.epam.esm.service.GiftCertificateService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class GiftCertificateController {
         return giftCertificateService.findById(id);
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public GiftCertificate update(@PathVariable Long id, @RequestBody GiftCertificate giftCertificate) {
         return giftCertificateService.update(id, giftCertificate);
@@ -53,4 +54,17 @@ public class GiftCertificateController {
                                                      @RequestParam(required = false, name = "search") String search){
         return giftCertificateService.findByAttributes(tagName, searchPart, sortingField, orderSort, search);
     }
+
+    @PutMapping("/{id}/tags")
+    @ResponseStatus(HttpStatus.OK)
+    public GiftCertificate addTagToCertificate(@PathVariable Long id, @RequestBody Tag tag){
+        return giftCertificateService.addTagToCertificate(tag, id);
+    }
+
+    @DeleteMapping ("/{id}/tags")
+    @ResponseStatus(HttpStatus.OK)
+    public GiftCertificate deleteTagFromCertificate(@PathVariable Long id, @RequestBody Tag tag){
+        return giftCertificateService.deleteTagFromCertificate(tag, id);
+    }
+
 }

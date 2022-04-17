@@ -35,11 +35,7 @@ public class SqlQueryBuilder {
         } else {
             resultQuery.append(CERTIFICATE_ID);
         }
-        if (sortingField == null){
-            sortingField = DEFAULT_SORT;
-            resultQuery.append(" ").append(DEFAULT_SORT);
-        }
-        if (sortingField.equals(DESC_SORT)){
+        if (orderSort.equals(DESC_SORT)){
             resultQuery.append(" ").append(DESC_SORT);
         }
         return resultQuery.toString();

@@ -17,7 +17,7 @@ public class GiftCertificateValidator  {
     private static final BigDecimal MIN_PRICE_VALUE = BigDecimal.ONE;
     private static final BigDecimal MAX_PRICE_VALUE = BigDecimal.valueOf(10000);
     private static final Set<String> AVAILABLE_SORT_ORDERS = Set.of("asc", "desc");
-    private static final Set<String> AVAILABLE_FIELDS = Set.of("name", "description", "duration", "price");
+    private static final Set<String> AVAILABLE_FIELDS = Set.of("name", "duration", "price", "create_date");
 
     public boolean isValid(GiftCertificate giftCertificate) {
         return isNameValid(giftCertificate.getName()) &&

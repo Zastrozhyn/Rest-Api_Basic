@@ -9,9 +9,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Repository
 public class TagDaoImpl implements TagDao {
@@ -25,9 +23,7 @@ public class TagDaoImpl implements TagDao {
     private final static String DELETE_TAG = "DELETE FROM tag WHERE id = ?";
     private final String ADD_TAG_TO_CERTIFICATE = "INSERT INTO tag_certificate (tag_id, certificate_id) VALUES (?,?)";
     private final static  String DELETE_TAG_FROM_CERTIFICATE = "DELETE FROM tag_certificate WHERE certificate_id=?" +
-            "AND tag=?";
-    private final static String FIND_ALL_TAG_IN_CERTIFICATE = "SELECT id, name FROM tag_certificate " +
-            "JOIN tag ON tag_id=id WHERE certificate_id=?";
+            "AND tag_id=?";
     private final static String DELETE_ALL_TAG_FROM_CERTIFICATE = "DELETE FROM tag_certificate WHERE certificate_id=?";
 
     @Autowired
@@ -76,18 +72,12 @@ public class TagDaoImpl implements TagDao {
 
     @Override
     public void addTagToCertificate(Tag tag, Long idCertificate){
-        jdbcTemplate.update(ADD_TAG_TO_CERTIFICATE, tag.getName(), idCertificate);
+        jdbcTemplate.update(ADD_TAG_TO_CERTIFICATE, tag.getId(), idCertificate);
     }
 
     @Override
     public void deleteTagFromCertificate(Tag tag, Long idCertificate){
-        jdbcTemplate.update(DELETE_TAG_FROM_CERTIFICATE, idCertificate, tag.getName());
-    }
-
-    @Override
-    public Set<Tag> findAllTagInCertificate(Long idCertificate){
-        return new HashSet<>(jdbcTemplate.query(FIND_ALL_TAG_IN_CERTIFICATE, new BeanPropertyRowMapper<>(Tag.class),
-                idCertificate));
+        jdbcTemplate.update(DELETE_TAG_FROM_CERTIFICATE, idCertificate, tag.getId());
     }
 
     @Override
