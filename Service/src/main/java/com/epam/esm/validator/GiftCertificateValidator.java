@@ -56,4 +56,6 @@ public class GiftCertificateValidator  {
     public boolean isOrderSortValid(String orderSort) {
         return orderSort == null || AVAILABLE_SORT_ORDERS.contains(orderSort.toLowerCase());
     }
+
+
 }

@@ -8,7 +8,7 @@ public class SqlQueryBuilder {
     public static String CERTIFICATE_ID = " gift_certificate.id";
     public static final String START_OF_UPDATE_QUERY = "UPDATE gift_certificate SET ";
     public static final String MIDDLE_OF_UPDATE_QUERY = "%s=?, ";
-    public static final String END_OF_UPDATE_QUERY = " WHERE id=?";
+    public static final String END_OF_UPDATE_QUERY = "%s=? WHERE id=?";
     private static final String EMPTY = "NULL";
     public static final String SEARCH_AND_SORT_QUERY = "SELECT gift_certificate.id, gift_certificate.name" +
             ", description, price, duration, create_date, last_update_date, tag.id AS tag_id, tag.name AS tag_name " +
@@ -19,7 +19,7 @@ public class SqlQueryBuilder {
             "OR gift_certificate.description LIKE CONCAT ('%%', '%s', '%%')) ORDER BY ";
 
     public static String buildCertificateQueryForUpdate(Set<String> columnNames) {
-        String res = START_OF_UPDATE_QUERY + MIDDLE_OF_UPDATE_QUERY.repeat(columnNames.size()) + END_OF_UPDATE_QUERY;
+        String res = START_OF_UPDATE_QUERY + MIDDLE_OF_UPDATE_QUERY.repeat(columnNames.size()-1) + END_OF_UPDATE_QUERY;
         return res.formatted(columnNames.toArray());
     }
 

@@ -16,15 +16,15 @@ public class TagDaoImpl implements TagDao {
     private final JdbcTemplate jdbcTemplate;
     private final IdMapper idMapper;
 
-    private final static String CREATE_TAG = "INSERT INTO tag(name) VALUES(?) RETURNING id AS new_id";
-    private final static String FIND_TAG_BY_ID = "SELECT id, name FROM tag WHERE id = ?";
-    private final static String FIND_TAG_BY_NAME = "SELECT id, name FROM tag WHERE name = ?";
-    private final static String FIND_ALL_TAG = "SELECT id, name FROM tag";
-    private final static String DELETE_TAG = "DELETE FROM tag WHERE id = ?";
-    private final String ADD_TAG_TO_CERTIFICATE = "INSERT INTO tag_certificate (tag_id, certificate_id) VALUES (?,?)";
-    private final static  String DELETE_TAG_FROM_CERTIFICATE = "DELETE FROM tag_certificate WHERE certificate_id=?" +
+    private static final String CREATE_TAG = "INSERT INTO tag(name) VALUES(?) RETURNING id AS new_id";
+    private static final String FIND_TAG_BY_ID = "SELECT id, name FROM tag WHERE id = ?";
+    private static final String FIND_TAG_BY_NAME = "SELECT id, name FROM tag WHERE name = ?";
+    private static final String FIND_ALL_TAG = "SELECT id, name FROM tag";
+    private static final String DELETE_TAG = "DELETE FROM tag WHERE id = ?";
+    private static final String ADD_TAG_TO_CERTIFICATE = "INSERT INTO tag_certificate (tag_id, certificate_id) VALUES (?,?)";
+    private static final  String DELETE_TAG_FROM_CERTIFICATE = "DELETE FROM tag_certificate WHERE certificate_id=?" +
             "AND tag_id=?";
-    private final static String DELETE_ALL_TAG_FROM_CERTIFICATE = "DELETE FROM tag_certificate WHERE certificate_id=?";
+    private static final String DELETE_ALL_TAG_FROM_CERTIFICATE = "DELETE FROM tag_certificate WHERE certificate_id=?";
 
     @Autowired
     public TagDaoImpl(JdbcTemplate jdbcTemplate, IdMapper idMapper) {

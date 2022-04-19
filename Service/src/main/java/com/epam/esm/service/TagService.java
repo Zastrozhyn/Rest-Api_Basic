@@ -10,4 +10,6 @@ public interface TagService {
     Tag findTag(Long id);
     List<Tag> findAll();
     void delete(Long id);
+    boolean isTagValid(Tag tag);
+    boolean isTagExist(Tag tag);
 }
