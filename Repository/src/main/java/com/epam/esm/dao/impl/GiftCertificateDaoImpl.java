@@ -5,6 +5,7 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.mapper.GiftCertificateExtractor;
 import com.epam.esm.mapper.IdMapper;
 import com.epam.esm.util.SqlQueryBuilder;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Log4j2
 @Repository
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private final JdbcTemplate jdbcTemplate;
