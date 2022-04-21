@@ -1,14 +1,12 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.EntityException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
 import com.epam.esm.validator.GiftCertificateValidator;
-import com.epam.esm.validator.TagValidator;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.epam.esm.exception.ExceptionCode.*;
 
@@ -25,33 +24,34 @@ import static com.epam.esm.exception.ExceptionCode.*;
 public class GiftCertificateServiceImpl implements GiftCertificateService {
     private final GiftCertificateDao giftCertificateDao;
     private final TagService tagService;
-    private final TagDao tagDao;
     private final GiftCertificateValidator giftCertificateValidator;
-    private final TagValidator tagValidator;
     private static final String FIELD_NAME = "name";
     private static final String FIELD_DESCRIPTION = "description";
     private static final String FIELD_PRICE = "price";
     private static final String FIELD_DURATION = "duration";
 
     @Autowired
-    public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao, TagDao tagDao, TagService tagService,
-                                      GiftCertificateValidator giftCertificateValidator, TagValidator tagValidator) {
+    public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao, TagService tagService,
+                                      GiftCertificateValidator giftCertificateValidator) {
         this.giftCertificateDao = giftCertificateDao;
-        this.tagDao = tagDao;
         this.giftCertificateValidator = giftCertificateValidator;
-        this.tagValidator = tagValidator;
         this.tagService = tagService;
     }
 
     @Override
+    @Transactional
     public GiftCertificate create(GiftCertificate giftCertificate) {
-        if (giftCertificateValidator.isValid(giftCertificate)){
-            Long newId = giftCertificateDao.create(giftCertificate);
-            return findById(newId);
-        }
-        else{
+        if (!giftCertificateValidator.isValid(giftCertificate)){
             throw new EntityException(NOT_VALID_GIFT_CERTIFICATE_DATA.getErrorCode());
         }
+        Long newId = giftCertificateDao.create(giftCertificate);
+        Set<Tag> tags = giftCertificate.getTags();
+        if(tags != null){
+            for(Tag tag : tags){
+                addTagToCertificate(tag, newId);
+            }
+        }
+        return findById(newId);
     }
 
     @Override
@@ -78,17 +78,17 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     @Transactional
     public GiftCertificate addTagToCertificate(Tag tag, long idCertificate){
-        if(tagService.isTagValid(tag) && isGiftCertificateExist(idCertificate) && (tagDao.findTagByName(tag.getName()) == null)) {
-            tagDao.create(tag);
+        if(tagService.isTagValid(tag) && isGiftCertificateExist(idCertificate) && (tagService.findTagByName(tag.getName()) == null)) {
+            tagService.create(tag);
         }
-        tagDao.addTagToCertificate(tagDao.findTagByName(tag.getName()), idCertificate);
+        tagService.addTagToCertificate(tagService.findTagByName(tag.getName()), idCertificate);
         return giftCertificateDao.findById(idCertificate);
     }
 
     @Override
     public GiftCertificate deleteTagFromCertificate(Tag tag, long idCertificate){
         if(tagService.isTagValid(tag) && isGiftCertificateExist(idCertificate) && tagService.isTagExist(tag)){
-            tagDao.deleteTagFromCertificate(tagDao.findTagByName(tag.getName()), idCertificate);
+            tagService.deleteTagFromCertificate(tagService.findTagByName(tag.getName()), idCertificate);
         }
         return giftCertificateDao.findById(idCertificate);
     }

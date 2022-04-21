@@ -80,9 +80,4 @@ public class TagDaoImpl implements TagDao {
         jdbcTemplate.update(DELETE_TAG_FROM_CERTIFICATE, idCertificate, tag.getId());
     }
 
-    @Override
-    public void deleteAllTagFromCertificate(Long idCertificate){
-        jdbcTemplate.update(DELETE_ALL_TAG_FROM_CERTIFICATE, idCertificate);
-    }
-
 }

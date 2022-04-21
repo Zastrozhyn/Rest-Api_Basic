@@ -12,5 +12,4 @@ public interface TagDao {
     void delete(Long id);
     void addTagToCertificate(Tag tag, Long idCertificate);
     void deleteTagFromCertificate(Tag tag, Long idCertificate);
-    void deleteAllTagFromCertificate(Long idCertificate);
 }

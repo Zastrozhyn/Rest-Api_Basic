@@ -36,7 +36,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public Tag findTag(Long id) {
         Tag tag = tagDao.findTag(id);
-        if (tagDao.findTag(id) == null){
+        if (tag == null){
             throw new EntityException(TAG_NOT_FOUND.getErrorCode());
         }
         return tag;
@@ -61,6 +61,21 @@ public class TagServiceImpl implements TagService {
             throw new EntityException(TAG_NOT_FOUND.getErrorCode());
         }
         return true;
+    }
+
+    @Override
+    public void addTagToCertificate(Tag tag, Long idCertificate) {
+        tagDao.addTagToCertificate(tag,idCertificate);
+    }
+
+    @Override
+    public Tag findTagByName(String name) {
+        return tagDao.findTagByName(name);
+    }
+
+    @Override
+    public void deleteTagFromCertificate(Tag tag, Long idCertificate) {
+        tagDao.deleteTagFromCertificate(tag, idCertificate);
     }
 
     @Override

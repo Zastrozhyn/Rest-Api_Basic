@@ -12,4 +12,7 @@ public interface TagService {
     void delete(Long id);
     boolean isTagValid(Tag tag);
     boolean isTagExist(Tag tag);
+    void addTagToCertificate(Tag tag, Long idCertificate);
+    Tag findTagByName(String name);
+    void deleteTagFromCertificate(Tag tag, Long idCertificate);
 }
