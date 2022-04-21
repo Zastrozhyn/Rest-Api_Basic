@@ -11,7 +11,7 @@ public class GiftCertificateValidator  {
     private static final int MAX_NAME_LENGTH = 50;
     private static final int MIN_NAME_LENGTH = 2;
     private static final int MAX_DESCRIPTION_LENGTH = 300;
-    private static final int MIN_DESCRIPTION_LENGTH = 3;
+    private static final int MIN_DESCRIPTION_LENGTH = 2;
     private static final int MIN_DURATION_VALUE = 1;
     private static final int MAX_DURATION_VALUE = 365;
     private static final BigDecimal MIN_PRICE_VALUE = BigDecimal.ONE;
@@ -49,7 +49,7 @@ public class GiftCertificateValidator  {
                 duration >= MIN_DURATION_VALUE &&
                 duration <= MAX_DURATION_VALUE;
     }
-    public boolean isGiftCertificateFieldListValid(String fieldList) {
+    public boolean isGiftCertificateFieldValid(String fieldList) {
         return fieldList == null || AVAILABLE_FIELDS.contains(fieldList);
     }
 

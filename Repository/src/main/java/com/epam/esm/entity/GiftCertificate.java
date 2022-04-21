@@ -20,6 +20,18 @@ public class GiftCertificate{
     public GiftCertificate() {
     }
 
+    public GiftCertificate(Long id, String name, String description, BigDecimal price,
+                           LocalDateTime createDate, LocalDateTime lastUpdateDate, int duration, Set<Tag> tags) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.createDate = createDate;
+        this.lastUpdateDate = lastUpdateDate;
+        this.duration = duration;
+        this.tags = tags;
+    }
+
     public void addTag(Tag tag) {
         tags.add(tag);
     }

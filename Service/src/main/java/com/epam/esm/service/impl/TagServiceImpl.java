@@ -26,7 +26,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public Tag create(Tag tag) {
-        if(isTagValid(tag) && isTagExist(tag)){
+        if(isTagValid(tag) && tagDao.findTagByName(tag.getName()) == null){
             Long idCreatedTag = tagDao.create(tag);
             return findTag(idCreatedTag);
         }
@@ -49,7 +49,10 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public void delete(Long id) {
-        tagDao.delete(id);
+        if (tagDao.findTag(id) != null){
+            tagDao.delete(id);
+        }
+        else throw new EntityException(TAG_NOT_FOUND.getErrorCode());
     }
 
     @Override

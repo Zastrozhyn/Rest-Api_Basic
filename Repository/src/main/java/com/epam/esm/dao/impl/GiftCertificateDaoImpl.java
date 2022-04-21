@@ -58,10 +58,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     public void update(Long id, Map<String, Object> updatedFields) {
         updatedFields.put(LAST_UPDATE_DATE_FIELD, LocalDateTime.now());
         String query = SqlQueryBuilder.buildCertificateQueryForUpdate(updatedFields.keySet());
-        log.info(query);
         List<Object> fields = new ArrayList<>(updatedFields.values());
         fields.add(id);
-        log.info(fields);
         jdbcTemplate.update(query, fields.toArray());
     }
 

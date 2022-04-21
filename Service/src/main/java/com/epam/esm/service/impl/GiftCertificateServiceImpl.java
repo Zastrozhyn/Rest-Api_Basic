@@ -109,7 +109,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (search ==  null){
             return giftCertificateDao.findAll();
         }
-        if (giftCertificateValidator.isGiftCertificateFieldListValid(sortingField)
+        if (giftCertificateValidator.isGiftCertificateFieldValid(sortingField)
                 && giftCertificateValidator.isOrderSortValid(orderSort)) {
             return giftCertificateDao.findByAttributes(tagName, searchPart, sortingField, orderSort);
         }
