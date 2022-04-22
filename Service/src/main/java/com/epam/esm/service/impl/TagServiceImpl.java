@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 import static com.epam.esm.exception.ExceptionCode.NOT_VALID_TAG_DATA;
 import static com.epam.esm.exception.ExceptionCode.TAG_NOT_FOUND;
@@ -30,7 +31,7 @@ public class TagServiceImpl implements TagService {
             Long idCreatedTag = tagDao.create(tag);
             return findTag(idCreatedTag);
         }
-        return tag;
+        return findTagByName(tag.getName());
     }
 
     @Override
@@ -79,11 +80,25 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    public List<Tag> findTagsByName(Set<Tag> tags) {
+        return tagDao.findTagsByName(tags);
+    }
+
+    @Override
+    public void createTags(Set<Tag> tags) {
+        tagDao.createTags(tags);
+    }
+
+    @Override
+    public void addTagSToCertificate(List<Tag> tags, Long idCertificate) {
+        tagDao.addTagSToCertificate(tags, idCertificate);
+    }
+
+    @Override
     public boolean isTagValid(Tag tag){
         if(!tagValidator.isValid(tag)){
             throw new EntityException(NOT_VALID_TAG_DATA.getErrorCode());
         }
         return true;
     }
-
 }

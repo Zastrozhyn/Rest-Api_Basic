@@ -46,10 +46,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         }
         Long newId = giftCertificateDao.create(giftCertificate);
         Set<Tag> tags = giftCertificate.getTags();
-        if(tags != null){
+        if(tags != null && tags.size() != 0){
             for(Tag tag : tags){
-                addTagToCertificate(tag, newId);
+                tagService.isTagValid(tag);
             }
+            addTagsToCertificate(tags, newId);
         }
         return findById(newId);
     }
@@ -78,11 +79,20 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     @Transactional
     public GiftCertificate addTagToCertificate(Tag tag, long idCertificate){
-        if(tagService.isTagValid(tag) && isGiftCertificateExist(idCertificate) && (tagService.findTagByName(tag.getName()) == null)) {
+        if(tagService.isTagValid(tag) && isGiftCertificateExist(idCertificate)
+                && (tagService.findTagByName(tag.getName()) == null)) {
             tagService.create(tag);
         }
         tagService.addTagToCertificate(tagService.findTagByName(tag.getName()), idCertificate);
         return giftCertificateDao.findById(idCertificate);
+    }
+
+    @Override
+    @Transactional
+    public void addTagsToCertificate(Set<Tag> tags, long idCertificate){
+        tagService.createTags(tags);
+        List<Tag> newTags = tagService.findTagsByName(tags);
+        tagService.addTagSToCertificate(newTags, idCertificate);
     }
 
     @Override

@@ -1,5 +1,8 @@
 package com.epam.esm.util;
 
+import com.epam.esm.entity.Tag;
+
+import java.util.List;
 import java.util.Set;
 
 public class SqlQueryBuilder {
@@ -10,6 +13,9 @@ public class SqlQueryBuilder {
     public static final String MIDDLE_OF_UPDATE_QUERY = "%s=?, ";
     public static final String END_OF_UPDATE_QUERY = "%s=? WHERE id=?";
     private static final String EMPTY = "NULL";
+    private static final String ADD_VALUES = ", (?)";
+    private static final String ADD_2VALUES = ", (?,?)";
+    public static final String END_OF_CREATE_TAGS_QUERY = " ON CONFLICT DO NOTHING";
     public static final String SEARCH_AND_SORT_QUERY = "SELECT gift_certificate.id, gift_certificate.name" +
             ", description, price, duration, create_date, last_update_date, tag.id AS tag_id, tag.name AS tag_name " +
             "FROM gift_certificate " +
@@ -17,6 +23,10 @@ public class SqlQueryBuilder {
             "JOIN tag ON tag_id=tag.id " +
             "WHERE tag.name LIKE CONCAT ('%%', '%s', '%%') OR (gift_certificate.name LIKE CONCAT ('%%', '%s', '%%') " +
             "OR gift_certificate.description LIKE CONCAT ('%%', '%s', '%%')) ORDER BY ";
+    private static final String CREATE_TAGS_QUERY = "INSERT INTO tag(name) VALUES(?)";
+    private static final String FIND_TAGS_QUERY = "SELECT id, name from tag WHERE name=?";
+    public static final String END_OF_FIND_TAGS_QUERY = " OR name=?";
+    private static final String ADD_TAGS_TO_CERTIFICATE = "INSERT INTO tag_certificate (tag_id, certificate_id) VALUES (?,?)";
 
     public static String buildCertificateQueryForUpdate(Set<String> columnNames) {
         String res = START_OF_UPDATE_QUERY + MIDDLE_OF_UPDATE_QUERY.repeat(columnNames.size()-1) + END_OF_UPDATE_QUERY;
@@ -39,5 +49,18 @@ public class SqlQueryBuilder {
             resultQuery.append(" ").append(DESC_SORT);
         }
         return resultQuery.toString();
+    }
+
+    public static String buildCreateTagsQuery(Set<Tag> tags){
+        return CREATE_TAGS_QUERY + ADD_VALUES.repeat(tags.size()-1) + END_OF_CREATE_TAGS_QUERY;
+    }
+
+    public static String buildFindTagsByNameQuery
+            (Set<Tag> tags){
+        return FIND_TAGS_QUERY+ END_OF_FIND_TAGS_QUERY.repeat(tags.size()-1);
+    }
+
+    public static String buildAddTagsToCertificateQuery(List<Tag> tags){
+        return ADD_TAGS_TO_CERTIFICATE+ ADD_2VALUES.repeat(tags.size()-1);
     }
 }

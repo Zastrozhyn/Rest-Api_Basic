@@ -3,13 +3,16 @@ package com.epam.esm.dao.impl;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.mapper.IdMapper;
+import com.epam.esm.util.SqlQueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class TagDaoImpl implements TagDao {
@@ -76,8 +79,37 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
+    public void addTagSToCertificate(List<Tag> tags, Long idCertificate) {
+        String query = SqlQueryBuilder.buildAddTagsToCertificateQuery(tags);
+        List<Long> tagsCertificate = new ArrayList<>();
+        for (Tag tag : tags){
+            tagsCertificate.add(tag.getId());
+            tagsCertificate.add(idCertificate);
+        }
+        jdbcTemplate.update(query, tagsCertificate.stream().toArray());
+    }
+
+    @Override
     public void deleteTagFromCertificate(Tag tag, Long idCertificate){
         jdbcTemplate.update(DELETE_TAG_FROM_CERTIFICATE, idCertificate, tag.getId());
     }
+    @Override
+    public void createTags(Set<Tag> tags) {
+        String query = SqlQueryBuilder.buildCreateTagsQuery(tags);
+        List<String> names = new ArrayList<>();
+        for (Tag tag : tags){
+            names.add(tag.getName());
+        }
+        jdbcTemplate.update(query, names.stream().toArray());
+    }
 
+    @Override
+    public List<Tag> findTagsByName(Set<Tag> tags) {
+        String query = SqlQueryBuilder.buildFindTagsByNameQuery(tags);
+        List<String> names = new ArrayList<>();
+        for (Tag tag : tags){
+            names.add(tag.getName());
+        }
+        return jdbcTemplate.query(query, names.stream().toArray(), new BeanPropertyRowMapper<>(Tag.class));
+    }
 }
