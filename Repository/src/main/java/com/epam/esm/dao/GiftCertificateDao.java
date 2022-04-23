@@ -12,6 +12,7 @@ public interface GiftCertificateDao {
     List<GiftCertificate> findAll();
     GiftCertificate findById(Long id);
     void delete(Long id);
-    List<GiftCertificate> findAllCertificateByTag(String tagName);
     List<GiftCertificate> findByAttributes(String tagName, String searchPart, String sortingField, String orderSort);
+
+    void updateDate(Long id);
 }

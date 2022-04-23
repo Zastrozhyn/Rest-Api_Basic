@@ -84,6 +84,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             tagService.create(tag);
         }
         tagService.addTagToCertificate(tagService.findTagByName(tag.getName()), idCertificate);
+        giftCertificateDao.updateDate(idCertificate);
         return giftCertificateDao.findById(idCertificate);
     }
 
@@ -96,10 +97,12 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
+    @Transactional
     public GiftCertificate deleteTagFromCertificate(Tag tag, long idCertificate){
         if(tagService.isTagValid(tag) && isGiftCertificateExist(idCertificate) && tagService.isTagExist(tag)){
             tagService.deleteTagFromCertificate(tagService.findTagByName(tag.getName()), idCertificate);
         }
+        giftCertificateDao.updateDate(idCertificate);
         return giftCertificateDao.findById(idCertificate);
     }
 

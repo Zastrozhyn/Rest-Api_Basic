@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 public class SqlQueryBuilder {
-    public static String DEFAULT_SORT = "ASC";
     public static String DESC_SORT = "DESC";
     public static String CERTIFICATE_ID = " gift_certificate.id";
     public static final String START_OF_UPDATE_QUERY = "UPDATE gift_certificate SET ";
@@ -14,7 +13,7 @@ public class SqlQueryBuilder {
     public static final String END_OF_UPDATE_QUERY = "%s=? WHERE id=?";
     private static final String EMPTY = "NULL";
     private static final String ADD_VALUES = ", (?)";
-    private static final String ADD_2VALUES = ", (?,?)";
+    private static final String ADD_TWO_VALUES = ", (?,?)";
     public static final String END_OF_CREATE_TAGS_QUERY = " ON CONFLICT DO NOTHING";
     public static final String SEARCH_AND_SORT_QUERY = "SELECT gift_certificate.id, gift_certificate.name" +
             ", description, price, duration, create_date, last_update_date, tag.id AS tag_id, tag.name AS tag_name " +
@@ -45,7 +44,7 @@ public class SqlQueryBuilder {
         } else {
             resultQuery.append(CERTIFICATE_ID);
         }
-        if (orderSort.equals(DESC_SORT)){
+        if (orderSort != null && orderSort.equals(DESC_SORT)){
             resultQuery.append(" ").append(DESC_SORT);
         }
         return resultQuery.toString();
@@ -61,6 +60,6 @@ public class SqlQueryBuilder {
     }
 
     public static String buildAddTagsToCertificateQuery(List<Tag> tags){
-        return ADD_TAGS_TO_CERTIFICATE+ ADD_2VALUES.repeat(tags.size()-1);
+        return ADD_TAGS_TO_CERTIFICATE+ ADD_TWO_VALUES.repeat(tags.size()-1);
     }
 }

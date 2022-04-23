@@ -15,7 +15,7 @@ public class GiftCertificate{
     private int duration;
     private Set<Tag> tags;
     {
-        tags = new LinkedHashSet<Tag>();
+        tags = new LinkedHashSet<>();
     }
     public GiftCertificate() {
     }

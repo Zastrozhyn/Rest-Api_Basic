@@ -28,7 +28,7 @@ public class GiftCertificateExtractor implements ResultSetExtractor<List<GiftCer
 
     @Override
     public List<GiftCertificate> extractData(ResultSet rs) throws SQLException, DataAccessException {
-        Map<Long, GiftCertificate> giftCertificates = new LinkedHashMap<Long, GiftCertificate>();
+        Map<Long, GiftCertificate> giftCertificates = new LinkedHashMap();
         while (rs.next()) {
             Long key = rs.getLong(CERTIFICATE_ID);
             giftCertificates.putIfAbsent(key, mapper.mapRow(rs, rs.getRow()));
