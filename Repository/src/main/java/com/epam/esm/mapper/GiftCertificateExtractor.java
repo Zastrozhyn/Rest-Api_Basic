@@ -9,10 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class GiftCertificateExtractor implements ResultSetExtractor<List<GiftCertificate>> {
@@ -28,10 +25,10 @@ public class GiftCertificateExtractor implements ResultSetExtractor<List<GiftCer
 
     @Override
     public List<GiftCertificate> extractData(ResultSet rs) throws SQLException, DataAccessException {
-        Map<Long, GiftCertificate> giftCertificates = new LinkedHashMap();
+        Map<Long, GiftCertificate> giftCertificates = new LinkedHashMap<>();
         while (rs.next()) {
             Long key = rs.getLong(CERTIFICATE_ID);
-            giftCertificates.putIfAbsent(key, mapper.mapRow(rs, rs.getRow()));
+            giftCertificates.putIfAbsent(key, GiftCertificateMapper.buildCertificate(rs));
             Tag tag = new Tag(rs.getLong(TAG_ID), rs.getString(TAG_NAME));
             giftCertificates.get(key).addTag(tag);
         }
