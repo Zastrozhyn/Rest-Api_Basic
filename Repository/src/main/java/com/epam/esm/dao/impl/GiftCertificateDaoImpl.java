@@ -3,10 +3,12 @@ package com.epam.esm.dao.impl;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.mapper.GiftCertificateExtractor;
+import com.epam.esm.mapper.GiftCertificateMapper;
 import com.epam.esm.mapper.IdMapper;
 import com.epam.esm.util.SqlQueryBuilder;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -21,6 +23,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private final JdbcTemplate jdbcTemplate;
     private final GiftCertificateExtractor extractor;
     private final IdMapper idMapper;
+    private final GiftCertificateMapper mapper;
     private final static String CREATE_GIFT_CERTIFICATE_QUERY = "INSERT INTO gift_certificate (name, description, price, " +
             "duration, create_date, last_update_date) VALUES(?,?,?,?,?,?) RETURNING id AS new_id";
     private final static  String DELETE_CERTIFICATE_QUERY = "DELETE FROM gift_certificate WHERE id=?";
@@ -42,12 +45,13 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private final static String UPDATE_LAST_UPDATE_DATE_QUERY = "UPDATE gift_certificate SET last_update_date=? WHERE id=? ";
     private final static String LAST_UPDATE_DATE_FIELD = "last_update_date";
 
-
     @Autowired
-    public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate, GiftCertificateExtractor extractor, IdMapper idMapper) {
+    public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate, GiftCertificateExtractor extractor,
+                                  IdMapper idMapper, GiftCertificateMapper mapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.extractor = extractor;
         this.idMapper = idMapper;
+        this.mapper = mapper;
     }
 
     @Override
@@ -72,7 +76,13 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     @Override
     public GiftCertificate findById(Long id) {
-        return jdbcTemplate.query(FIND_GIFT_CERTIFICATE_BY_ID_QUERY, extractor, id).stream().findAny().orElse(null);
+        GiftCertificate certificate = null;
+        try{
+            certificate = jdbcTemplate.queryForObject(FIND_GIFT_CERTIFICATE_BY_ID_QUERY, mapper , id);
+        }catch (EmptyResultDataAccessException e) {
+            log.info(e.getMessage());
+        }
+        return certificate;
     }
 
     @Override
