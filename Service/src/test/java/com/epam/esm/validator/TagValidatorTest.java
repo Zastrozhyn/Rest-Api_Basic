@@ -1,7 +1,7 @@
 package com.epam.esm.validator;
 
 import com.epam.esm.entity.Tag;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -9,10 +9,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TagValidatorTest {
 
-    private TagValidator validator;
+    private static TagValidator validator;
 
-    @BeforeEach
-    void setUp() {
+    @BeforeAll
+    static void setUp() {
         validator = new TagValidator();
     }
 

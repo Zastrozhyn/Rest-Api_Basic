@@ -46,10 +46,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         }
         Long newId = giftCertificateDao.create(giftCertificate);
         Set<Tag> tags = giftCertificate.getTags();
-        if(tags != null && tags.size() != 0){
-            for(Tag tag : tags){
-                tagService.isTagValid(tag);
-            }
+        if(isTagsAttachedToCertificate(tags)){
+            tags.stream().allMatch(tagService::isTagValid);
             addTagsToCertificate(tags, newId);
         }
         return findById(newId);
@@ -79,8 +77,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     @Transactional
     public GiftCertificate addTagToCertificate(Tag tag, long idCertificate){
-        if(tagService.isTagValid(tag) && isGiftCertificateExist(idCertificate)
-                && (tagService.findTagByName(tag.getName()) == null)) {
+        if(isGiftCertificateExist(idCertificate) && isTagReadyToCreate(tag)) {
             tagService.create(tag);
         }
         tagService.addTagToCertificate(tagService.findTagByName(tag.getName()), idCertificate);
@@ -99,7 +96,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     @Transactional
     public GiftCertificate deleteTagFromCertificate(Tag tag, long idCertificate){
-        if(tagService.isTagValid(tag) && isGiftCertificateExist(idCertificate) && tagService.isTagExist(tag)){
+        if(isTagCanBeDeletedFromCertificate(tag, idCertificate)){
             tagService.deleteTagFromCertificate(tagService.findTagByName(tag.getName()), idCertificate);
         }
         giftCertificateDao.updateDate(idCertificate);
@@ -165,4 +162,15 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         return true;
     }
 
+    private boolean isTagsAttachedToCertificate(Set<Tag> tags){
+        return tags != null && tags.size() != 0;
+    }
+
+    private boolean isTagReadyToCreate(Tag tag){
+        return tagService.isTagValid(tag) && tagService.findTagByName(tag.getName()) == null;
+    }
+
+    private boolean isTagCanBeDeletedFromCertificate(Tag tag , long idCertificate){
+        return tagService.isTagValid(tag) && isGiftCertificateExist(idCertificate) && tagService.isTagExist(tag);
+    }
 }

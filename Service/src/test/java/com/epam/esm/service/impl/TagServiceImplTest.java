@@ -6,6 +6,7 @@ import com.epam.esm.exception.EntityException;
 import com.epam.esm.exception.ExceptionCode;
 import com.epam.esm.validator.TagValidator;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -20,17 +21,21 @@ class TagServiceImplTest {
     private static final long TAG_ID = 1;
     private static final String TAG_NAME = "Tag";
     private static int expectedErrorCode;
+    private static Tag tag;
 
     private TagServiceImpl tagService;
     private TagDaoImpl tagDao;
     private TagValidator validator;
 
-    private Tag tag;
+
+    @BeforeAll
+    static void init(){
+        expectedErrorCode = ExceptionCode.TAG_NOT_FOUND.getErrorCode();
+        tag = new Tag(TAG_ID, TAG_NAME);
+    }
 
     @BeforeEach
     public void setUp() {
-        expectedErrorCode = ExceptionCode.TAG_NOT_FOUND.getErrorCode();
-        tag = new Tag(TAG_ID, TAG_NAME);
         tagDao = Mockito.mock(TagDaoImpl.class);
         validator = new TagValidator();
         tagService = new TagServiceImpl(tagDao, validator);

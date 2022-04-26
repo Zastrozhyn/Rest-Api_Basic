@@ -1,6 +1,6 @@
 package com.epam.esm.validator;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -11,10 +11,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GiftCertificateValidatorTest {
-    private GiftCertificateValidator validator;
+    private static GiftCertificateValidator validator;
 
-    @BeforeEach
-    void setUp(){
+    @BeforeAll
+    static void setUp(){
         validator = new GiftCertificateValidator();
     }
 

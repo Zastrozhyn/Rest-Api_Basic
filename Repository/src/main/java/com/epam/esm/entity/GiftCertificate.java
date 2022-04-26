@@ -13,10 +13,8 @@ public class GiftCertificate{
     private LocalDateTime createDate;
     private LocalDateTime lastUpdateDate;
     private int duration;
-    private Set<Tag> tags;
-    {
-        tags = new LinkedHashSet<>();
-    }
+    private Set<Tag> tags = new LinkedHashSet<>();
+
     public GiftCertificate() {
     }
 

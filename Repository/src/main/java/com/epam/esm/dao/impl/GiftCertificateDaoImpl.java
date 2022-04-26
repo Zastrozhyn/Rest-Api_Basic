@@ -24,17 +24,21 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private final static String CREATE_GIFT_CERTIFICATE_QUERY = "INSERT INTO gift_certificate (name, description, price, " +
             "duration, create_date, last_update_date) VALUES(?,?,?,?,?,?) RETURNING id AS new_id";
     private final static  String DELETE_CERTIFICATE_QUERY = "DELETE FROM gift_certificate WHERE id=?";
-    private final static String FIND_GIFT_CERTIFICATE_BY_ID_QUERY = "SELECT gift_certificate.id,  gift_certificate.name, " +
-            "description, price, duration, create_date, last_update_date, tag.id AS tag_id, tag.name AS tag_name " +
-            "FROM gift_certificate " +
-            "LEFT JOIN tag_certificate ON certificate_id=gift_certificate.id " +
-            "LEFT JOIN tag ON tag_id=tag.id " +
-            "WHERE gift_certificate.id=? ";
-    private final static String FIND_ALL_GIFT_CERTIFICATE_QUERY = "SELECT gift_certificate.id,  gift_certificate.name, " +
-            "description, price, duration, create_date, last_update_date, tag.id AS tag_id, tag.name AS tag_name " +
-            "FROM gift_certificate " +
-            "LEFT JOIN tag_certificate ON certificate_id=gift_certificate.id " +
-            "LEFT JOIN tag ON tag_id=tag.id ";
+    private final static String FIND_GIFT_CERTIFICATE_BY_ID_QUERY =
+            "SELECT certificate.id,  certificate.name, certificate.description, certificate.price," +
+            "certificate.duration, certificate.create_date, certificate.last_update_date," +
+            "tag.id AS tag_id, tag.name AS tag_name " +
+            "FROM gift_certificate AS certificate " +
+            "LEFT JOIN tag_certificate AS tag_map ON tag_map.certificate_id=certificate.id " +
+            "LEFT JOIN tag ON tag_map.tag_id=tag.id " +
+            "WHERE certificate.id=? ";
+    private final static String FIND_ALL_GIFT_CERTIFICATE_QUERY =
+            "SELECT certificate.id,  certificate.name, certificate.description, certificate.price," +
+            "certificate.duration, certificate.create_date, certificate.last_update_date," +
+            "tag.id AS tag_id, tag.name AS tag_name " +
+            "FROM gift_certificate AS certificate " +
+            "LEFT JOIN tag_certificate AS tag_map ON tag_map.certificate_id=certificate.id " +
+            "LEFT JOIN tag ON tag_map.tag_id=tag.id ";
     private final static String UPDATE_LAST_UPDATE_DATE_QUERY = "UPDATE gift_certificate SET last_update_date=? WHERE id=? ";
     private final static String LAST_UPDATE_DATE_FIELD = "last_update_date";
 

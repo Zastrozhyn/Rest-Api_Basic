@@ -43,25 +43,23 @@ public class TagDaoImpl implements TagDao {
 
     @Override
     public Tag findTag(Long id) {
-        Tag tag;
+        Tag tag = null;
         try{
             tag = jdbcTemplate.queryForObject(FIND_TAG_BY_ID_QUERY,
                     new BeanPropertyRowMapper<>(Tag.class), id);
         } catch (EmptyResultDataAccessException e) {
             log.info(e.getMessage());
-            tag = null;
         }
         return tag;
     }
 
     @Override
     public Tag findTagByName(String name){
-        Tag tag;
+        Tag tag = null;
         try{
            tag = jdbcTemplate.queryForObject(FIND_TAG_BY_NAME_QUERY, new BeanPropertyRowMapper<>(Tag.class), name);
         } catch (EmptyResultDataAccessException e) {
             log.info(e.getMessage());
-            tag = null;
         }
         return tag;
     }

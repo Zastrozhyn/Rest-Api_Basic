@@ -46,7 +46,6 @@ public class GiftCertificateController {
     }
 
     @GetMapping()
-    @ResponseStatus(HttpStatus.OK)
     public List<GiftCertificate> findByAttributes(@RequestParam(required = false, name = "tagName") String tagName,
                                                      @RequestParam(required = false, name = "searchPart") String searchPart,
                                                      @RequestParam(required = false, name = "sortingField") String sortingField,
@@ -56,13 +55,11 @@ public class GiftCertificateController {
     }
 
     @PutMapping("/{id}/tags")
-    @ResponseStatus(HttpStatus.OK)
     public GiftCertificate addTagToCertificate(@PathVariable Long id, @RequestBody Tag tag){
         return giftCertificateService.addTagToCertificate(tag, id);
     }
 
     @DeleteMapping ("/{id}/tags")
-    @ResponseStatus(HttpStatus.OK)
     public GiftCertificate deleteTagFromCertificate(@PathVariable Long id, @RequestBody Tag tag){
         return giftCertificateService.deleteTagFromCertificate(tag, id);
     }

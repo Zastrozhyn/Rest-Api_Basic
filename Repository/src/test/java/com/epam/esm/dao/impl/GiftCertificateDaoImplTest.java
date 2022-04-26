@@ -26,7 +26,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @ContextConfiguration(classes = {TestConfig.class})
 @Transactional
 @ActiveProfiles("dev")
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class GiftCertificateDaoImplTest {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm:ss.SSSSSS");
     private static final String TAG_NAME_FOR_SEARCH= "IT";
@@ -60,28 +59,24 @@ public class GiftCertificateDaoImplTest {
     }
 
     @Test
-    @Order(1)
     void findByIdTest() {
         GiftCertificate actual = certificateDao.findById(CERTIFICATE_ID);
         assertThat(actual, is(equalTo(certificate)));
     }
 
     @Test
-    @Order(2)
     void FindByIdReturnsEmptyWithNonExistingCertificate() {
         GiftCertificate actual = certificateDao.findById(100L);
         assertThat(actual, is(equalTo(null)));
     }
 
     @Test
-    @Order(3)
     void findAllTest() {
         List<GiftCertificate> certificates = certificateDao.findAll();
         assertThat(certificates.size(), is(equalTo(AMOUNT_OF_CERTIFICATES_IN_DB)));
     }
 
     @Test
-    @Order(5)
     void findByAttributesAmountOfCertificateTest() {
         List<GiftCertificate> actual = certificateDao.findByAttributes(TAG_NAME_FOR_SEARCH,
                 PART_OF_SEARCH, null, null);
@@ -89,7 +84,6 @@ public class GiftCertificateDaoImplTest {
     }
 
     @Test
-    @Order(6)
     void findByAttributesTest() {
         List<GiftCertificate> actual = certificateDao.findByAttributes(TAG_NAME_FOR_SEARCH,
                 PART_OF_SEARCH, null, null);
@@ -97,7 +91,6 @@ public class GiftCertificateDaoImplTest {
     }
 
     @Test
-    @Order(7)
     void findByAttributesNullResultTest() {
         List<GiftCertificate> actual = certificateDao.findByAttributes(null,
                 null, null, null);
@@ -105,7 +98,6 @@ public class GiftCertificateDaoImplTest {
     }
 
     @Test
-    @Order(8)
     void deleteNonExistingCertificate() {
         certificateDao.delete(100L);
         List<GiftCertificate> tags = certificateDao.findAll();
@@ -113,7 +105,6 @@ public class GiftCertificateDaoImplTest {
     }
 
     @Test
-    @Order(9)
     void deleteTest() {
         certificateDao.delete(1L);
         List<GiftCertificate> tags = certificateDao.findAll();

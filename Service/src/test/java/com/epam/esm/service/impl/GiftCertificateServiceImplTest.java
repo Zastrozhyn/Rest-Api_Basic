@@ -9,6 +9,7 @@ import com.epam.esm.exception.ExceptionCode;
 import com.epam.esm.service.TagService;
 import com.epam.esm.validator.GiftCertificateValidator;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -38,6 +39,10 @@ public class GiftCertificateServiceImplTest {
     private static final int DURATION = 50;
     private static final LocalDateTime CREATION_DATE = LocalDateTime.now();
     private static final LocalDateTime LAST_UPDATE_DATE = LocalDateTime.now();
+    private static Tag tag;
+    private static Set<Tag> tagSet;
+    private static GiftCertificate certificate;
+    private static Map<String,Object> updatedFields;
 
     private GiftCertificateDao giftCertificateDao;
     private TagService tagService;
@@ -45,24 +50,23 @@ public class GiftCertificateServiceImplTest {
     private GiftCertificateServiceImpl service;
 
 
-    private Tag tag;
-    private Set<Tag> tagSet;
-    private GiftCertificate certificate;
-    Map<String,Object> updatedFields;
-
-
-    @BeforeEach
-    void setUp() {
+    @BeforeAll
+    static void init(){
+        updatedFields = new HashMap<>(Map.of("name", CERTIFICATE_NEW_NAME));
         expectedErrorCode = ExceptionCode.GIFT_CERTIFICATE_NOT_FOUND.getErrorCode();
         tag = new Tag(TAG_ID, TAG_NAME);
         tagSet = new HashSet<>();
         certificate = new GiftCertificate(CERTIFICATE_ID, CERTIFICATE_NAME, DESCRIPTION, PRICE, CREATION_DATE
                 , LAST_UPDATE_DATE,DURATION, tagSet);
+
+    }
+
+    @BeforeEach
+    void setUp() {
         giftCertificateDao = Mockito.mock(GiftCertificateDaoImpl.class);
         tagService = Mockito.mock(TagServiceImpl.class);
         giftCertificateValidator = new GiftCertificateValidator();
         service = new GiftCertificateServiceImpl(giftCertificateDao, tagService, giftCertificateValidator);
-        updatedFields = new HashMap<>(Map.of("name", CERTIFICATE_NEW_NAME));
     }
 
     @AfterEach
@@ -113,6 +117,7 @@ public class GiftCertificateServiceImplTest {
         GiftCertificate actualCertificate = service.addTagToCertificate(tag, CERTIFICATE_ID);
         assertThat(actualCertificate, is(equalTo(certificate)));
         verify(giftCertificateDao,times(2)).findById(CERTIFICATE_ID);
+        verify(giftCertificateDao).updateDate(CERTIFICATE_ID);
         verify(tagService).isTagValid(tag);
         verify(tagService, times(2)).findTagByName(TAG_NAME);
     }
