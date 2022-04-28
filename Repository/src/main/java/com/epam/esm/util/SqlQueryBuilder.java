@@ -44,7 +44,7 @@ public class SqlQueryBuilder {
         } else {
             resultQuery.append(CERTIFICATE_ID);
         }
-        if (orderSort != null && orderSort.equals(DESC_SORT)){
+        if (orderSort != null && orderSort.equalsIgnoreCase(DESC_SORT)){
             resultQuery.append(" ").append(DESC_SORT);
         }
         return resultQuery.toString();

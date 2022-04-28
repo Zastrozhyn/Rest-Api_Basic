@@ -6,8 +6,12 @@ import com.epam.esm.service.GiftCertificateService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.LocaleResolver;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @Log4j2
@@ -15,10 +19,12 @@ import java.util.List;
 @RequestMapping("/gift-certificates")
 public class GiftCertificateController {
     private final GiftCertificateService giftCertificateService;
+    private final LocaleResolver localeResolver;
 
     @Autowired
-    public GiftCertificateController(GiftCertificateService giftCertificateService) {
+    public GiftCertificateController(GiftCertificateService giftCertificateService, LocaleResolver localeResolver) {
         this.giftCertificateService = giftCertificateService;
+        this.localeResolver = localeResolver;
     }
 
     @PostMapping
@@ -62,6 +68,12 @@ public class GiftCertificateController {
     @DeleteMapping ("/{id}/tags")
     public GiftCertificate deleteTagFromCertificate(@PathVariable Long id, @RequestBody Tag tag){
         return giftCertificateService.deleteTagFromCertificate(tag, id);
+    }
+
+    @GetMapping("locales")
+    public void changeLocale (@RequestParam(required = true, name = "locale") String locale ,
+                              HttpServletRequest request, HttpServletResponse response){
+        localeResolver.setLocale(request, response, StringUtils.parseLocaleString(locale));
     }
 
 }

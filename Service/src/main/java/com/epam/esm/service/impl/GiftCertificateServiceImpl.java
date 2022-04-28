@@ -46,7 +46,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         }
         Long newId = giftCertificateDao.create(giftCertificate);
         Set<Tag> tags = giftCertificate.getTags();
-        if(isTagsAttachedToCertificate(tags)){
+        if(giftCertificateValidator.isTagsAttachedToCertificate(tags)){
             tags.stream().allMatch(tagService::isTagValid);
             addTagsToCertificate(tags, newId);
         }
@@ -160,10 +160,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             throw new EntityException(GIFT_CERTIFICATE_NOT_FOUND.getErrorCode());
         }
         return true;
-    }
-
-    private boolean isTagsAttachedToCertificate(Set<Tag> tags){
-        return tags != null && tags.size() != 0;
     }
 
     private boolean isTagReadyToCreate(Tag tag){
