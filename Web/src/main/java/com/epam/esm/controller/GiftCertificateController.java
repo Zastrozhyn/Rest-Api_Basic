@@ -35,7 +35,6 @@ public class GiftCertificateController {
 
     @GetMapping("/{id}")
     public GiftCertificate findById(@PathVariable Long id) {
-        System.out.println(giftCertificateService.findById(id));
         return giftCertificateService.findById(id);
     }
 

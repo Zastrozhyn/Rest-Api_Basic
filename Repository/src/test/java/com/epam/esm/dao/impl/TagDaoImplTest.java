@@ -57,7 +57,7 @@ public class TagDaoImplTest {
     }
 
     @Test
-    void findTagsByNameTes() {
+    void findTagsByNameTest() {
         Set<Tag> tags = Set.of(expectedTag);
         List<Tag> tagList = tagDao.findTagsByName(tags);
         assertThat(tagList.get(0), is(equalTo(expectedTag)));
