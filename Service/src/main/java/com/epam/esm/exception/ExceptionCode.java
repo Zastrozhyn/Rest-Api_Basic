@@ -2,6 +2,8 @@ package com.epam.esm.exception;
 
 public enum ExceptionCode {
     TAG_NOT_FOUND(40401),
+    USER_NOT_FOUND(40201),
+    NOT_VALID_USER_NAME(40202),
     GIFT_CERTIFICATE_NOT_FOUND(40301),
     NOT_VALID_TAG_DATA(40403),
     NOT_VALID_GIFT_CERTIFICATE_DATA(40600),

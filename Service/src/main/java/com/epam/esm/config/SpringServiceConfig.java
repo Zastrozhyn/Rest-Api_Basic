@@ -9,13 +9,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 
-@Configuration
-@ComponentScan("com.epam.esm")
-@EnableTransactionManagement
+//@Configuration
+//@ComponentScan("com.epam.esm")
+//@EnableTransactionManagement
 public class SpringServiceConfig {
-
-    @Bean
-    public TransactionManager transactionManager(DataSource dataSource) {
-        return new DataSourceTransactionManager(dataSource);
-    }
 }

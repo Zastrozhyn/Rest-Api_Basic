@@ -6,11 +6,12 @@ import com.epam.esm.mapper.IdMapper;
 import com.epam.esm.util.SqlQueryBuilder;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -18,6 +19,10 @@ import java.util.Set;
 @Log4j2
 @Repository
 public class TagDaoImpl implements TagDao {
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
     private final JdbcTemplate jdbcTemplate;
     private final IdMapper idMapper;
 
@@ -37,31 +42,19 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public Long create(Tag tag) {
-        return jdbcTemplate.queryForObject(CREATE_TAG_QUERY, idMapper, tag.getName());
+    public Tag create(Tag tag) {
+        entityManager.persist(tag);
+        return tag;
     }
 
     @Override
     public Tag findTag(Long id) {
-        Tag tag = null;
-        try{
-            tag = jdbcTemplate.queryForObject(FIND_TAG_BY_ID_QUERY,
-                    new BeanPropertyRowMapper<>(Tag.class), id);
-        } catch (EmptyResultDataAccessException e) {
-            log.info(e.getMessage());
-        }
-        return tag;
+        return entityManager.find(Tag.class, id);
     }
 
     @Override
     public Tag findTagByName(String name){
-        Tag tag = null;
-        try{
-           tag = jdbcTemplate.queryForObject(FIND_TAG_BY_NAME_QUERY, new BeanPropertyRowMapper<>(Tag.class), name);
-        } catch (EmptyResultDataAccessException e) {
-            log.info(e.getMessage());
-        }
-        return tag;
+        return entityManager.find(Tag.class, name);
     }
 
     @Override

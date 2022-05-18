@@ -25,7 +25,7 @@ import java.util.Locale;
 @ComponentScan("com.epam.esm")
 public class WebConfig implements WebMvcConfigurer {
 
-    private final static String FILE_BASENAME = "/errorMessage";
+    private final static String FILE_BASENAME = "errorMessage";
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {

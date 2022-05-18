@@ -28,8 +28,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public Tag create(Tag tag) {
         if(isTagValid(tag) && tagDao.findTagByName(tag.getName()) == null){
-            Long idCreatedTag = tagDao.create(tag);
-            return findTag(idCreatedTag);
+            return tagDao.create(tag);
         }
         return findTagByName(tag.getName());
     }

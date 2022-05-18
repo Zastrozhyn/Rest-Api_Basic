@@ -50,7 +50,7 @@ class TagServiceImplTest {
     @Test
     void createTest() {
         when(tagDao.findTagByName(TAG_NAME)).thenReturn(null);
-        when(tagDao.create(tag)).thenReturn(tag.getId());
+        when(tagDao.create(tag)).thenReturn(tag);
         when(tagDao.findTag(TAG_ID)).thenReturn(tag);
         Tag result = tagService.create(tag);
         assertThat(result, is(equalTo(tag)));

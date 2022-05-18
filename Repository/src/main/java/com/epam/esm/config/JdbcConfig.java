@@ -49,5 +49,4 @@ public class JdbcConfig {
     public TransactionManager transactionManager(DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
     }
-
 }
