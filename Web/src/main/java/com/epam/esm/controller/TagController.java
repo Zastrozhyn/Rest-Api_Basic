@@ -2,12 +2,14 @@ package com.epam.esm.controller;
 
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.TagService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Log4j2
 @RestController
 @RequestMapping("/tags")
 public class TagController {
@@ -20,8 +22,8 @@ public class TagController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody Tag tag) {
-        tagService.create(tag);
+    public Tag create(@RequestBody Tag tag) {
+        return tagService.create(tag);
     }
 
     @GetMapping

@@ -23,16 +23,11 @@ public class ExceptionControllerAdviser {
     }
 
 
-    @ExceptionHandler(EntityAlreadyExistsException.class)
-    public ResponseEntity<ExceptionResponse> handleEntityAlreadyExistsException(EntityAlreadyExistsException e, Locale locale) {
-        return buildErrorResponse(resolveResourceBundle(e.getMessage(), locale), e.getErrorCode(), HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(EntityException.class)
+    public ResponseEntity<ExceptionResponse> handleEntityNotFoundException(EntityException e, Locale locale) {
+        return buildErrorResponse(resolveResourceBundle(getMessageByCode(e.getErrorCode()), locale), e.getErrorCode(),
+                HttpStatus.BAD_REQUEST);
     }
-
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ExceptionResponse> handleEntityNotFoundException(EntityNotFoundException e, Locale locale) {
-        return buildErrorResponse(resolveResourceBundle(e.getMessage(), locale), e.getErrorCode(), HttpStatus.BAD_REQUEST);
-    }
-
 
     private String resolveResourceBundle(String key, Locale locale) {
         if (!AVAILABLE_LOCALES.contains(locale.toString())) {
@@ -44,6 +39,10 @@ public class ExceptionControllerAdviser {
     private ResponseEntity<ExceptionResponse> buildErrorResponse(String message, Integer code, HttpStatus status) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(message, code);
         return new ResponseEntity<>(exceptionResponse, status);
+    }
+
+    private String getMessageByCode(int errorCode) {
+        return "error_msg." + errorCode;
     }
 
 }

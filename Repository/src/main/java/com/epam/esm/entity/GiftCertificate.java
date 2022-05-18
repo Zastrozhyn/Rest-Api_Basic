@@ -2,7 +2,8 @@ package com.epam.esm.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class GiftCertificate{
     private Long id;
@@ -12,9 +13,25 @@ public class GiftCertificate{
     private LocalDateTime createDate;
     private LocalDateTime lastUpdateDate;
     private int duration;
-    private List<Tag> tags;
+    private Set<Tag> tags = new LinkedHashSet<>();
 
     public GiftCertificate() {
+    }
+
+    public GiftCertificate(Long id, String name, String description, BigDecimal price,
+                           LocalDateTime createDate, LocalDateTime lastUpdateDate, int duration, Set<Tag> tags) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.createDate = createDate;
+        this.lastUpdateDate = lastUpdateDate;
+        this.duration = duration;
+        this.tags = tags;
+    }
+
+    public void addTag(Tag tag) {
+        tags.add(tag);
     }
 
     public Long getId() {
@@ -65,11 +82,11 @@ public class GiftCertificate{
         this.lastUpdateDate = lastUpdateTime;
     }
 
-    public List<Tag> getTags() {
+    public Set<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(List<Tag> tags) {
+    public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
 
@@ -126,4 +143,5 @@ public class GiftCertificate{
         sb.append('}');
         return sb.toString();
     }
+
 }

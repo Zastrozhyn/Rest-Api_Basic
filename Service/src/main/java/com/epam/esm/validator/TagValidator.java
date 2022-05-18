@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TagValidator  {
     private static final int MAX_NAME_LENGTH = 300;
-    private static final int MIN_NAME_LENGTH = 1;
+    private static final int MIN_NAME_LENGTH = 2;
 
     public boolean isValid(Tag tag) {
         String tagName = tag.getName();

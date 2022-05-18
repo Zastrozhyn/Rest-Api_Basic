@@ -17,7 +17,7 @@ import javax.sql.DataSource;
 @ComponentScan("com.epam.esm")
 @PropertySource("classpath:jdbc.properties")
 @EnableTransactionManagement
-public class SpringJdbcConfig {
+public class JdbcConfig {
     @Value("${db.driver}")
     private String driverClassName;
     @Value("${db.url}")
