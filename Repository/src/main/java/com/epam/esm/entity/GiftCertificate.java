@@ -57,6 +57,10 @@ public class GiftCertificate{
         lastUpdateDate = LocalDateTime.now();
     }
 
+    public void deleteTagFromCertificate(Tag tag){
+        tags.remove(tag);
+    }
+
     public void addTag(Tag tag) {
         tags.add(tag);
     }

@@ -32,6 +32,7 @@ public class Order {
             , joinColumns = @JoinColumn(name = "order_id", referencedColumnName = "id")
             , inverseJoinColumns = @JoinColumn(name = "certificate_id", referencedColumnName = "id"))
     private List<GiftCertificate> certificateList;
+
     @PrePersist
     public void prePersist() {
         orderDate = LocalDateTime.now();

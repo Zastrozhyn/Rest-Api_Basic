@@ -2,7 +2,8 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.config.TestConfig;
 import com.epam.esm.entity.Tag;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
@@ -11,7 +12,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -54,13 +54,6 @@ public class TagDaoImplTest {
     void findAllTest() {
         List<Tag> tags = tagDao.findAll();
         assertThat(tags.size(), is(equalTo(AMOUNT_OF_TAGS_IN_DB)));
-    }
-
-    @Test
-    void findTagsByNameTest() {
-        Set<Tag> tags = Set.of(expectedTag);
-        List<Tag> tagList = tagDao.findTagsByName(tags);
-        assertThat(tagList.get(0), is(equalTo(expectedTag)));
     }
 
     @Test

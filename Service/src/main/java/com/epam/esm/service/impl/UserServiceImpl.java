@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUser(Long id) {
-        var user = userDao.findUser(id);
+        User user = userDao.findUser(id);
         if (user ==  null){
             throw new EntityException(ExceptionCode.USER_NOT_FOUND.getErrorCode());
         }

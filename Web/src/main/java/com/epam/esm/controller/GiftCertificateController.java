@@ -29,7 +29,7 @@ public class GiftCertificateController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public GiftCertificate insert(@RequestBody GiftCertificate giftCertificate) {
+    public GiftCertificate create(@RequestBody GiftCertificate giftCertificate) {
         return giftCertificateService.create(giftCertificate);
     }
 
@@ -70,7 +70,7 @@ public class GiftCertificateController {
     }
 
     @GetMapping("locales")
-    public void changeLocale (@RequestParam(required = true, name = "locale") String locale ,
+    public void changeLocale (@RequestParam(name = "locale") String locale ,
                               HttpServletRequest request, HttpServletResponse response){
         localeResolver.setLocale(request, response, StringUtils.parseLocaleString(locale));
     }
