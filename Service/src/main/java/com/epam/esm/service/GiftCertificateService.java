@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface GiftCertificateService {
     GiftCertificate create(GiftCertificate giftCertificate);
-    List<GiftCertificate> findAll();
     GiftCertificate findById(Long id);
     void delete(long id);
     GiftCertificate addTagToCertificate(Tag tag, long idCertificate);
     GiftCertificate deleteTagFromCertificate(Tag tag, long idCertificate);
     GiftCertificate update(Long id, GiftCertificate giftCertificate);
-    List<GiftCertificate> findByAttributes(String tagName, String searchPart, String sortingField, String orderSort, String search);
+    List<GiftCertificate> findByAttributes(String tagName, String searchPart, String sortingField, String orderSort,
+                                           String search, Integer pageSize, Integer page);
 }

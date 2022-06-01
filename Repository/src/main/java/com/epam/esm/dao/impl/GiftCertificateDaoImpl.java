@@ -4,18 +4,29 @@ import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.util.SqlQueryBuilder;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 @Log4j2
 @Repository
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
+    public static final String ID = "id";
     @PersistenceContext
     private EntityManager entityManager;
+    private final CriteriaBuilder criteriaBuilder;
 
+    @Autowired
+    public GiftCertificateDaoImpl(EntityManager entityManager) {
+        this.entityManager = entityManager;
+        this.criteriaBuilder = entityManager.getCriteriaBuilder();
+    }
     @Override
     public GiftCertificate create(GiftCertificate giftCertificate) {
         entityManager.persist(giftCertificate);
@@ -29,8 +40,12 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public List<GiftCertificate> findAll() {
-        return entityManager.createQuery("FROM GiftCertificate ").getResultList();
+    public List<GiftCertificate> findAll(Integer offset, Integer limit) {
+        CriteriaQuery<GiftCertificate> query = criteriaBuilder.createQuery(GiftCertificate.class);
+        Root<GiftCertificate> root = query.from(GiftCertificate.class);
+        query.select(root);
+        query.orderBy(criteriaBuilder.asc(root.get(ID)));
+        return entityManager.createQuery(query).setFirstResult(offset).setMaxResults(limit).getResultList();
     }
 
     @Override

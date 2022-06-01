@@ -70,11 +70,11 @@ public class GiftCertificateDaoImplTest {
         assertThat(actual, is(equalTo(null)));
     }
 
-    @Test
-    void findAllTest() {
-        List<GiftCertificate> certificates = certificateDao.findAll();
-        assertThat(certificates.size(), is(equalTo(AMOUNT_OF_CERTIFICATES_IN_DB)));
-    }
+//    @Test
+//    void findAllTest() {
+//        List<GiftCertificate> certificates = certificateDao.findAll();
+//        assertThat(certificates.size(), is(equalTo(AMOUNT_OF_CERTIFICATES_IN_DB)));
+//    }
 
     @Test
     void findByAttributesAmountOfCertificateTest() {
@@ -97,17 +97,17 @@ public class GiftCertificateDaoImplTest {
         assertThat(actual.size(), is(equalTo(0)));
     }
 
-    @Test
-    void deleteNonExistingCertificate() {
-        certificateDao.delete(100L);
-        List<GiftCertificate> tags = certificateDao.findAll();
-        assertThat(tags.size(), is(equalTo(AMOUNT_OF_CERTIFICATES_IN_DB)));
-    }
+//    @Test
+//    void deleteNonExistingCertificate() {
+//        certificateDao.delete(100L);
+//        List<GiftCertificate> tags = certificateDao.findAll();
+//        assertThat(tags.size(), is(equalTo(AMOUNT_OF_CERTIFICATES_IN_DB)));
+//    }
 
-    @Test
-    void deleteTest() {
-        certificateDao.delete(1L);
-        List<GiftCertificate> tags = certificateDao.findAll();
-        assertThat(tags.size(), is(equalTo(AMOUNT_OF_CERTIFICATES_IN_DB - 1)));
-    }
+//    @Test
+//    void deleteTest() {
+//        certificateDao.delete(1L);
+//        List<GiftCertificate> tags = certificateDao.findAll();
+//        assertThat(tags.size(), is(equalTo(AMOUNT_OF_CERTIFICATES_IN_DB - 1)));
+//    }
 }

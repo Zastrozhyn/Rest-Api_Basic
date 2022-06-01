@@ -41,11 +41,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificate> findAll() {
-        return giftCertificateDao.findAll();
-    }
-
-    @Override
     public GiftCertificate findById(Long id) {
         GiftCertificate giftCertificate = giftCertificateDao.findById(id);
         if (giftCertificate == null){
@@ -83,19 +78,19 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
+    @Transactional
     public GiftCertificate update(Long id, GiftCertificate giftCertificate) {
         if(isGiftCertificateValid(giftCertificate) && isGiftCertificateExist(id)){
             giftCertificate.setId(id);
-            giftCertificateDao.update(giftCertificate);
         }
-        return giftCertificate;
+        return giftCertificateDao.update(giftCertificate);
     }
 
     @Override
     public List<GiftCertificate> findByAttributes(String tagName, String searchPart, String sortingField,
-                                                  String orderSort, String search) {
+                                                  String orderSort, String search, Integer pageSize, Integer page) {
         if (search ==  null){
-            return giftCertificateDao.findAll();
+            return giftCertificateDao.findAll(calculateOffset(pageSize, page), pageSize);
         }
         if (giftCertificateValidator.isGiftCertificateFieldValid(sortingField)
                 && giftCertificateValidator.isOrderSortValid(orderSort)) {
@@ -125,5 +120,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private boolean isTagCanBeDeletedFromCertificate(Tag tag , long idCertificate){
         return tagService.isTagValid(tag) && isGiftCertificateExist(idCertificate) && tagService.isTagExist(tag);
+    }
+    private Integer calculateOffset(Integer pageSize, Integer page){
+        return pageSize*(page - 1);
     }
 }
