@@ -61,8 +61,9 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
 
     @Override
-    public List<GiftCertificate> findByAttributes(String tagName, String searchPart, String sortingField, String orderSort) {
-        String query = SqlQueryBuilder.buildCertificateQueryForSearchAndSort(tagName, searchPart, sortingField, orderSort);
-        return null;
+    public List<GiftCertificate> findByAttributes(String tagName, String searchPart, String sortingField, String orderSort,
+                                                  Integer offset, Integer limit) {
+        String sqlQuery = SqlQueryBuilder.buildCertificateQueryForSearchAndSort(tagName, searchPart, sortingField, orderSort);
+        return entityManager.createNativeQuery(sqlQuery, GiftCertificate.class).setFirstResult(offset).setMaxResults(limit).getResultList();
     }
 }

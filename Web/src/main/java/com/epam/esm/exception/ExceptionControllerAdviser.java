@@ -24,15 +24,15 @@ public class ExceptionControllerAdviser {
 
     @ExceptionHandler(EntityException.class)
     public ResponseEntity<ExceptionResponse> handleEntityNotFoundException(EntityException e, Locale locale) {
-        return buildErrorResponse(resolveResourceBundle(getMessageByCode(e.getErrorCode()), locale), e.getErrorCode(),
-                HttpStatus.BAD_REQUEST);
+        return buildErrorResponse(resolveResourceBundle(getMessageByCode(e.getErrorCode()), locale), e.getErrorCode()
+        );
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ExceptionResponse> handleMessageNotReadableException(Locale locale) {
         int errorCode = ExceptionCode.ERROR_INPUT_DATA.getErrorCode();
-        return buildErrorResponse(resolveResourceBundle(getMessageByCode(errorCode), locale), errorCode,
-                HttpStatus.BAD_REQUEST);
+        return buildErrorResponse(resolveResourceBundle(getMessageByCode(errorCode), locale), errorCode
+        );
     }
 
     private String resolveResourceBundle(String key, Locale locale) {
@@ -42,9 +42,9 @@ public class ExceptionControllerAdviser {
         return bundleMessageSource.getMessage(key, null, locale);
     }
 
-    private ResponseEntity<ExceptionResponse> buildErrorResponse(String message, Integer code, HttpStatus status) {
+    private ResponseEntity<ExceptionResponse> buildErrorResponse(String message, Integer code) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(message, code);
-        return new ResponseEntity<>(exceptionResponse, status);
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 
     private String getMessageByCode(int errorCode) {

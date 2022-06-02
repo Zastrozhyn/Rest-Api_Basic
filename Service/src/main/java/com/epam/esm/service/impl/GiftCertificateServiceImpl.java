@@ -95,7 +95,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         }
         if (giftCertificateValidator.isGiftCertificateFieldValid(sortingField)
                 && giftCertificateValidator.isOrderSortValid(orderSort)) {
-            return giftCertificateDao.findByAttributes(tagName, searchPart, sortingField, orderSort);
+            return giftCertificateDao.findByAttributes(tagName, searchPart, sortingField, orderSort,
+                    calculateOffset(pageSize, page), pageSize );
         }
         throw new EntityException(WRONG_FIND_PARAMETERS.getErrorCode());
     }
