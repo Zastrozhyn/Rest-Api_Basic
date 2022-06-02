@@ -5,9 +5,10 @@ import com.epam.esm.entity.Order;
 import java.util.List;
 
 public interface OrderService {
-    Order create(Order order);
+    Order create(Long userId, List<Long> certificates);
     Order findOrder(Long id);
-    List<Order> findAll();
     void delete(Long id);
+    List<Order> findAllUsersOrder(Long id, Integer page, Integer pageSize);
     Order update(Order order, Long id);
+    List<Order> findAll(Integer page, Integer pageSize);
 }

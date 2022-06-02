@@ -1,6 +1,7 @@
 package com.epam.esm.exception;
 
 public enum ExceptionCode {
+    ERROR_INPUT_DATA(40400),
     TAG_NOT_FOUND(40401),
     USER_NOT_FOUND(40201),
     NOT_VALID_USER_NAME(40202),

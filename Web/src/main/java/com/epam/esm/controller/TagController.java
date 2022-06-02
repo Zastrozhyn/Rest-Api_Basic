@@ -27,8 +27,9 @@ public class TagController {
     }
 
     @GetMapping
-    public List<Tag> findAll() {
-        return tagService.findAll();
+    public List<Tag> findAll(@RequestParam(required = false, defaultValue = "10", name = "pageSize") Integer pageSize,
+                             @RequestParam(required = false, defaultValue = "1", name = "page") Integer page) {
+        return tagService.findAll(pageSize, page);
     }
 
     @GetMapping("/{id}")

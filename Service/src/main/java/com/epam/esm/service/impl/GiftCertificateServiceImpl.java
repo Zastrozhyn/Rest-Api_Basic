@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.epam.esm.exception.ExceptionCode.*;
+import static com.epam.esm.util.ApplicationUtil.calculateOffset;
 
 @Log4j2
 @Service
@@ -121,7 +122,5 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private boolean isTagCanBeDeletedFromCertificate(Tag tag , long idCertificate){
         return tagService.isTagValid(tag) && isGiftCertificateExist(idCertificate) && tagService.isTagExist(tag);
     }
-    private Integer calculateOffset(Integer pageSize, Integer page){
-        return pageSize*(page - 1);
-    }
+
 }

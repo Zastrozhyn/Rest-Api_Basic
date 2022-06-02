@@ -5,6 +5,7 @@ import com.epam.esm.entity.User;
 import com.epam.esm.exception.EntityException;
 import com.epam.esm.exception.ExceptionCode;
 import com.epam.esm.service.UserService;
+import com.epam.esm.util.ApplicationUtil;
 import com.epam.esm.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,35 +34,35 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findUser(Long id) {
         User user = userDao.findUser(id);
-        if (user ==  null){
-            throw new EntityException(ExceptionCode.USER_NOT_FOUND.getErrorCode());
-        }
+        isUserExist(user);
         return user;
     }
 
     @Override
-    public List<User> findAll() {
-        return userDao.findAll();
+    public List<User> findAll(Integer pageSize, Integer page) {
+        return userDao.findAll(ApplicationUtil.calculateOffset(pageSize,page), pageSize);
     }
 
     @Override
     public void delete(Long id) {
-        if (isUserExist(id)){
+        if (isUserExist(findUser(id))){
             userDao.delete(id);
         }
     }
 
     @Override
     public User update(User user, Long id) {
-        if (isUserExist(id) && isUserNameValid(user)){
+
+        if (isUserExist(findUser(id)) && isUserNameValid(user)){
             user.setId(id);
             userDao.update(user);
         }
         return user;
     }
 
-    private boolean isUserExist(Long id){
-        if (userDao.findUser(id) ==  null){
+    @Override
+    public boolean isUserExist(User user){
+        if (user ==  null){
             throw new EntityException(ExceptionCode.USER_NOT_FOUND.getErrorCode());
         }
         return true;

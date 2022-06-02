@@ -8,6 +8,6 @@ public interface TagDao {
     Tag create(Tag tag);
     Tag findTag(Long id);
     Tag findTagByName(String name);
-    List<Tag> findAll();
     void delete(Long id);
+    List<Tag> findAll(Integer offset, Integer limit);
 }

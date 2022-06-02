@@ -55,8 +55,8 @@ public class GiftCertificateController {
                                                      @RequestParam(required = false, name = "searchPart") String searchPart,
                                                      @RequestParam(required = false, name = "sortingField") String sortingField,
                                                      @RequestParam(required = false, name = "orderSort") String orderSort,
-                                                     @RequestParam(required = false, name = "pageSize") Integer pageSize,
-                                                     @RequestParam(required = false, name = "page") Integer page,
+                                                     @RequestParam(required = false, defaultValue = "10", name = "pageSize") Integer pageSize,
+                                                     @RequestParam(required = false, defaultValue = "1", name = "page") Integer page,
                                                      @RequestParam(required = false, name = "search") String search){
         return giftCertificateService.findByAttributes(tagName, searchPart, sortingField, orderSort, search, pageSize, page);
     }

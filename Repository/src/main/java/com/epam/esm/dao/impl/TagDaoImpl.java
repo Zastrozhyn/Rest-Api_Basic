@@ -11,7 +11,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
+
+import static com.epam.esm.constant.StringConstant.ID;
 
 @Log4j2
 @Repository
@@ -45,9 +48,11 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public List<Tag> findAll() {
-        CriteriaQuery<Tag> criteria = criteriaBuilder.createQuery(Tag.class);
-        return entityManager.createQuery(criteria).getResultList();
+    public List<Tag> findAll(Integer offset, Integer limit) {
+        CriteriaQuery<Tag> query = criteriaBuilder.createQuery(Tag.class);
+        Root<Tag> root = query.from(Tag.class);
+        query.orderBy(criteriaBuilder.asc(root.get(ID)));
+        return entityManager.createQuery(query).setFirstResult(offset).setMaxResults(limit).getResultList();
     }
 
     @Override

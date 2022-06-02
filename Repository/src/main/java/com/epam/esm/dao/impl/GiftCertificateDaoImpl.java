@@ -14,10 +14,11 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
+import static com.epam.esm.constant.StringConstant.ID;
+
 @Log4j2
 @Repository
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
-    public static final String ID = "id";
     @PersistenceContext
     private EntityManager entityManager;
     private final CriteriaBuilder criteriaBuilder;

@@ -30,7 +30,7 @@ public class ExceptionControllerAdviser {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ExceptionResponse> handleMessageNotReadableException(Locale locale) {
-        int errorCode = ExceptionCode.NOT_VALID_GIFT_CERTIFICATE_DATA.getErrorCode();
+        int errorCode = ExceptionCode.ERROR_INPUT_DATA.getErrorCode();
         return buildErrorResponse(resolveResourceBundle(getMessageByCode(errorCode), locale), errorCode,
                 HttpStatus.BAD_REQUEST);
     }
