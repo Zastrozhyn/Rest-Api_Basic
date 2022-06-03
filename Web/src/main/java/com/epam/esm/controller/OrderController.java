@@ -2,6 +2,7 @@ package com.epam.esm.controller;
 
 import com.epam.esm.entity.Order;
 import com.epam.esm.service.OrderService;
+import com.epam.esm.util.impl.OrderLinkBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,21 +13,28 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService service;
+    private final OrderLinkBuilder linkBuilder;
 
     @Autowired
-    public OrderController(OrderService service) {
+    public OrderController(OrderService service, OrderLinkBuilder linkBuilder) {
         this.service = service;
+        this.linkBuilder = linkBuilder;
     }
+
 
     @GetMapping
     public List<Order> findAll(@RequestParam(required = false, defaultValue = "10", name = "pageSize") Integer pageSize,
                                @RequestParam(required = false, defaultValue = "1", name = "page") Integer page){
-        return service.findAll(page, pageSize);
+        List<Order> orders = service.findAll(page, pageSize);
+        orders.forEach(linkBuilder::buildLinks);
+        return orders;
     }
 
     @GetMapping("/{id}")
     public Order findOrder(@PathVariable Long id){
-        return service.findOrder(id);
+        Order order = service.findOrder(id);
+        linkBuilder.buildLinks(order);
+        return order;
     }
 
     @DeleteMapping("/{id}")

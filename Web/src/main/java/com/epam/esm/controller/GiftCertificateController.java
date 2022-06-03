@@ -3,6 +3,7 @@ package com.epam.esm.controller;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.GiftCertificateService;
+import com.epam.esm.util.impl.GiftCertificateLinkBuilder;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,11 +21,28 @@ import java.util.List;
 public class GiftCertificateController {
     private final GiftCertificateService giftCertificateService;
     private final LocaleResolver localeResolver;
+    private final GiftCertificateLinkBuilder linkBuilder;
 
     @Autowired
-    public GiftCertificateController(GiftCertificateService giftCertificateService, LocaleResolver localeResolver) {
+    public GiftCertificateController(GiftCertificateService giftCertificateService,
+                                     LocaleResolver localeResolver, GiftCertificateLinkBuilder linkBuilder) {
         this.giftCertificateService = giftCertificateService;
         this.localeResolver = localeResolver;
+        this.linkBuilder = linkBuilder;
+    }
+
+    @GetMapping()
+    public List<GiftCertificate> findByAttributes(@RequestParam(required = false, name = "tagName") String tagName,
+                                                  @RequestParam(required = false, name = "searchPart") String searchPart,
+                                                  @RequestParam(required = false, name = "sortingField") String sortingField,
+                                                  @RequestParam(required = false, name = "orderSort") String orderSort,
+                                                  @RequestParam(required = false, defaultValue = "10", name = "pageSize") Integer pageSize,
+                                                  @RequestParam(required = false, defaultValue = "1", name = "page") Integer page,
+                                                  @RequestParam(required = false, name = "search") String search){
+        List<GiftCertificate> certificates = giftCertificateService.findByAttributes(tagName, searchPart,
+                sortingField, orderSort, search, pageSize, page);
+        certificates.forEach(linkBuilder::buildLinks);
+        return certificates;
     }
 
     @PostMapping
@@ -35,7 +53,9 @@ public class GiftCertificateController {
 
     @GetMapping("/{id}")
     public GiftCertificate findById(@PathVariable Long id) {
-        return giftCertificateService.findById(id);
+        GiftCertificate certificate = giftCertificateService.findById(id);
+        linkBuilder.buildLinks(certificate);
+        return certificate;
     }
 
     @PatchMapping("/{id}")
@@ -48,17 +68,6 @@ public class GiftCertificateController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         giftCertificateService.delete(id);
-    }
-
-    @GetMapping()
-    public List<GiftCertificate> findByAttributes(@RequestParam(required = false, name = "tagName") String tagName,
-                                                     @RequestParam(required = false, name = "searchPart") String searchPart,
-                                                     @RequestParam(required = false, name = "sortingField") String sortingField,
-                                                     @RequestParam(required = false, name = "orderSort") String orderSort,
-                                                     @RequestParam(required = false, defaultValue = "10", name = "pageSize") Integer pageSize,
-                                                     @RequestParam(required = false, defaultValue = "1", name = "page") Integer page,
-                                                     @RequestParam(required = false, name = "search") String search){
-        return giftCertificateService.findByAttributes(tagName, searchPart, sortingField, orderSort, search, pageSize, page);
     }
 
     @PutMapping("/{id}/tags")
