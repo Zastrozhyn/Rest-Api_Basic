@@ -30,7 +30,7 @@ public class ExceptionControllerAdviser {
         );
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ExceptionHandler({HttpMessageNotReadableException.class, NumberFormatException.class})
     public ResponseEntity<ExceptionResponse> handleMessageNotReadableException(Locale locale) {
         int errorCode = ExceptionCode.ERROR_INPUT_DATA.getErrorCode();
         return buildErrorResponse(resolveResourceBundle(getMessageByCode(errorCode), locale), errorCode

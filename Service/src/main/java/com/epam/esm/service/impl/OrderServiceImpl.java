@@ -6,12 +6,13 @@ import com.epam.esm.entity.User;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.UserService;
-import com.epam.esm.util.ApplicationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import static com.epam.esm.util.ApplicationUtil.*;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -48,7 +49,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> findAll(Integer page, Integer pageSize) {
-        return orderDao.findAll(ApplicationUtil.calculateOffset(pageSize,page), pageSize);
+        page = checkPage(page);
+        pageSize = checkPageSize(pageSize);
+        return orderDao.findAll(calculateOffset(pageSize,page), pageSize);
     }
 
     @Override
@@ -59,9 +62,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public List<Order> findAllUsersOrder(Long id, Integer page, Integer pageSize) {
+        page = checkPage(page);
+        pageSize = checkPageSize(pageSize);
         User user = userService.findUser(id);
         userService.isUserExist(user);
-        return orderDao.findAllUsersOrder(user, ApplicationUtil.calculateOffset(pageSize,page), pageSize);
+        return orderDao.findAllUsersOrder(user, calculateOffset(pageSize,page), pageSize);
     }
 
     @Override

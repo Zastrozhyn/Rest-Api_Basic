@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.epam.esm.exception.ExceptionCode.*;
-import static com.epam.esm.util.ApplicationUtil.calculateOffset;
+import static com.epam.esm.util.ApplicationUtil.*;
 
 @Log4j2
 @Service
@@ -88,14 +88,16 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificate> findByAttributes(String tagName, String searchPart, String sortingField,
+    public List<GiftCertificate> findByAttributes(List<String> tagList, String searchPart, String sortingField,
                                                   String orderSort, String search, Integer pageSize, Integer page) {
+        page = checkPage(page);
+        pageSize = checkPageSize(pageSize);
         if (search ==  null){
             return giftCertificateDao.findAll(calculateOffset(pageSize, page), pageSize);
         }
         if (giftCertificateValidator.isGiftCertificateFieldValid(sortingField)
                 && giftCertificateValidator.isOrderSortValid(orderSort)) {
-            return giftCertificateDao.findByAttributes(tagName, searchPart, sortingField, orderSort,
+            return giftCertificateDao.findByAttributes(tagList, searchPart, sortingField, orderSort,
                     calculateOffset(pageSize, page), pageSize );
         }
         throw new EntityException(WRONG_FIND_PARAMETERS.getErrorCode());

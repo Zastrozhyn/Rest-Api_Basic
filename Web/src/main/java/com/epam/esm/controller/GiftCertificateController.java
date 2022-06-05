@@ -32,14 +32,14 @@ public class GiftCertificateController {
     }
 
     @GetMapping()
-    public List<GiftCertificate> findByAttributes(@RequestParam(required = false, name = "tagName") String tagName,
+    public List<GiftCertificate> findByAttributes(@RequestParam(required = false, name = "tagList") List<String> tagList,
                                                   @RequestParam(required = false, name = "searchPart") String searchPart,
                                                   @RequestParam(required = false, name = "sortingField") String sortingField,
                                                   @RequestParam(required = false, name = "orderSort") String orderSort,
                                                   @RequestParam(required = false, defaultValue = "10", name = "pageSize") Integer pageSize,
                                                   @RequestParam(required = false, defaultValue = "1", name = "page") Integer page,
                                                   @RequestParam(required = false, name = "search") String search){
-        List<GiftCertificate> certificates = giftCertificateService.findByAttributes(tagName, searchPart,
+        List<GiftCertificate> certificates = giftCertificateService.findByAttributes(tagList, searchPart,
                 sortingField, orderSort, search, pageSize, page);
         certificates.forEach(linkBuilder::buildLinks);
         return certificates;

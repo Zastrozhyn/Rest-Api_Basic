@@ -5,12 +5,13 @@ import com.epam.esm.entity.User;
 import com.epam.esm.exception.EntityException;
 import com.epam.esm.exception.ExceptionCode;
 import com.epam.esm.service.UserService;
-import com.epam.esm.util.ApplicationUtil;
 import com.epam.esm.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static com.epam.esm.util.ApplicationUtil.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -40,7 +41,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> findAll(Integer pageSize, Integer page) {
-        return userDao.findAll(ApplicationUtil.calculateOffset(pageSize,page), pageSize);
+        page = checkPage(page);
+        pageSize = checkPageSize(pageSize);
+        return userDao.findAll(calculateOffset(pageSize,page), pageSize);
     }
 
     @Override

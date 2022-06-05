@@ -1,32 +1,57 @@
 package com.epam.esm.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SqlQueryBuilder {
-    public static final String DESC_SORT = "DESC";
+    public static final String DESC_SORT = " DESC";
+    public static final String ASC_SORT = " ASC";
     public static final String CERTIFICATE_ID = " gift_certificate.id";
     private static final String EMPTY = "NULL";
-    public static final String SEARCH_AND_SORT_QUERY = "SELECT gift_certificate.id, gift_certificate.name" +
-            ", description, price, duration, create_date, last_update_date, tag.id AS tag_id, tag.name AS tag_name " +
-            "FROM gift_certificate " +
-            " JOIN tag_certificate ON certificate_id=gift_certificate.id " +
-            "JOIN tag ON tag_id=tag.id " +
-            "WHERE tag.name LIKE CONCAT ('%%', '%s', '%%') OR (gift_certificate.name LIKE CONCAT ('%%', '%s', '%%') " +
-            "OR gift_certificate.description LIKE CONCAT ('%%', '%s', '%%')) ORDER BY ";
+    public static final String SEARCH_AND_SORT_QUERY_START = "SELECT gift_certificate.id, count(*), gift_certificate.name" +
+            ", description, price, duration, create_date, last_update_date FROM gift_certificate " +
+            " JOIN tag_certificate ON certificate_id=gift_certificate.id JOIN tag ON tag_id=tag.id " +
+            "WHERE tag.name IN ('%s' ";
+    private static final String FIND_TAG = ", '%s'";
+    public static final String SEARCH_AND_SORT_QUERY_END = ") OR (gift_certificate.name LIKE CONCAT ('%%', '%s', '%%') " +
+            "OR gift_certificate.description LIKE CONCAT ('%%', '%s', '%%')) group by gift_certificate.id ";
+    private static String HAVING_COUNT = "having count(*)=";
+    private static final String ORDER_BY = " order by ";
 
-    public static String buildCertificateQueryForSearchAndSort(String tagName, String searchPart,
+    public static String buildCertificateQueryForSearchAndSort(List<String> tagList, String searchPart,
                                                                String sortingField, String orderSort) {
-        tagName = tagName != null ? tagName : EMPTY;
-        searchPart = searchPart != null ? searchPart : EMPTY;
-        String queryMainPart = String.format(SEARCH_AND_SORT_QUERY, tagName, searchPart, searchPart);
-        StringBuilder resultQuery = new StringBuilder(queryMainPart);
+        if(tagList == null){
+            tagList = new ArrayList<>();
+            tagList.add(EMPTY);
+            HAVING_COUNT = "";
+        }
+        else {
+            HAVING_COUNT.concat(String.valueOf(tagList.size()));
+        }
 
-        if (sortingField != null && !sortingField.isEmpty()) {
-             resultQuery.append(sortingField);
-        } else {
-            resultQuery.append(CERTIFICATE_ID);
+        if (sortingField == null) {
+            sortingField = CERTIFICATE_ID;
         }
-        if (orderSort != null && orderSort.equalsIgnoreCase(DESC_SORT)){
-            resultQuery.append(" ").append(DESC_SORT);
+
+        if (orderSort == null){
+            orderSort = ASC_SORT;
         }
-        return resultQuery.toString();
+        
+        if (!orderSort.equalsIgnoreCase(DESC_SORT)){
+            orderSort = ASC_SORT;
+        }
+
+        String SEARCH_AND_SORT_QUERY = SEARCH_AND_SORT_QUERY_START
+                .concat(FIND_TAG.repeat(tagList.size()-1))
+                .concat(SEARCH_AND_SORT_QUERY_END)
+                .concat(HAVING_COUNT)
+                .concat(ORDER_BY)
+                .concat(sortingField)
+                .concat(orderSort);
+        searchPart = searchPart != null ? searchPart : EMPTY;
+        tagList.add(searchPart);
+        tagList.add(searchPart);
+        String[] attributes = tagList.toArray(String[]::new);
+        return String.format(SEARCH_AND_SORT_QUERY, attributes);
     }
 }

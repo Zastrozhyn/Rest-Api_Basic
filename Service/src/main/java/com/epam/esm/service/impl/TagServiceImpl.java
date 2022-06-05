@@ -4,7 +4,6 @@ import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.EntityException;
 import com.epam.esm.service.TagService;
-import com.epam.esm.util.ApplicationUtil;
 import com.epam.esm.validator.TagValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +12,7 @@ import java.util.List;
 
 import static com.epam.esm.exception.ExceptionCode.NOT_VALID_TAG_DATA;
 import static com.epam.esm.exception.ExceptionCode.TAG_NOT_FOUND;
+import static com.epam.esm.util.ApplicationUtil.*;
 
 @Service
 public class TagServiceImpl implements TagService {
@@ -44,7 +44,9 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public List<Tag> findAll(Integer pageSize, Integer page) {
-        return tagDao.findAll(ApplicationUtil.calculateOffset(pageSize,page), pageSize);
+        page = checkPage(page);
+        pageSize = checkPageSize(pageSize);
+        return tagDao.findAll(calculateOffset(pageSize,page), pageSize);
     }
 
     @Override
