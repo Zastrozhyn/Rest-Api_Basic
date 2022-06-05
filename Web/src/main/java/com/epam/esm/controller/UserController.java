@@ -1,7 +1,9 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.entity.Order;
+import com.epam.esm.entity.Tag;
 import com.epam.esm.entity.User;
+import com.epam.esm.entity.dto.UserDto;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.UserService;
 import com.epam.esm.util.impl.UserLinkBuilder;
@@ -9,6 +11,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Log4j2
@@ -68,4 +71,20 @@ public class UserController {
                                          @RequestParam(required = false, defaultValue = "1", name = "page") Integer page){
         return orderService.findAllUsersOrder(id, page, pageSize);
     }
+
+    @GetMapping("/tags")
+    public Tag getMostPopularTag() {
+        return service.getMostPopularTag();
+    }
+
+    @GetMapping("{id}/total")
+    public BigDecimal totalCostOfUserOrders(@PathVariable Long id) {
+        return service.findTotalCost(id);
+    }
+
+    @GetMapping("/total")
+    public List<UserDto> getRichestUser() {
+        return service.getUsersWithTotalCost();
+    }
+
 }

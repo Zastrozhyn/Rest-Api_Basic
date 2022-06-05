@@ -8,15 +8,20 @@ public class SqlQueryBuilder {
     public static final String ASC_SORT = " ASC";
     public static final String CERTIFICATE_ID = " gift_certificate.id";
     private static final String EMPTY = "NULL";
-    public static final String SEARCH_AND_SORT_QUERY_START = "SELECT gift_certificate.id, count(*), gift_certificate.name" +
-            ", description, price, duration, create_date, last_update_date FROM gift_certificate " +
-            " JOIN tag_certificate ON certificate_id=gift_certificate.id JOIN tag ON tag_id=tag.id " +
-            "WHERE tag.name IN ('%s' ";
+    public static final String SEARCH_AND_SORT_QUERY_START = """
+        SELECT gift_certificate.id, count(*), gift_certificate.name, description, price, 
+        duration, create_date, last_update_date 
+        FROM gift_certificate JOIN tag_certificate ON certificate_id=gift_certificate.id 
+        JOIN tag ON tag_id=tag.id WHERE tag.name IN ('%s' """;
     private static final String FIND_TAG = ", '%s'";
-    public static final String SEARCH_AND_SORT_QUERY_END = ") OR (gift_certificate.name LIKE CONCAT ('%%', '%s', '%%') " +
-            "OR gift_certificate.description LIKE CONCAT ('%%', '%s', '%%')) group by gift_certificate.id ";
-    private static String HAVING_COUNT = "having count(*)=";
+    public static final String SEARCH_AND_SORT_QUERY_END = """
+        ) OR (gift_certificate.name LIKE CONCAT ('%%', '%s', '%%') OR gift_certificate.description 
+        LIKE CONCAT ('%%', '%s', '%%')) group by gift_certificate.id """;
+    private static String HAVING_COUNT = " having count(*)=";
     private static final String ORDER_BY = " order by ";
+    private static final String GET_TOTAL_COST = """
+        SELECT sum(cost) FROM users JOIN orders on users.id = orders.user_id 
+        WHERE user_id= %s group by users.id""";
 
     public static String buildCertificateQueryForSearchAndSort(List<String> tagList, String searchPart,
                                                                String sortingField, String orderSort) {
@@ -26,7 +31,7 @@ public class SqlQueryBuilder {
             HAVING_COUNT = "";
         }
         else {
-            HAVING_COUNT.concat(String.valueOf(tagList.size()));
+            HAVING_COUNT = HAVING_COUNT.concat(String.valueOf(tagList.size()));
         }
 
         if (sortingField == null) {
@@ -36,7 +41,7 @@ public class SqlQueryBuilder {
         if (orderSort == null){
             orderSort = ASC_SORT;
         }
-        
+
         if (!orderSort.equalsIgnoreCase(DESC_SORT)){
             orderSort = ASC_SORT;
         }
@@ -53,5 +58,9 @@ public class SqlQueryBuilder {
         tagList.add(searchPart);
         String[] attributes = tagList.toArray(String[]::new);
         return String.format(SEARCH_AND_SORT_QUERY, attributes);
+    }
+
+    public static String buildTotalCostQuery(Long id){
+        return String.format(GET_TOTAL_COST, id.toString());
     }
 }

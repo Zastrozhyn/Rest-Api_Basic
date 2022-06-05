@@ -1,7 +1,10 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.UserDao;
+import com.epam.esm.entity.Tag;
 import com.epam.esm.entity.User;
+import com.epam.esm.entity.dto.UserDto;
+import com.epam.esm.util.SqlQueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -10,12 +13,27 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.math.BigDecimal;
 import java.util.List;
 
 import static com.epam.esm.constant.StringConstant.ID;
 
 @Repository
 public class UserDaoImpl implements UserDao {
+
+    private static final String GET_MOST_POPULAR_TAG_OF_RICHEST_USER = """
+        SELECT t.id, t.name FROM tag as t
+        JOIN tag_certificate as tc ON tc.tag_id=t.id
+        JOIN order_certificates as oc ON oc.certificate_id=tc.certificate_id
+        JOIN orders as o ON o.id=oc.order_id AND o.user_id=(
+        SELECT u.id FROM users as u
+        JOIN orders as ord ON ord.user_id=u.id
+        GROUP BY u.id ORDER BY sum(ord.cost) DESC LIMIT 1
+        ) GROUP BY t.id ORDER BY count(t.id) DESC LIMIT 1""";
+
+    private static final String GET_USERS_WITH_TOTAL_COST = """
+        SELECT users.id , users.name, sum(cost) as total_cost FROM users JOIN orders on users.id = orders.user_id 
+        group by users.id order by sum(cost) """;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -54,5 +72,20 @@ public class UserDaoImpl implements UserDao {
     public User update(User user) {
         entityManager.merge(user);
         return user;
+    }
+
+    @Override
+    public Tag getMostPopularTag(){
+        return (Tag) entityManager.createNativeQuery(GET_MOST_POPULAR_TAG_OF_RICHEST_USER, Tag.class).getSingleResult();
+    }
+
+    @Override
+    public BigDecimal findTotalCost(Long id) {
+        return (BigDecimal) entityManager.createNativeQuery(SqlQueryBuilder.buildTotalCostQuery(id)).getSingleResult();
+    }
+
+    @Override
+    public List<UserDto> getUsersWithTotalCost() {
+        return entityManager.createNativeQuery(GET_USERS_WITH_TOTAL_COST, UserDto.class).getResultList();
     }
 }

@@ -1,7 +1,9 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.UserDao;
+import com.epam.esm.entity.Tag;
 import com.epam.esm.entity.User;
+import com.epam.esm.entity.dto.UserDto;
 import com.epam.esm.exception.EntityException;
 import com.epam.esm.exception.ExceptionCode;
 import com.epam.esm.service.UserService;
@@ -9,6 +11,7 @@ import com.epam.esm.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static com.epam.esm.util.ApplicationUtil.*;
@@ -69,6 +72,21 @@ public class UserServiceImpl implements UserService {
             throw new EntityException(ExceptionCode.USER_NOT_FOUND.getErrorCode());
         }
         return true;
+    }
+
+    @Override
+    public Tag getMostPopularTag(){
+        return userDao.getMostPopularTag();
+    }
+
+    @Override
+    public BigDecimal findTotalCost(Long id) {
+        return userDao.findTotalCost(id);
+    }
+
+    @Override
+    public List<UserDto> getUsersWithTotalCost() {
+        return userDao.getUsersWithTotalCost();
     }
 
     private boolean isUserNameValid(User user){
