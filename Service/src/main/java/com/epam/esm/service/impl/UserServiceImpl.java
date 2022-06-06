@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Tag getMostPopularTag(){
+    public List<Tag> getMostPopularTag(){
         return userDao.getMostPopularTag();
     }
 

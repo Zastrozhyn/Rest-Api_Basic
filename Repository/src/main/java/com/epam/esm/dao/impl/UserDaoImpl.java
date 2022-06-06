@@ -22,14 +22,22 @@ import static com.epam.esm.constant.StringConstant.ID;
 public class UserDaoImpl implements UserDao {
 
     private static final String GET_MOST_POPULAR_TAG_OF_RICHEST_USER = """
-        SELECT t.id, t.name FROM tag as t
-        JOIN tag_certificate as tc ON tc.tag_id=t.id
-        JOIN order_certificates as oc ON oc.certificate_id=tc.certificate_id
-        JOIN orders as o ON o.id=oc.order_id AND o.user_id=(
-        SELECT u.id FROM users as u
-        JOIN orders as ord ON ord.user_id=u.id
-        GROUP BY u.id ORDER BY sum(ord.cost) DESC LIMIT 1
-        ) GROUP BY t.id ORDER BY count(t.id) DESC LIMIT 1""";
+        SELECT t.id, t.name, count(t.id) FROM tag as t
+                JOIN tag_certificate as tc ON tc.tag_id=t.id
+                JOIN order_certificates as oc ON oc.certificate_id=tc.certificate_id
+                JOIN orders as o ON o.id=oc.order_id AND o.user_id=(
+                SELECT u.id FROM users as u
+                JOIN orders as ord ON ord.user_id=u.id
+                GROUP BY u.id ORDER BY sum(ord.cost) DESC LIMIT 1
+                ) GROUP BY t.id HAVING count(t.id) =
+        (SELECT max(tagsCount) FROM (SELECT count(t.id) AS tagsCount FROM tag as t
+                JOIN tag_certificate as tc ON tc.tag_id=t.id
+                JOIN order_certificates as oc ON oc.certificate_id=tc.certificate_id
+                JOIN orders as o ON o.id=oc.order_id AND o.user_id=(
+                SELECT u.id FROM users as u
+                JOIN orders as ord ON ord.user_id=u.id
+                GROUP BY u.id ORDER BY sum(ord.cost) DESC LIMIT 1
+                ) GROUP BY t.id) AS tagsc)""";
 
     private static final String GET_USERS_WITH_TOTAL_COST = """
         SELECT users.id , users.name, sum(cost) as total_cost FROM users JOIN orders on users.id = orders.user_id 
@@ -75,8 +83,8 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Tag getMostPopularTag(){
-        return (Tag) entityManager.createNativeQuery(GET_MOST_POPULAR_TAG_OF_RICHEST_USER, Tag.class).getSingleResult();
+    public List<Tag> getMostPopularTag(){
+        return entityManager.createNativeQuery(GET_MOST_POPULAR_TAG_OF_RICHEST_USER, Tag.class).getResultList();
     }
 
     @Override

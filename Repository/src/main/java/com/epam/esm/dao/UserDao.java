@@ -13,8 +13,7 @@ public interface UserDao {
     List<User> findAll(Integer offset, Integer limit);
     void delete(Long id);
     User update(User user);
-    Tag getMostPopularTag();
+    List<Tag> getMostPopularTag();
     BigDecimal findTotalCost(Long id);
-
     List<UserDto> getUsersWithTotalCost();
 }

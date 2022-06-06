@@ -14,7 +14,7 @@ public interface UserService {
     void delete(Long id);
     User update(User user, Long id);
     boolean isUserExist(User user);
-    Tag getMostPopularTag();
+    List<Tag> getMostPopularTag();
     BigDecimal findTotalCost(Long id);
 
     List<UserDto> getUsersWithTotalCost();

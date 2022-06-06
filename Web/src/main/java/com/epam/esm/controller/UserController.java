@@ -73,7 +73,7 @@ public class UserController {
     }
 
     @GetMapping("/tags")
-    public Tag getMostPopularTag() {
+    public List<Tag> getMostPopularTag() {
         return service.getMostPopularTag();
     }
 
