@@ -1,6 +1,7 @@
 package com.epam.esm.util.impl;
 
 import com.epam.esm.controller.GiftCertificateController;
+import com.epam.esm.dto.CustomPage;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.util.HateoasLinkBuilder;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,16 @@ public class GiftCertificateLinkBuilder implements HateoasLinkBuilder<GiftCertif
         certificate.add(linkTo(GiftCertificateController.class).slash(certificate.getId())
                 .slash(TAGS).withRel(ADD_TAG_TO_CERTIFICATE).withType(RequestMethod.PUT.name()));
 
+
+    }
+
+    @Override
+    public void buildSelfLink(GiftCertificate certificate) {
+
+    }
+
+    @Override
+    public void buildAllLinks(CustomPage<GiftCertificate> customPage) {
 
     }
 }

@@ -1,15 +1,17 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.UserDao;
+import com.epam.esm.dto.UserDto;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.entity.User;
-import com.epam.esm.entity.dto.UserDto;
+import com.epam.esm.entity.UserWithTotalCost;
 import com.epam.esm.exception.EntityException;
 import com.epam.esm.exception.ExceptionCode;
 import com.epam.esm.service.UserService;
 import com.epam.esm.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -28,40 +30,43 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User create(User user) {
-        if (isUserNameValid(user)){
-            userDao.create(user);
-        }
-        return user;
+    @Transactional
+    public UserDto create(UserDto user) {
+        isUserNameValid(user.convertToUser());
+        return new UserDto(userDao.create(user.convertToUser()));
     }
 
     @Override
-    public User findUser(Long id) {
+    public UserDto findUser(Long id) {
         User user = userDao.findUser(id);
         isUserExist(user);
-        return user;
+        return new UserDto(user);
     }
 
     @Override
-    public List<User> findAll(Integer pageSize, Integer page) {
+    public List<UserDto> findAll(Integer pageSize, Integer page) {
         page = checkPage(page);
         pageSize = checkPageSize(pageSize);
-        return userDao.findAll(calculateOffset(pageSize,page), pageSize);
+        return userDao.findAll(calculateOffset(pageSize,page), pageSize)
+                .stream()
+                .map(UserDto::new)
+                .toList();
     }
 
     @Override
     public void delete(Long id) {
-        if (isUserExist(findUser(id))){
+        if (isUserExist(userDao.findUser(id))){
             userDao.delete(id);
         }
     }
 
     @Override
-    public User update(User user, Long id) {
+    @Transactional
+    public UserDto update(UserDto user, Long id) {
 
-        if (isUserExist(findUser(id)) && isUserNameValid(user)){
+        if (isUserExist(userDao.findUser(id)) && isUserNameValid(user.convertToUser())){
             user.setId(id);
-            userDao.update(user);
+            userDao.update(user.convertToUser());
         }
         return user;
     }
@@ -85,7 +90,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getUsersWithTotalCost() {
+    public List<UserWithTotalCost> getUsersWithTotalCost() {
         return userDao.getUsersWithTotalCost();
     }
 

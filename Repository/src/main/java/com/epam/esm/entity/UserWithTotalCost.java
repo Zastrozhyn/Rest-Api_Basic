@@ -1,4 +1,4 @@
-package com.epam.esm.entity.dto;
+package com.epam.esm.entity;
 
 import lombok.Data;
 
@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @SqlResultSetMapping(name = "UserDtoMapping",
 classes = {
         @ConstructorResult(
-                targetClass = UserDto.class,
+                targetClass = UserWithTotalCost.class,
                 columns = {
                         @ColumnResult(name = "id", type = Long.class),
                         @ColumnResult(name = "name", type = String.class),
@@ -18,7 +18,7 @@ classes = {
                 }
         )
 })
-public class UserDto {
+public class UserWithTotalCost {
     @Id
     private Long id;
     private String name;

@@ -2,7 +2,7 @@ package com.epam.esm.dao;
 
 import com.epam.esm.entity.Tag;
 import com.epam.esm.entity.User;
-import com.epam.esm.entity.dto.UserDto;
+import com.epam.esm.entity.UserWithTotalCost;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -15,5 +15,5 @@ public interface UserDao {
     User update(User user);
     List<Tag> getMostPopularTag();
     BigDecimal findTotalCost(Long id);
-    List<UserDto> getUsersWithTotalCost();
+    List<UserWithTotalCost> getUsersWithTotalCost();
 }

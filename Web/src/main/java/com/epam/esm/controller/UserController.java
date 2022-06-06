@@ -1,9 +1,10 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.dto.CustomPage;
+import com.epam.esm.dto.UserDto;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.entity.User;
-import com.epam.esm.entity.dto.UserDto;
+import com.epam.esm.entity.UserWithTotalCost;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.UserService;
 import com.epam.esm.util.impl.UserLinkBuilder;
@@ -31,16 +32,18 @@ public class UserController {
 
 
     @GetMapping
-    public List<User> findAll(@RequestParam(required = false, defaultValue = "10", name = "pageSize") Integer pageSize,
+    public CustomPage<UserDto> findAll(@RequestParam(required = false, defaultValue = "10", name = "pageSize") Integer pageSize,
                               @RequestParam(required = false, defaultValue = "1", name = "page") Integer page){
-        List<User> users = service.findAll(pageSize, page);
-        users.forEach(linkBuilder::buildLinks);
-        return users;
+        List<UserDto> users = service.findAll(pageSize, page);
+        users.forEach(linkBuilder::buildSelfLink);
+        CustomPage customPage = new CustomPage(users, page, pageSize);
+        linkBuilder.buildAllLinks(customPage);
+        return customPage;
     }
 
     @GetMapping("/{id}")
-    public User findUser(@PathVariable Long id){
-        User user = service.findUser(id);
+    public UserDto findUser(@PathVariable Long id){
+        UserDto user = service.findUser(id);
         linkBuilder.buildLinks(user);
         return user;
     }
@@ -51,12 +54,12 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public User update(@PathVariable Long id,@RequestBody User user){
+    public UserDto update(@PathVariable Long id,@RequestBody UserDto user){
         return service.update(user, id);
     }
 
     @PostMapping
-    public User create(@RequestBody User user){
+    public UserDto create(@RequestBody UserDto user){
         return service.create(user);
     }
 
@@ -83,7 +86,7 @@ public class UserController {
     }
 
     @GetMapping("/total")
-    public List<UserDto> getRichestUser() {
+    public List<UserWithTotalCost> getRichestUser() {
         return service.getUsersWithTotalCost();
     }
 

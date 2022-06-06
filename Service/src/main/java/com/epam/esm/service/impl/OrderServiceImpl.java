@@ -32,7 +32,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public Order create(Long userId, List<Long> certificates) {
         Order order = new Order();
-        User user = userService.findUser(userId);
+        User user = userService.findUser(userId).convertToUser();
         if (userService.isUserExist(user)){
             order.setUser(user);
             certificates.stream().
@@ -64,7 +64,7 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> findAllUsersOrder(Long id, Integer page, Integer pageSize) {
         page = checkPage(page);
         pageSize = checkPageSize(pageSize);
-        User user = userService.findUser(id);
+        User user = userService.findUser(id).convertToUser();
         userService.isUserExist(user);
         return orderDao.findAllUsersOrder(user, calculateOffset(pageSize,page), pageSize);
     }

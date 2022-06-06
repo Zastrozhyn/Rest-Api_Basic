@@ -1,18 +1,22 @@
 package com.epam.esm.entity;
 
-import lombok.Data;
-import org.springframework.hateoas.RepresentationModel;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
+@Builder
 @Entity
 @Table(name = "users")
-public class User extends RepresentationModel<User> {
+@NoArgsConstructor
+@AllArgsConstructor
+public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name", nullable = false, length = 30)
     private String name;
+
 }
