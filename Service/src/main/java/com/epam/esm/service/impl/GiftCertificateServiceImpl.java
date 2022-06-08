@@ -1,6 +1,10 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.converter.impl.GiftCertificateDtoConverter;
+import com.epam.esm.converter.impl.TagDtoConverter;
 import com.epam.esm.dao.GiftCertificateDao;
+import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.EntityException;
@@ -12,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.epam.esm.exception.ExceptionCode.*;
@@ -23,31 +28,37 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private final GiftCertificateDao giftCertificateDao;
     private final TagService tagService;
     private final GiftCertificateValidator giftCertificateValidator;
+    private final GiftCertificateDtoConverter converter;
+    private final TagDtoConverter tagConverter;
 
     @Autowired
     public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao, TagService tagService,
-                                      GiftCertificateValidator giftCertificateValidator) {
+                                      GiftCertificateValidator giftCertificateValidator,
+                                      GiftCertificateDtoConverter converter, TagDtoConverter tagConverter) {
         this.giftCertificateDao = giftCertificateDao;
-        this.giftCertificateValidator = giftCertificateValidator;
         this.tagService = tagService;
+        this.giftCertificateValidator = giftCertificateValidator;
+        this.converter = converter;
+        this.tagConverter = tagConverter;
     }
 
     @Override
     @Transactional
-    public GiftCertificate create(GiftCertificate giftCertificate) {
-        if (!giftCertificateValidator.isValid(giftCertificate)){
+    public GiftCertificateDto create(GiftCertificateDto giftCertificateDto) {
+        GiftCertificate certificate = converter.convertFromDto(giftCertificateDto);
+        if (!giftCertificateValidator.isValid(certificate)){
             throw new EntityException(NOT_VALID_GIFT_CERTIFICATE_DATA.getErrorCode());
         }
-        return giftCertificateDao.create(giftCertificate);
+        return converter.convertToDto(giftCertificateDao.create(certificate));
     }
 
     @Override
-    public GiftCertificate findById(Long id) {
+    public GiftCertificateDto findById(Long id) {
         GiftCertificate giftCertificate = giftCertificateDao.findById(id);
         if (giftCertificate == null){
             throw new EntityException(GIFT_CERTIFICATE_NOT_FOUND.getErrorCode());
         }
-        return giftCertificate;
+        return converter.convertToDto(giftCertificate);
     }
 
     @Override
@@ -59,48 +70,55 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     @Transactional
-    public GiftCertificate addTagToCertificate(Tag tag, long idCertificate){
+    public GiftCertificateDto addTagToCertificate(TagDto tagDto, long idCertificate){
         GiftCertificate certificate = giftCertificateDao.findById(idCertificate);
+        Tag tag = tagConverter.convertFromDto(tagDto);
         if(isGiftCertificateExist(idCertificate) && isTagReadyToCreate(tag)) {
-            tagService.create(tag);
+            tagService.create(tagDto);
         }
         certificate.addTag(tag);
-        return giftCertificateDao.update(certificate);
+        return converter.convertToDto(giftCertificateDao.update(certificate));
     }
 
     @Override
     @Transactional
-    public GiftCertificate deleteTagFromCertificate(Tag tag, long idCertificate){
+    public GiftCertificateDto deleteTagFromCertificate(TagDto tagDto, long idCertificate){
         GiftCertificate certificate = giftCertificateDao.findById(idCertificate);
+        Tag tag = tagConverter.convertFromDto(tagDto);
         if(isTagCanBeDeletedFromCertificate(tag, idCertificate)){
             certificate.deleteTagFromCertificate(tag);
         }
-        return giftCertificateDao.update(certificate);
+        return converter.convertToDto(giftCertificateDao.update(certificate));
     }
 
     @Override
     @Transactional
-    public GiftCertificate update(Long id, GiftCertificate giftCertificate) {
+    public GiftCertificateDto update(Long id, GiftCertificateDto giftCertificateDto) {
+        GiftCertificate giftCertificate = giftCertificateDao.findById(id);
         if(isGiftCertificateValid(giftCertificate) && isGiftCertificateExist(id)){
             giftCertificate.setId(id);
         }
-        return giftCertificateDao.update(giftCertificate);
+        return converter.convertToDto(giftCertificateDao.update(giftCertificate));
     }
 
     @Override
-    public List<GiftCertificate> findByAttributes(List<String> tagList, String searchPart, String sortingField,
+    public List<GiftCertificateDto> findByAttributes(List<String> tagList, String searchPart, String sortingField,
                                                   String orderSort, String search, Integer pageSize, Integer page) {
         page = checkPage(page);
         pageSize = checkPageSize(pageSize);
-        if (search ==  null){
-            return giftCertificateDao.findAll(calculateOffset(pageSize, page), pageSize);
+        List<GiftCertificate> certificates = new ArrayList<>();
+        if (search == null){
+            certificates = giftCertificateDao.findAll(calculateOffset(pageSize, page), pageSize);
         }
         if (giftCertificateValidator.isGiftCertificateFieldValid(sortingField)
-                && giftCertificateValidator.isOrderSortValid(orderSort)) {
-            return giftCertificateDao.findByAttributes(tagList, searchPart, sortingField, orderSort,
+                && giftCertificateValidator.isOrderSortValid(orderSort) && search != null) {
+            certificates = giftCertificateDao.findByAttributes(tagList, searchPart, sortingField, orderSort,
                     calculateOffset(pageSize, page), pageSize );
         }
-        throw new EntityException(WRONG_FIND_PARAMETERS.getErrorCode());
+        return certificates
+                .stream()
+                .map(converter::convertToDto)
+                .toList();
     }
 
 

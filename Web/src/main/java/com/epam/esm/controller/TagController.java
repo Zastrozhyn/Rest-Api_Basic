@@ -1,12 +1,13 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.entity.Tag;
+import com.epam.esm.dto.CustomPage;
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.service.TagService;
+import com.epam.esm.util.impl.TagLinkBuilder;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import com.epam.esm.util.impl.TagLinkBuilder;
 
 import java.util.List;
 
@@ -26,21 +27,23 @@ public class TagController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Tag create(@RequestBody Tag tag) {
+    public TagDto create(@RequestBody TagDto tag) {
         return tagService.create(tag);
     }
 
     @GetMapping
-    public List<Tag> findAll(@RequestParam(required = false, defaultValue = "10", name = "pageSize") Integer pageSize,
-                             @RequestParam(required = false, defaultValue = "1", name = "page") Integer page) {
-        List<Tag> tags = tagService.findAll(pageSize, page);
+    public CustomPage<TagDto> findAll(@RequestParam(required = false, defaultValue = "10", name = "pageSize") Integer pageSize,
+                                   @RequestParam(required = false, defaultValue = "1", name = "page") Integer page) {
+        List<TagDto> tags = tagService.findAll(pageSize, page);
         tags.forEach(linkBuilder::buildLinks);
-        return tags;
+        CustomPage<TagDto> customPage = new CustomPage<>(tags, page,pageSize);
+        linkBuilder.buildAllLinks(customPage);
+        return customPage;
     }
 
     @GetMapping("/{id}")
-    public Tag findById(@PathVariable Long id) {
-        Tag tag = tagService.findTag(id);
+    public TagDto findById(@PathVariable Long id) {
+        TagDto tag = tagService.findTag(id);
         linkBuilder.buildLinks(tag);
         return tag;
     }

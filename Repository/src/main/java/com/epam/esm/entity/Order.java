@@ -1,5 +1,7 @@
 package com.epam.esm.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.hateoas.RepresentationModel;
 
@@ -10,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "orders")
 public class Order extends RepresentationModel<Order> {

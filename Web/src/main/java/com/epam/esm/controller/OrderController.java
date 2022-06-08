@@ -1,6 +1,7 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.entity.Order;
+import com.epam.esm.dto.CustomPage;
+import com.epam.esm.dto.OrderDto;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.util.impl.OrderLinkBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,16 +24,18 @@ public class OrderController {
 
 
     @GetMapping
-    public List<Order> findAll(@RequestParam(required = false, defaultValue = "10", name = "pageSize") Integer pageSize,
-                               @RequestParam(required = false, defaultValue = "1", name = "page") Integer page){
-        List<Order> orders = service.findAll(page, pageSize);
-        orders.forEach(linkBuilder::buildLinks);
-        return orders;
+    public CustomPage<OrderDto> findAll(@RequestParam(required = false, defaultValue = "10", name = "pageSize") Integer pageSize,
+                                     @RequestParam(required = false, defaultValue = "1", name = "page") Integer page){
+        List<OrderDto> orders = service.findAll(page, pageSize);
+        orders.forEach(linkBuilder::buildSelfLink);
+        CustomPage<OrderDto> customPage = new CustomPage<>(orders, page, pageSize);
+        linkBuilder.buildAllLinks(customPage);
+        return customPage;
     }
 
     @GetMapping("/{id}")
-    public Order findOrder(@PathVariable Long id){
-        Order order = service.findOrder(id);
+    public OrderDto findOrder(@PathVariable Long id){
+        OrderDto order = service.findOrder(id);
         linkBuilder.buildLinks(order);
         return order;
     }
@@ -43,8 +46,10 @@ public class OrderController {
     }
 
     @PatchMapping("/{id}")
-    public Order update(@PathVariable Long id,@RequestBody Order order){
-        return service.update(order, id);
+    public OrderDto update(@PathVariable Long id,@RequestBody OrderDto order){
+        OrderDto orderDto = service.update(order, id);
+        linkBuilder.buildLinks(orderDto);
+        return orderDto;
     }
 
 }
