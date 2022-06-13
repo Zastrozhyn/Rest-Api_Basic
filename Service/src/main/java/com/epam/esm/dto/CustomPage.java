@@ -12,8 +12,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
-public class CustomPage<T> extends RepresentationModel<CustomPage<T>> {
-    private List<T> content;
-    private int currentPage;
-    private int pageSize;
+public class CustomPage extends RepresentationModel<CustomPage> {
+    private List<?> content;
 }

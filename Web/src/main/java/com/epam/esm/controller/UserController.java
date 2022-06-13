@@ -1,9 +1,12 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.dto.CustomPage;
-import com.epam.esm.dto.OrderDto;
-import com.epam.esm.dto.TagDto;
-import com.epam.esm.dto.UserDto;
+import com.epam.esm.converter.impl.OrderModelAssembler;
+import com.epam.esm.converter.impl.TagModelAssembler;
+import com.epam.esm.converter.impl.UserModelAssembler;
+import com.epam.esm.dto.OrderModel;
+import com.epam.esm.dto.TagModel;
+import com.epam.esm.dto.UserModel;
+import com.epam.esm.entity.User;
 import com.epam.esm.entity.UserWithTotalCost;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.UserService;
@@ -12,6 +15,7 @@ import com.epam.esm.util.impl.TagLinkBuilder;
 import com.epam.esm.util.impl.UserLinkBuilder;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -26,30 +30,37 @@ public class UserController {
     private  final UserLinkBuilder linkBuilder;
     private final OrderLinkBuilder orderLinkBuilder;
     private final TagLinkBuilder tagLinkBuilder;
+    private final UserModelAssembler assembler;
+    private final OrderModelAssembler orderModelAssembler;
+    private final TagModelAssembler tagModelAssembler;
 
     @Autowired
     public UserController(UserService service, OrderService orderService, UserLinkBuilder linkBuilder,
-                          OrderLinkBuilder orderLinkBuilder, TagLinkBuilder tagLinkBuilder) {
+                          OrderLinkBuilder orderLinkBuilder, TagLinkBuilder tagLinkBuilder,
+                          UserModelAssembler assembler, OrderModelAssembler orderModelAssembler,
+                          TagModelAssembler tagModelAssembler) {
         this.service = service;
         this.orderService = orderService;
         this.linkBuilder = linkBuilder;
         this.orderLinkBuilder = orderLinkBuilder;
         this.tagLinkBuilder = tagLinkBuilder;
+        this.assembler = assembler;
+        this.orderModelAssembler = orderModelAssembler;
+        this.tagModelAssembler = tagModelAssembler;
     }
 
     @GetMapping
-    public CustomPage<UserDto> findAll(@RequestParam(required = false, defaultValue = "10", name = "pageSize") Integer pageSize,
-                              @RequestParam(required = false, defaultValue = "1", name = "page") Integer page){
-        List<UserDto> users = service.findAll(pageSize, page);
+    public CollectionModel<UserModel> findAll(@RequestParam(required = false, defaultValue = "10", name = "pageSize") Integer pageSize,
+                                              @RequestParam(required = false, defaultValue = "1", name = "page") Integer page){
+        CollectionModel<UserModel> users = assembler.toCollectionModel(service.findAll(pageSize, page));
         users.forEach(linkBuilder::buildSelfLink);
-        CustomPage<UserDto> customPage = new CustomPage<>(users, page, pageSize);
-        linkBuilder.buildAllLinks(customPage);
-        return customPage;
+        linkBuilder.buildAllLinks(users);
+        return users;
     }
 
     @GetMapping("/{id}")
-    public UserDto findUser(@PathVariable Long id){
-        UserDto user = service.findUser(id);
+    public UserModel findUser(@PathVariable Long id){
+        UserModel user = assembler.toModel(service.findUser(id));
         linkBuilder.buildLinks(user);
         return user;
     }
@@ -60,36 +71,41 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public UserDto update(@PathVariable Long id,@RequestBody UserDto user){
-        UserDto userDto = service.update(user, id);
+    public UserModel update(@PathVariable Long id, @RequestBody User user){
+        UserModel userDto = assembler.toModel(service.update(user, id));
         linkBuilder.buildLinks(userDto);
         return userDto;
     }
 
     @PostMapping
-    public UserDto create(@RequestBody UserDto user){
-        UserDto userDto = service.create(user);
-        linkBuilder.buildLinks(userDto);
-        return userDto;
+    public UserModel create(@RequestBody User user){
+        UserModel userModel = assembler.toModel(service.create(user));
+        linkBuilder.buildLinks(userModel);
+        return userModel;
     }
 
     @PostMapping("{id}/orders")
-    public OrderDto createOrder(@PathVariable Long id, @RequestBody List<Long> certificates ){
-        return orderService.create(id, certificates);
+    public OrderModel createOrder(@PathVariable Long id, @RequestBody List<Long> certificates ){
+        OrderModel orderModel = orderModelAssembler.toModel(orderService.create(id, certificates));
+        orderLinkBuilder.buildLinks(orderModel);
+        return orderModel;
     }
 
     @GetMapping("{id}/orders")
-    public CustomPage<OrderDto> findAllUsersOrder(@PathVariable Long id,
-                                         @RequestParam(required = false, defaultValue = "10", name = "pageSize") Integer pageSize,
-                                         @RequestParam(required = false, defaultValue = "1", name = "page") Integer page){
-        List<OrderDto> orders = orderService.findAllUsersOrder(id, page, pageSize);
+    public CollectionModel<OrderModel> findAllUsersOrder(@PathVariable Long id,
+                                                    @RequestParam(required = false, defaultValue = "10", name = "pageSize") Integer pageSize,
+                                                    @RequestParam(required = false, defaultValue = "1", name = "page") Integer page){
+        CollectionModel<OrderModel> orders = orderModelAssembler.toCollectionModel(orderService.findAllUsersOrder(id, page, pageSize));
         orders.forEach(orderLinkBuilder::buildSelfLink);
-        return new CustomPage<>(orders, page, pageSize);
+        return orders;
     }
 
     @GetMapping("/tags")
-    public List<TagDto> getMostPopularTag() {
-        List<TagDto> tagDtoList = service.getMostPopularTag();
+    public List<TagModel> getMostPopularTag() {
+        List<TagModel> tagDtoList = service.getMostPopularTag()
+                .stream()
+                .map(tagModelAssembler::toModel)
+                .toList();
         tagDtoList.forEach(tagLinkBuilder::buildLinks);
         return tagDtoList;
     }

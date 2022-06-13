@@ -1,18 +1,19 @@
 package com.epam.esm.service;
 
 
-import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.TagDto;
+import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.Tag;
 
 import java.util.List;
 
 public interface GiftCertificateService {
-    GiftCertificateDto create(GiftCertificateDto giftCertificate);
-    GiftCertificateDto findById(Long id);
+    GiftCertificate create(GiftCertificate giftCertificate);
+    GiftCertificate findById(Long id);
     void delete(long id);
-    GiftCertificateDto addTagToCertificate(TagDto tag, long idCertificate);
-    GiftCertificateDto deleteTagFromCertificate(TagDto tag, long idCertificate);
-    GiftCertificateDto update(Long id, GiftCertificateDto giftCertificate);
-    List<GiftCertificateDto> findByAttributes(List<String> tagList, String searchPart, String sortingField,
-                                              String orderSort, String search, Integer pageSize, Integer page);
+    GiftCertificate addTagToCertificate(Tag tag, long idCertificate);
+    GiftCertificate deleteTagFromCertificate(Tag tag, long idCertificate);
+    GiftCertificate update(Long id, GiftCertificate giftCertificate);
+    List<GiftCertificate> findByAttributes(List<String> tagList, String searchPart, String sortingField,
+                                           String orderSort, String search, Integer pageSize, Integer page);
+    boolean isGiftCertificateExist(Long id);
 }

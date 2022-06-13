@@ -1,8 +1,6 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.converter.impl.TagDtoConverter;
 import com.epam.esm.dao.TagDao;
-import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.EntityException;
 import com.epam.esm.service.TagService;
@@ -22,42 +20,36 @@ public class TagServiceImpl implements TagService {
     private final TagValidator tagValidator;
 
     @Autowired
-    public TagServiceImpl(TagDao tagDao, TagValidator tagValidator, TagDtoConverter converter) {
+    public TagServiceImpl(TagDao tagDao, TagValidator tagValidator) {
         this.tagDao = tagDao;
         this.tagValidator = tagValidator;
-        this.converter = converter;
     }
 
-    private final TagDtoConverter converter;
 
 
 
     @Override
-    public TagDto create(TagDto tagDto) {
-        Tag tag = converter.convertFromDto(tagDto);
+    public Tag create(Tag tag) {
         if(isTagValid(tag) && tagDao.findTagByName(tag.getName()) == null){
-            return converter.convertToDto(tagDao.create(tag));
+            return tagDao.create(tag);
         }
-        return converter.convertToDto(findTagByName(tag.getName()));
+        return findTagByName(tag.getName());
     }
 
     @Override
-    public TagDto findTag(Long id) {
+    public Tag findTag(Long id) {
         Tag tag = tagDao.findTag(id);
         if (tag == null){
             throw new EntityException(TAG_NOT_FOUND.getErrorCode());
         }
-        return converter.convertToDto(tag);
+        return tag;
     }
 
     @Override
-    public List<TagDto> findAll(Integer pageSize, Integer page) {
+    public List<Tag> findAll(Integer pageSize, Integer page) {
         page = checkPage(page);
         pageSize = checkPageSize(pageSize);
-        return tagDao.findAll(calculateOffset(pageSize,page), pageSize)
-                .stream()
-                .map(converter::convertToDto)
-                .toList();
+        return tagDao.findAll(calculateOffset(pageSize,page), pageSize);
     }
 
     @Override

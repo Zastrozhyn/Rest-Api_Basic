@@ -18,6 +18,7 @@ import static com.epam.esm.constant.StringConstant.ID;
 @Log4j2
 @Repository
 public class TagDaoImpl implements TagDao {
+    private static final String FIND_TAG_BY_NAME = "SELECT id, name FROM tag WHERE name=?";
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -42,7 +43,7 @@ public class TagDaoImpl implements TagDao {
 
     @Override
     public Tag findTagByName(String name){
-        return entityManager.find(Tag.class, name);
+        return (Tag) entityManager.createNativeQuery(FIND_TAG_BY_NAME, Tag.class).setParameter(1, name).getSingleResult();
     }
 
     @Override

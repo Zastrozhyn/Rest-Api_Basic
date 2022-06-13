@@ -1,13 +1,13 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.dto.CustomPage;
-import com.epam.esm.dto.OrderDto;
+import com.epam.esm.converter.impl.OrderModelAssembler;
+import com.epam.esm.dto.OrderModel;
+import com.epam.esm.entity.Order;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.util.impl.OrderLinkBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/orders")
@@ -15,27 +15,27 @@ public class OrderController {
 
     private final OrderService service;
     private final OrderLinkBuilder linkBuilder;
+    private final OrderModelAssembler assembler;
 
     @Autowired
-    public OrderController(OrderService service, OrderLinkBuilder linkBuilder) {
+    public OrderController(OrderService service, OrderLinkBuilder linkBuilder, OrderModelAssembler assembler) {
         this.service = service;
         this.linkBuilder = linkBuilder;
+        this.assembler = assembler;
     }
 
-
     @GetMapping
-    public CustomPage<OrderDto> findAll(@RequestParam(required = false, defaultValue = "10", name = "pageSize") Integer pageSize,
-                                     @RequestParam(required = false, defaultValue = "1", name = "page") Integer page){
-        List<OrderDto> orders = service.findAll(page, pageSize);
+    public CollectionModel<OrderModel> findAll(@RequestParam(required = false, defaultValue = "10", name = "pageSize") Integer pageSize,
+                                               @RequestParam(required = false, defaultValue = "1", name = "page") Integer page){
+        CollectionModel<OrderModel> orders = assembler.toCollectionModel(service.findAll(page, pageSize));
         orders.forEach(linkBuilder::buildSelfLink);
-        CustomPage<OrderDto> customPage = new CustomPage<>(orders, page, pageSize);
-        linkBuilder.buildAllLinks(customPage);
-        return customPage;
+        linkBuilder.buildAllLinks(orders);
+        return orders;
     }
 
     @GetMapping("/{id}")
-    public OrderDto findOrder(@PathVariable Long id){
-        OrderDto order = service.findOrder(id);
+    public OrderModel findOrder(@PathVariable Long id){
+        OrderModel order = assembler.toModel(service.findOrder(id));
         linkBuilder.buildLinks(order);
         return order;
     }
@@ -46,10 +46,10 @@ public class OrderController {
     }
 
     @PatchMapping("/{id}")
-    public OrderDto update(@PathVariable Long id,@RequestBody OrderDto order){
-        OrderDto orderDto = service.update(order, id);
-        linkBuilder.buildLinks(orderDto);
-        return orderDto;
+    public OrderModel update(@PathVariable Long id, @RequestBody Order order){
+        OrderModel orderModel = assembler.toModel(service.update(order, id));
+        linkBuilder.buildLinks(orderModel);
+        return orderModel;
     }
 
 }

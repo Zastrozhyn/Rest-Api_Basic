@@ -12,11 +12,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OrderDto extends RepresentationModel<OrderDto> {
+public class OrderModel extends RepresentationModel<OrderModel> {
     private Long id;
     private LocalDateTime orderDate;
     private BigDecimal cost;
-    private UserDto user;
-    private List<GiftCertificateDto> certificateList;
+    private UserModel user;
+    private List<GiftCertificateModel> certificateList;
 
 }

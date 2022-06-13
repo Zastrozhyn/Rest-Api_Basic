@@ -18,7 +18,7 @@ public class HomePageController {
 
     @GetMapping
     public CustomPage getHomePage(){
-        CustomPage customPage = new CustomPage<>(null, 1, 1);
+        CustomPage customPage = new CustomPage();
         linkBuilder.buildLinks(customPage);
         return customPage;
     }

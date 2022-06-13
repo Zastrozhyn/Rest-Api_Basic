@@ -12,7 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GiftCertificateDto extends RepresentationModel<GiftCertificateDto> {
+public class GiftCertificateModel extends RepresentationModel<GiftCertificateModel> {
     private Long id;
     private String name;
     private String description;
@@ -20,6 +20,6 @@ public class GiftCertificateDto extends RepresentationModel<GiftCertificateDto> 
     private LocalDateTime createDate;
     private LocalDateTime lastUpdateDate;
     private int duration;
-    private Set<TagDto> tags;
+    private Set<TagModel> tags;
 
 }

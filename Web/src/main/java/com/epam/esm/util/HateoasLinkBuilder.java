@@ -1,6 +1,6 @@
 package com.epam.esm.util;
 
-import com.epam.esm.dto.CustomPage;
+import org.springframework.hateoas.CollectionModel;
 
 public interface HateoasLinkBuilder<T> {
     String UPDATE = "update";
@@ -9,5 +9,5 @@ public interface HateoasLinkBuilder<T> {
     String ID = "Id";
     void buildLinks(T t);
     void buildSelfLink(T t);
-    void buildAllLinks(CustomPage<T> customPage);
+    void buildAllLinks(CollectionModel<T> models);
 }

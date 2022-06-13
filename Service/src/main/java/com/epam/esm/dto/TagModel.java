@@ -8,7 +8,7 @@ import org.springframework.hateoas.RepresentationModel;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDto extends RepresentationModel<UserDto> {
+public class TagModel extends RepresentationModel<TagModel> {
     private Long id;
     private String name;
 
