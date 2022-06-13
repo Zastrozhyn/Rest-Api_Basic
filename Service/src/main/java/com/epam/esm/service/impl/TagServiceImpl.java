@@ -7,6 +7,7 @@ import com.epam.esm.service.TagService;
 import com.epam.esm.validator.TagValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class TagServiceImpl implements TagService {
 
 
     @Override
+    @Transactional
     public Tag create(Tag tag) {
         if(isTagValid(tag) && tagDao.findTagByName(tag.getName()) == null){
             return tagDao.create(tag);
@@ -53,6 +55,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         if (tagDao.findTag(id) != null){
             tagDao.delete(id);

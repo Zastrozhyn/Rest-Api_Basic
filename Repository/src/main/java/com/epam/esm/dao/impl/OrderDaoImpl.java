@@ -38,7 +38,10 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public Order findOrder(Long id) {
-        return entityManager.find(Order.class, id);
+        CriteriaQuery<Order> query = criteriaBuilder.createQuery(Order.class);
+        Root<Order> root = query.from(Order.class);
+        query.where(criteriaBuilder.equal(root.get("id"), id));
+        return entityManager.createQuery(query).getSingleResult();
     }
 
     @Override

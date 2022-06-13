@@ -16,8 +16,7 @@ public class SqlQueryBuilder {
     private static final String FIND_TAG = ", '%s'";
     public static final String SEARCH_AND_SORT_QUERY_END = """
         ) OR (gift_certificate.name LIKE CONCAT ('%%', '%s', '%%') OR gift_certificate.description 
-        LIKE CONCAT ('%%', '%s', '%%')) group by gift_certificate.id """;
-    private static String HAVING_COUNT = " having count(*)=";
+        LIKE CONCAT ('%%', '%s', '%%')) group by gift_certificate.id""";
     private static final String ORDER_BY = " order by ";
     private static final String GET_TOTAL_COST = """
         SELECT sum(cost) FROM users JOIN orders on users.id = orders.user_id 
@@ -25,13 +24,14 @@ public class SqlQueryBuilder {
 
     public static String buildCertificateQueryForSearchAndSort(List<String> tagList, String searchPart,
                                                                String sortingField, String orderSort) {
+        String havingCount = " having count(*)=";
         if(tagList == null){
             tagList = new ArrayList<>();
             tagList.add(EMPTY);
-            HAVING_COUNT = "";
+            havingCount = "";
         }
         else {
-            HAVING_COUNT = HAVING_COUNT.concat(String.valueOf(tagList.size()));
+            havingCount = havingCount.concat(String.valueOf(tagList.size()));
         }
 
         if (sortingField == null) {
@@ -49,7 +49,7 @@ public class SqlQueryBuilder {
         String SEARCH_AND_SORT_QUERY = SEARCH_AND_SORT_QUERY_START
                 .concat(FIND_TAG.repeat(tagList.size()-1))
                 .concat(SEARCH_AND_SORT_QUERY_END)
-                .concat(HAVING_COUNT)
+                .concat(havingCount)
                 .concat(ORDER_BY)
                 .concat(sortingField)
                 .concat(orderSort);

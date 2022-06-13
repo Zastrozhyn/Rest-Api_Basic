@@ -36,8 +36,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     @Override
     public GiftCertificate update(GiftCertificate giftCertificate) {
-        entityManager.merge(giftCertificate);
-        return giftCertificate;
+        return entityManager.merge(giftCertificate);
     }
 
     @Override

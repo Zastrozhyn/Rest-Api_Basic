@@ -4,6 +4,8 @@ import com.epam.esm.dao.OrderDao;
 import com.epam.esm.dao.UserDao;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.User;
+import com.epam.esm.exception.EntityException;
+import com.epam.esm.exception.ExceptionCode;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.UserService;
@@ -38,12 +40,16 @@ public class OrderServiceImpl implements OrderService {
         User user = userDao.findUser(userId);
         userService.isUserExist(user);
         certificates.forEach(certificateService::isGiftCertificateExist);
+        order.setCertificateList(certificates.stream().map(certificateService::findById).toList());
+        order.setUser(user);
         return orderDao.create(order);
     }
 
     @Override
     public Order findOrder(Long id) {
-        return orderDao.findOrder(id);
+        Order order = orderDao.findOrder(id);
+        isOrderExist(order);
+        return order;
     }
 
     @Override
@@ -54,6 +60,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         orderDao.delete(id);
     }
@@ -69,9 +76,18 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public Order update(Order order, Long id) {
+        isOrderExist(findOrder(id));
         order.setId(id);
         return orderDao.update(order);
+    }
+
+    private boolean isOrderExist (Order order){
+        if (order == null){
+            throw new EntityException(ExceptionCode.ORDER_NOT_FOUND.getErrorCode());
+        }
+        return true;
     }
 
 }

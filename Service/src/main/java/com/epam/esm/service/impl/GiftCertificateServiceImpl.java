@@ -53,6 +53,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
+    @Transactional
     public void delete(long id) {
          if (isGiftCertificateExist(id)){
              giftCertificateDao.delete(id);

@@ -72,9 +72,9 @@ public class UserController {
 
     @PatchMapping("/{id}")
     public UserModel update(@PathVariable Long id, @RequestBody User user){
-        UserModel userDto = assembler.toModel(service.update(user, id));
-        linkBuilder.buildLinks(userDto);
-        return userDto;
+        UserModel userModel = assembler.toModel(service.update(user, id));
+        linkBuilder.buildLinks(userModel);
+        return userModel;
     }
 
     @PostMapping
@@ -102,12 +102,12 @@ public class UserController {
 
     @GetMapping("/tags")
     public List<TagModel> getMostPopularTag() {
-        List<TagModel> tagDtoList = service.getMostPopularTag()
+        List<TagModel> tagList = service.getMostPopularTag()
                 .stream()
                 .map(tagModelAssembler::toModel)
                 .toList();
-        tagDtoList.forEach(tagLinkBuilder::buildLinks);
-        return tagDtoList;
+        tagList.forEach(tagLinkBuilder::buildSelfLink);
+        return tagList;
     }
 
     @GetMapping("{id}/total")

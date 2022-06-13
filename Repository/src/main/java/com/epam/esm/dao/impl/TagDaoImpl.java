@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -43,7 +44,16 @@ public class TagDaoImpl implements TagDao {
 
     @Override
     public Tag findTagByName(String name){
-        return (Tag) entityManager.createNativeQuery(FIND_TAG_BY_NAME, Tag.class).setParameter(1, name).getSingleResult();
+        CriteriaQuery<Tag> query = criteriaBuilder.createQuery(Tag.class);
+        Root<Tag> root = query.from(Tag.class);
+        query.where(criteriaBuilder.equal(root.get("name"), name));
+        try{
+            return entityManager.createQuery(query).getSingleResult();
+        }
+        catch (NoResultException e){
+            return null;
+        }
+
     }
 
     @Override
