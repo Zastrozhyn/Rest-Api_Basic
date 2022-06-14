@@ -6,25 +6,22 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TestConfig.class})
-@ActiveProfiles("dev")
+@SpringBootTest(classes = {TestConfig.class})
 @Transactional
+@ActiveProfiles("test")
 public class TagDaoImplTest {
-    private static final long EXISTING_TAG_ID = 1;
-    private static final Integer AMOUNT_OF_TAGS_IN_DB = 4;
-    private static final String EXISTING_TAG_NAME = "IT";
     private final TagDaoImpl tagDao;
-    private static Tag expectedTag;
+    private Tag tag;
 
     @Autowired
     public TagDaoImplTest(TagDaoImpl tagDao) {
@@ -32,38 +29,45 @@ public class TagDaoImplTest {
     }
 
     @BeforeEach
-    void setUp(){
-        expectedTag = new Tag(EXISTING_TAG_ID, EXISTING_TAG_NAME);
+    void setUp() {
+        tag = Tag.builder().name("NewTag").build();
     }
 
     @Test
-    void findByIdTest() {
-        Tag actual = tagDao.findTag(EXISTING_TAG_ID);
-        assertThat(actual, is(equalTo(expectedTag)));
+    void create() {
+        Tag actual = tagDao.create(tag);
+        assertEquals("NewTag", actual.getName());
+    }
+
+
+    @Test
+    void findById() {
+        Tag actual = tagDao.findTag(1L);
+        assertNotNull(actual);
     }
 
     @Test
-    void FindByIdReturnsEmptyWithNonExistingTag() {
+    void FindByIdReturnsEmptyWithNonExistentTag() {
         Tag actual = tagDao.findTag(100L);
-        assertThat(actual, is(equalTo(null)));
+        assertNull(actual);
     }
-
-//    @Test
-//    void findAllTest() {
-//        List<Tag> tags = tagDao.findAll();
-//        assertThat(tags.size(), is(equalTo(AMOUNT_OF_TAGS_IN_DB)));
-//    }
 
     @Test
-    void findByNameTest() {
-        Tag actual = tagDao.findTagByName(EXISTING_TAG_NAME);
-        assertThat(actual, is(equalTo(expectedTag)));
+    void findByName() {
+        Tag actual = tagDao.findTagByName("HR");
+        assertNotNull(actual);
     }
 
-//    @Test
-//    void deleteTest() {
-//        tagDao.delete(1L);
-//        List<Tag> tags = tagDao.findAll();
-//        assertThat(tags.size(), is(equalTo(AMOUNT_OF_TAGS_IN_DB - 1)));
-//    }
+    @Test
+    void findByNameReturnsEmptyWithNonExistentTag() {
+        Tag actual = tagDao.findTagByName("HR222");
+        assertNull(actual);
+    }
+
+    @Test
+    void findAll() {
+        List<Tag> tags = tagDao.findAll(0, 4);
+        assertEquals(4, tags.size());
+    }
+
 }
