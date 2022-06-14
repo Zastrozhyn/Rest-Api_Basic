@@ -55,4 +55,9 @@ public class TagController {
     public void deleteTag(@PathVariable(name = "tagId") Long id) {
         tagService.delete(id);
     }
+
+    @PostMapping("/create")
+    public void create1000(){
+        tagService.create1000();
+    }
 }

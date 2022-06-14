@@ -120,4 +120,9 @@ public class UserController {
         return service.getUsersWithTotalCost();
     }
 
+    @PostMapping("/create")
+    public void create1000(){
+        service.create1000();
+    }
+
 }

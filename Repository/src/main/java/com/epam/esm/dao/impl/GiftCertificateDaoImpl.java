@@ -2,8 +2,11 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.Tag;
 import com.epam.esm.util.SqlQueryBuilder;
 import lombok.extern.log4j.Log4j2;
+import org.hibernate.jpa.TypedParameterValue;
+import org.hibernate.type.LongType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -19,6 +22,7 @@ import static com.epam.esm.constant.StringConstant.ID;
 @Log4j2
 @Repository
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
+    private static final String ADD_TAG_TO_CERTIFICATE_QUERY = "INSERT INTO tag_certificate (tag_id, certificate_id) VALUES (?,?)";
     @PersistenceContext
     private EntityManager entityManager;
     private final CriteriaBuilder criteriaBuilder;
@@ -64,5 +68,13 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
                                                   Integer offset, Integer limit) {
         String sqlQuery = SqlQueryBuilder.buildCertificateQueryForSearchAndSort(tagList, searchPart, sortingField, orderSort);
         return entityManager.createNativeQuery(sqlQuery, GiftCertificate.class).setFirstResult(offset).setMaxResults(limit).getResultList();
+    }
+
+    @Override
+    public void addTagToCertificate(Tag tag, Long idCertificate){
+        entityManager.createNativeQuery(ADD_TAG_TO_CERTIFICATE_QUERY)
+                .setParameter(1, new TypedParameterValue(LongType.INSTANCE, tag.getId()))
+                .setParameter(2, new TypedParameterValue(LongType.INSTANCE, idCertificate))
+                .executeUpdate();
     }
 }

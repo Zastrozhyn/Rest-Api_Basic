@@ -17,4 +17,5 @@ public interface UserService {
     List<Tag> getMostPopularTag();
     BigDecimal findTotalCost(Long id);
     List<UserWithTotalCost> getUsersWithTotalCost();
+    void create1000();
 }

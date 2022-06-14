@@ -13,4 +13,5 @@ public interface TagService {
     boolean isTagExist(Tag tag);
     Tag findTagByName(String name);
     List<Tag> findAll(Integer pageSize, Integer page);
+    void create1000();
 }

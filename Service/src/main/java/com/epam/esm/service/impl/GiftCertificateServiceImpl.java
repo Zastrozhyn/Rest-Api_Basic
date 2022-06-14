@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,12 +64,12 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     @Transactional
     public GiftCertificate addTagToCertificate(Tag tag, long idCertificate){
-        GiftCertificate certificate = giftCertificateDao.findById(idCertificate);
         if(isGiftCertificateExist(idCertificate) && isTagReadyToCreate(tag)) {
             tagService.create(tag);
         }
-        certificate.addTag(tag);
-        return giftCertificateDao.update(certificate);
+
+        giftCertificateDao.addTagToCertificate(tagService.findTagByName(tag.getName()),idCertificate);
+        return findById(idCertificate);
     }
 
     @Override
@@ -122,6 +123,20 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             throw new EntityException(GIFT_CERTIFICATE_NOT_FOUND.getErrorCode());
         }
         return true;
+    }
+
+    @Override
+    @Transactional
+    public void create1000() {
+        for (int i = 1; i < 1000; i++){
+            GiftCertificate certificate = new GiftCertificate();
+            certificate.setName("Certificate".concat(String.valueOf(i)));
+            certificate.setDuration(1);
+            certificate.setPrice(BigDecimal.valueOf(i));
+            certificate.setDescription("CDescription".concat(String.valueOf(i)));
+            Long id = create(certificate).getId();
+            addTagToCertificate(new Tag("Tag".concat(String.valueOf(i))), id);
+        }
     }
 
     private boolean isTagReadyToCreate(Tag tag){

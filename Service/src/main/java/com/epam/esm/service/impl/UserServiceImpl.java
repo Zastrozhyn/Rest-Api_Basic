@@ -93,6 +93,16 @@ public class UserServiceImpl implements UserService {
         return userDao.getUsersWithTotalCost();
     }
 
+    @Override
+    @Transactional
+    public void create1000() {
+        for (int i = 1; i < 1000; i++){
+            User user = new User();
+            user.setName("User".concat(String.valueOf(i)));
+            create(user);
+        }
+    }
+
     private boolean isUserNameValid(User user){
         if(!validator.isValid(user)){
             throw new EntityException(ExceptionCode.NOT_VALID_USER_NAME.getErrorCode());
