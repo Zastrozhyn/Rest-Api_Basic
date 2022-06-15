@@ -19,7 +19,7 @@ class TagValidatorTest {
     @ParameterizedTest
     @ValueSource(strings = {"Name", "Tag-name", "another-tag-name", "QWERTY", "qa"})
     void isValidTest(String tagName){
-        Tag tag = new Tag("tagName");
+        Tag tag = new Tag(tagName);
         assertTrue(validator.isValid(tag));
     }
 }

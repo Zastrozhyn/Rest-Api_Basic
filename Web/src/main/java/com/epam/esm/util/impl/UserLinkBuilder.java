@@ -39,5 +39,4 @@ public class UserLinkBuilder implements HateoasLinkBuilder<UserModel> {
                 .withRel(CREATE_ORDER).withType(RequestMethod.POST.name()));
         models.add(linkTo(UserController.class).slash(ID).slash(ORDERS).withRel(ALL_USERS_ORDERS));
     }
-
 }

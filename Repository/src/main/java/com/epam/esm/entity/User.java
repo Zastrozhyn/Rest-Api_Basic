@@ -18,5 +18,4 @@ public class User{
 
     @Column(name = "name", nullable = false, length = 30)
     private String name;
-
 }

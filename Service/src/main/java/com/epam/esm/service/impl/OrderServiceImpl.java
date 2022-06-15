@@ -1,7 +1,6 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.OrderDao;
-import com.epam.esm.dao.UserDao;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.EntityException;
@@ -22,22 +21,19 @@ public class OrderServiceImpl implements OrderService {
     private final OrderDao orderDao;
     private final UserService userService;
     private final GiftCertificateService certificateService;
-    private final UserDao userDao;
 
     @Autowired
-    public OrderServiceImpl(OrderDao orderDao, UserService userService, GiftCertificateService certificateService,
-                            UserDao userDao) {
+    public OrderServiceImpl(OrderDao orderDao, UserService userService, GiftCertificateService certificateService) {
         this.orderDao = orderDao;
         this.userService = userService;
         this.certificateService = certificateService;
-        this.userDao = userDao;
     }
 
     @Override
     @Transactional
     public Order create(Long userId, List<Long> certificates) {
         Order order = new Order();
-        User user = userDao.findUser(userId);
+        User user = userService.findUser(userId);
         userService.isUserExist(user);
         certificates.forEach(certificateService::isGiftCertificateExist);
         order.setCertificateList(certificates.stream().map(certificateService::findById).toList());
@@ -70,7 +66,7 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> findAllUsersOrder(Long id, Integer page, Integer pageSize) {
         page = checkPage(page);
         pageSize = checkPageSize(pageSize);
-        User user = userDao.findUser(id);
+        User user = userService.findUser(id);
         userService.isUserExist(user);
         return orderDao.findAllUsersOrder(user, calculateOffset(pageSize,page), pageSize);
     }
@@ -89,5 +85,4 @@ public class OrderServiceImpl implements OrderService {
         }
         return true;
     }
-
 }

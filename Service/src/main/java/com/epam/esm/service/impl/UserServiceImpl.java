@@ -22,12 +22,10 @@ public class UserServiceImpl implements UserService {
     private final UserDao userDao;
     private final UserValidator validator;
 
-
     @Autowired
     public UserServiceImpl(UserDao userDao, UserValidator validator) {
         this.userDao = userDao;
         this.validator = validator;
-
     }
 
     @Override
@@ -49,7 +47,6 @@ public class UserServiceImpl implements UserService {
         page = checkPage(page);
         pageSize = checkPageSize(pageSize);
         return userDao.findAll(calculateOffset(pageSize,page), pageSize);
-
     }
 
     @Override
@@ -65,7 +62,6 @@ public class UserServiceImpl implements UserService {
     public User update(User user, Long id) {
         if (isUserExist(userDao.findUser(id)) && isUserNameValid(user)){
             user.setId(id);
-
         }
         return userDao.update(user);
     }

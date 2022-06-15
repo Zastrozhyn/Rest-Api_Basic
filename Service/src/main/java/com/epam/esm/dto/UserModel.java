@@ -11,5 +11,4 @@ import org.springframework.hateoas.RepresentationModel;
 public class UserModel extends RepresentationModel<UserModel> {
     private Long id;
     private String name;
-
 }

@@ -12,7 +12,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 public class TagLinkBuilder implements HateoasLinkBuilder<TagModel> {
-
     @Override
     public void buildLinks(TagModel tag) {
         tag.add(linkTo(methodOn(TagController.class).findById(tag.getId())).withSelfRel());
@@ -29,5 +28,4 @@ public class TagLinkBuilder implements HateoasLinkBuilder<TagModel> {
     public void buildAllLinks(CollectionModel<TagModel> models) {
         models.add(linkTo(TagController.class).withRel(ALL));
     }
-
 }

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserModelAssembler implements RepresentationModelAssembler<User, UserModel> {
 
-
     @Override
     public UserModel toModel(User entity) {
         return UserModel.builder()

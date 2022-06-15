@@ -18,5 +18,4 @@ public class OrderModel extends RepresentationModel<OrderModel> {
     private BigDecimal cost;
     private UserModel user;
     private List<GiftCertificateModel> certificateList;
-
 }

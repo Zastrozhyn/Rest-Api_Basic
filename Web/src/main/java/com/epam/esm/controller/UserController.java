@@ -124,5 +124,4 @@ public class UserController {
     public void create1000(){
         service.create1000();
     }
-
 }

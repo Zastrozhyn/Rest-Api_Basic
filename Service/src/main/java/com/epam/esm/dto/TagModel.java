@@ -11,5 +11,4 @@ import org.springframework.hateoas.RepresentationModel;
 public class TagModel extends RepresentationModel<TagModel> {
     private Long id;
     private String name;
-
 }

@@ -19,7 +19,6 @@ import static com.epam.esm.constant.StringConstant.ID;
 @Log4j2
 @Repository
 public class TagDaoImpl implements TagDao {
-
     @PersistenceContext
     private EntityManager entityManager;
     private final CriteriaBuilder criteriaBuilder;
@@ -52,7 +51,6 @@ public class TagDaoImpl implements TagDao {
         catch (NoResultException e){
             return null;
         }
-
     }
 
     @Override
@@ -67,5 +65,4 @@ public class TagDaoImpl implements TagDao {
     public void delete(Long id) {
         entityManager.remove(findTag(id));
     }
-
 }

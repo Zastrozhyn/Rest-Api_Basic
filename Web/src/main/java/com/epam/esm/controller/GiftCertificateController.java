@@ -104,5 +104,4 @@ public class GiftCertificateController {
     public void create1000(){
         giftCertificateService.create1000();
     }
-
 }

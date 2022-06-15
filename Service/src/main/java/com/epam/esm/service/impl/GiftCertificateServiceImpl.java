@@ -109,7 +109,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         return certificates;
     }
 
-
     private boolean isGiftCertificateValid(GiftCertificate giftCertificate){
         if(!giftCertificateValidator.isValid(giftCertificate)){
             throw new EntityException(NOT_VALID_GIFT_CERTIFICATE_DATA.getErrorCode());
@@ -146,5 +145,4 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private boolean isTagCanBeDeletedFromCertificate(Tag tag , long idCertificate){
         return tagService.isTagValid(tag) && isGiftCertificateExist(idCertificate) && tagService.isTagExist(tag);
     }
-
 }

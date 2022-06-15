@@ -20,7 +20,6 @@ import static com.epam.esm.constant.StringConstant.ID;
 
 @Repository
 public class UserDaoImpl implements UserDao {
-
     private static final String GET_MOST_POPULAR_TAG_OF_RICHEST_USER = """
         SELECT t.id, t.name, count(t.id) FROM tag as t
                 JOIN tag_certificate as tc ON tc.tag_id=t.id
@@ -52,6 +51,7 @@ public class UserDaoImpl implements UserDao {
         this.entityManager = entityManager;
         this.criteriaBuilder = entityManager.getCriteriaBuilder();
     }
+
     @Override
     public User create(User user) {
         entityManager.persist(user);

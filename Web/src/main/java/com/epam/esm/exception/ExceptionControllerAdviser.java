@@ -59,5 +59,4 @@ public class ExceptionControllerAdviser {
     private String getMessageByCode(int errorCode) {
         return "error_msg." + errorCode;
     }
-
 }

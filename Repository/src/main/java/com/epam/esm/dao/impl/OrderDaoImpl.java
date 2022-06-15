@@ -18,7 +18,6 @@ import static com.epam.esm.constant.StringConstant.USER;
 
 @Repository
 public class OrderDaoImpl implements OrderDao {
-
     @PersistenceContext
     private EntityManager entityManager;
     private final CriteriaBuilder criteriaBuilder;
@@ -28,7 +27,6 @@ public class OrderDaoImpl implements OrderDao {
         this.entityManager = entityManager;
         this.criteriaBuilder = entityManager.getCriteriaBuilder();
     }
-
 
     @Override
     public Order create(Order order) {

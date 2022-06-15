@@ -21,5 +21,4 @@ public class GiftCertificateModel extends RepresentationModel<GiftCertificateMod
     private LocalDateTime lastUpdateDate;
     private int duration;
     private Set<TagModel> tags;
-
 }

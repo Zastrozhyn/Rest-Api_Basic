@@ -65,7 +65,7 @@ public class GiftCertificateServiceImplTest {
     }
 
     @AfterEach
-    public void afterEachTest(){
+    void afterEachTest(){
         verifyNoMoreInteractions(giftCertificateDao);
     }
 

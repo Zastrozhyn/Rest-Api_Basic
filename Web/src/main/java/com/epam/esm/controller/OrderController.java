@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
-
     private final OrderService service;
     private final OrderLinkBuilder linkBuilder;
     private final OrderModelAssembler assembler;
@@ -51,5 +50,4 @@ public class OrderController {
         linkBuilder.buildLinks(orderModel);
         return orderModel;
     }
-
 }

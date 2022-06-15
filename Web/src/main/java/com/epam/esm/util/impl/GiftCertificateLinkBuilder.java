@@ -22,7 +22,6 @@ public class GiftCertificateLinkBuilder implements HateoasLinkBuilder<GiftCertif
         this.linkBuilder = linkBuilder;
     }
 
-
     @Override
     public void buildLinks(GiftCertificateModel certificate) {
         certificate.add(linkTo(methodOn(GiftCertificateController.class).findById(certificate.getId())).withSelfRel());
@@ -49,5 +48,4 @@ public class GiftCertificateLinkBuilder implements HateoasLinkBuilder<GiftCertif
         models.add(linkTo(GiftCertificateController.class).slash(ID)
                 .slash(TAGS).withRel(ADD_TAG_TO_CERTIFICATE).withType(RequestMethod.PUT.name()));
     }
-
 }

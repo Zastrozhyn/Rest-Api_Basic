@@ -22,7 +22,6 @@ public class OrderLinkBuilder implements HateoasLinkBuilder<OrderModel> {
         this.giftCertificateLinkBuilder = giftCertificateLinkBuilder;
     }
 
-
     @Override
     public void buildLinks(OrderModel order) {
         order.add(linkTo(methodOn(OrderController.class).findOrder(order.getId())).withSelfRel());
@@ -46,5 +45,4 @@ public class OrderLinkBuilder implements HateoasLinkBuilder<OrderModel> {
         models.add(linkTo(OrderController.class).slash(ID).withRel(UPDATE).withType(RequestMethod.PATCH.name()));
 
     }
-
 }

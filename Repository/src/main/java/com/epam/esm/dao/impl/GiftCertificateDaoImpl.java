@@ -32,6 +32,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         this.entityManager = entityManager;
         this.criteriaBuilder = entityManager.getCriteriaBuilder();
     }
+
     @Override
     public GiftCertificate create(GiftCertificate giftCertificate) {
         entityManager.persist(giftCertificate);
