@@ -3,7 +3,6 @@ package com.epam.esm.entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -16,7 +15,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "orders")
-public class Order extends RepresentationModel<Order> {
+public class Order{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

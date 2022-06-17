@@ -36,8 +36,6 @@ public class OrderServiceImpl implements OrderService {
         User user = userService.findUser(userId);
         userService.isUserExist(user);
         certificates.forEach(certificateService::isGiftCertificateExist);
-        order.setCertificateList(certificates.stream().map(certificateService::findById).toList());
-        order.setUser(user);
         return orderDao.create(order);
     }
 
