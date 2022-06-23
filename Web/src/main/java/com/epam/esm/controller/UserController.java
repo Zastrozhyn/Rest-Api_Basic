@@ -1,8 +1,8 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.converter.impl.OrderModelAssembler;
-import com.epam.esm.converter.impl.TagModelAssembler;
-import com.epam.esm.converter.impl.UserModelAssembler;
+import com.epam.esm.assembler.OrderModelAssembler;
+import com.epam.esm.assembler.TagModelAssembler;
+import com.epam.esm.assembler.UserModelAssembler;
 import com.epam.esm.dto.OrderModel;
 import com.epam.esm.dto.TagModel;
 import com.epam.esm.dto.UserModel;
@@ -60,7 +60,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public UserModel findUser(@PathVariable Long id){
-        UserModel user = assembler.toModel(service.findUser(id));
+        UserModel user = assembler.toModel(service.findById(id));
         linkBuilder.buildLinks(user);
         return user;
     }

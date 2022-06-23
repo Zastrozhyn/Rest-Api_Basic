@@ -42,13 +42,13 @@ public class TagDaoImplTest {
 
     @Test
     void findById() {
-        Tag actual = tagDao.findTag(1L);
+        Tag actual = tagDao.findById(1L);
         assertNotNull(actual);
     }
 
     @Test
     void FindByIdReturnsEmptyWithNonExistentTag() {
-        Tag actual = tagDao.findTag(100L);
+        Tag actual = tagDao.findById(100L);
         assertNull(actual);
     }
 

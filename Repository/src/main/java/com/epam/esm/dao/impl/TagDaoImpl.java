@@ -14,11 +14,11 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
-import static com.epam.esm.constant.StringConstant.ID;
 
 @Log4j2
 @Repository
 public class TagDaoImpl implements TagDao {
+    public static final String TAG_ID = "id";
     @PersistenceContext
     private EntityManager entityManager;
     private final CriteriaBuilder criteriaBuilder;
@@ -36,7 +36,7 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public Tag findTag(Long id) {
+    public Tag findById(Long id) {
         return entityManager.find(Tag.class, id);
     }
 
@@ -57,12 +57,12 @@ public class TagDaoImpl implements TagDao {
     public List<Tag> findAll(Integer offset, Integer limit) {
         CriteriaQuery<Tag> query = criteriaBuilder.createQuery(Tag.class);
         Root<Tag> root = query.from(Tag.class);
-        query.orderBy(criteriaBuilder.asc(root.get(ID)));
+        query.orderBy(criteriaBuilder.asc(root.get(TAG_ID)));
         return entityManager.createQuery(query).setFirstResult(offset).setMaxResults(limit).getResultList();
     }
 
     @Override
     public void delete(Long id) {
-        entityManager.remove(findTag(id));
+        entityManager.remove(findById(id));
     }
 }

@@ -64,43 +64,43 @@ public class UserServiceImplTest {
 
     @Test
     void FindUserTest(){
-        when(userDao.findUser(USER_ID)).thenReturn(user);
-        User actual = service.findUser(USER_ID);
+        when(userDao.findById(USER_ID)).thenReturn(user);
+        User actual = service.findById(USER_ID);
         assertThat(actual, is(equalTo(user)));
-        verify(userDao).findUser(USER_ID);
+        verify(userDao).findById(USER_ID);
     }
 
     @Test
     void FindUserTestThrows(){
-        when(userDao.findUser(USER_ID)).thenReturn(null);
-        EntityException actualException = assertThrows(EntityException.class, () -> service.findUser(USER_ID));
+        when(userDao.findById(USER_ID)).thenReturn(null);
+        EntityException actualException = assertThrows(EntityException.class, () -> service.findById(USER_ID));
         assertThat(actualException.getErrorCode(), is(equalTo(EXPECTED_ERROR_CODE_USER_NOT_FOUND)));
-        verify(userDao).findUser(USER_ID);
+        verify(userDao).findById(USER_ID);
     }
 
     @Test
     void updateTest(){
         when(userDao.update(user)).thenReturn(user);
-        when(userDao.findUser(USER_ID)).thenReturn(user);
+        when(userDao.findById(USER_ID)).thenReturn(user);
         User actual = service.update(user, USER_ID);
         assertThat(actual, is(equalTo(user)));
         verify(userDao).update(user);
-        verify(userDao).findUser(USER_ID);
+        verify(userDao).findById(USER_ID);
     }
 
     @Test
     void updateUserTestThrows(){
-        when(userDao.findUser(USER_ID)).thenReturn(null);
+        when(userDao.findById(USER_ID)).thenReturn(null);
         EntityException actualException = assertThrows(EntityException.class, () -> service.update(user,USER_ID));
         assertThat(actualException.getErrorCode(), is(equalTo(EXPECTED_ERROR_CODE_USER_NOT_FOUND)));
-        verify(userDao).findUser(USER_ID);
+        verify(userDao).findById(USER_ID);
     }
 
     @Test
     void deleteUserTestThrows(){
-        when(userDao.findUser(USER_ID)).thenReturn(null);
+        when(userDao.findById(USER_ID)).thenReturn(null);
         EntityException actualException = assertThrows(EntityException.class, () -> service.delete(USER_ID));
         assertThat(actualException.getErrorCode(), is(equalTo(EXPECTED_ERROR_CODE_USER_NOT_FOUND)));
-        verify(userDao).findUser(USER_ID);
+        verify(userDao).findById(USER_ID);
     }
 }

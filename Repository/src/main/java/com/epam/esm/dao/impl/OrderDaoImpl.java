@@ -18,11 +18,10 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
-import static com.epam.esm.constant.StringConstant.ID;
-import static com.epam.esm.constant.StringConstant.USER;
-
 @Repository
 public class OrderDaoImpl implements OrderDao {
+    public static final String ORDER_ID = "id";
+    public static final String USER = "user";
     @PersistenceContext
     private EntityManager entityManager;
     private final CriteriaBuilder criteriaBuilder;
@@ -40,7 +39,7 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public Order findOrder(Long id) {
+    public Order findById(Long id) {
         CriteriaQuery<Order> query = criteriaBuilder.createQuery(Order.class);
         Root<Order> root = query.from(Order.class);
         query.where(criteriaBuilder.equal(root.get("id"), id));
@@ -54,13 +53,13 @@ public class OrderDaoImpl implements OrderDao {
     public List<Order> findAll(Integer offset, Integer limit) {
         CriteriaQuery<Order> query = criteriaBuilder.createQuery(Order.class);
         Root<Order> root = query.from(Order.class);
-        query.orderBy(criteriaBuilder.asc(root.get(ID)));
+        query.orderBy(criteriaBuilder.asc(root.get(ORDER_ID)));
         return entityManager.createQuery(query).setFirstResult(offset).setMaxResults(limit).getResultList();
     }
 
     @Override
     public void delete(Long id) {
-        entityManager.remove(findOrder(id));
+        entityManager.remove(findById(id));
     }
 
     @Override
@@ -74,16 +73,10 @@ public class OrderDaoImpl implements OrderDao {
         Root<Order> root = query.from(Order.class);
         query.select(root);
         query.where(criteriaBuilder.equal(root.get(USER), user));
-        query.orderBy(criteriaBuilder.asc(root.get(ID)));
+        query.orderBy(criteriaBuilder.asc(root.get(ORDER_ID)));
         return entityManager.createQuery(query).setFirstResult(offset).setMaxResults(limit).getResultList();
     }
-    private GiftCertificate setCertificateByRev(GiftCertificate certificate){
-        return GiftCertificate.builder()
-                .name(certificate.getName())
-                .description(certificate.getDescription())
-                .duration(certificate.getDuration())
-                .price(certificate.getPrice()).build();
-    }
+
     private List<GiftCertificate> setCertificateByRev(List<GiftCertificate> certificates, LocalDateTime date){
         List<GiftCertificate> revCertificates = new ArrayList<>();
         for (GiftCertificate certificate : certificates){
@@ -126,9 +119,9 @@ public class OrderDaoImpl implements OrderDao {
                 .max(LocalDateTime::compareTo)
                 .get();
         return revDates.
-                entrySet().
-                stream().
-                filter(entry -> nearestDate.equals(entry.getValue()))
+                entrySet()
+                .stream()
+                .filter(entry -> nearestDate.equals(entry.getValue()))
                 .map(Map.Entry::getKey)
                 .findFirst().
                 get();

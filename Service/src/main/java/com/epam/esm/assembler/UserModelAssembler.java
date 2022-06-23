@@ -1,24 +1,24 @@
-package com.epam.esm.converter.impl;
+package com.epam.esm.assembler;
 
-import com.epam.esm.dto.TagModel;
-import com.epam.esm.entity.Tag;
+import com.epam.esm.dto.UserModel;
+import com.epam.esm.entity.User;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TagModelAssembler implements RepresentationModelAssembler<Tag, TagModel> {
+public class UserModelAssembler implements RepresentationModelAssembler<User, UserModel> {
 
     @Override
-    public TagModel toModel(Tag entity) {
-        return TagModel.builder()
+    public UserModel toModel(User entity) {
+        return UserModel.builder()
                 .id(entity.getId())
                 .name(entity.getName())
                 .build();
     }
 
     @Override
-    public CollectionModel<TagModel> toCollectionModel(Iterable<? extends Tag> entities) {
+    public CollectionModel<UserModel> toCollectionModel(Iterable<? extends User> entities) {
         return RepresentationModelAssembler.super.toCollectionModel(entities);
     }
 }

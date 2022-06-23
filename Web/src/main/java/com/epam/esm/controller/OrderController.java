@@ -1,6 +1,6 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.converter.impl.OrderModelAssembler;
+import com.epam.esm.assembler.OrderModelAssembler;
 import com.epam.esm.dto.OrderModel;
 import com.epam.esm.entity.Order;
 import com.epam.esm.service.OrderService;
@@ -34,7 +34,7 @@ public class OrderController {
 
     @GetMapping("/{id}")
     public OrderModel findOrder(@PathVariable Long id){
-        OrderModel order = assembler.toModel(service.findOrder(id));
+        OrderModel order = assembler.toModel(service.findById(id));
         linkBuilder.buildLinks(order);
         return order;
     }

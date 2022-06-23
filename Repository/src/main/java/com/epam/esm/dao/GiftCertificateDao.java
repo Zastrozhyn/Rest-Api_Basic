@@ -12,7 +12,7 @@ public interface GiftCertificateDao {
     List<GiftCertificate> findAll(Integer offset, Integer limit);
     GiftCertificate findById(Long id);
     void delete(Long id);
-    List<GiftCertificate> findByAttributes(List<String> tagList, String searchPart, String sortingField, String orderSort,
-                                           Integer offset, Integer limit);
+    List<GiftCertificate> findByAttributes(List<String> tagList, String searchPart, String sortingField,
+                                           String orderSort, Integer offset, Integer limit);
     void addTagToCertificate(Tag tag, Long idCertificate);
 }

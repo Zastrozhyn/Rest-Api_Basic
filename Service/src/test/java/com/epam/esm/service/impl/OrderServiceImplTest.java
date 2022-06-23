@@ -73,35 +73,35 @@ public class OrderServiceImplTest {
 
     @Test
     void findOrderTest(){
-        when(orderDao.findOrder(ORDER_ID)).thenReturn(order);
-        Order actual = service.findOrder(ORDER_ID);
+        when(orderDao.findById(ORDER_ID)).thenReturn(order);
+        Order actual = service.findById(ORDER_ID);
         assertThat(actual, is(equalTo(order)));
-        verify(orderDao).findOrder(ORDER_ID);
+        verify(orderDao).findById(ORDER_ID);
     }
 
     @Test
     void findOrderTestThrows(){
-        when(orderDao.findOrder(ORDER_ID)).thenReturn(null);
-        EntityException actualException = assertThrows(EntityException.class, () -> service.findOrder(ORDER_ID));
+        when(orderDao.findById(ORDER_ID)).thenReturn(null);
+        EntityException actualException = assertThrows(EntityException.class, () -> service.findById(ORDER_ID));
         assertThat(actualException.getErrorCode(), is(equalTo(EXPECTED_ERROR_CODE_ORDER_NOT_FOUND)));
-        verify(orderDao).findOrder(ORDER_ID);
+        verify(orderDao).findById(ORDER_ID);
     }
 
     @Test
     void updateTest(){
         when(orderDao.update(order)).thenReturn(order);
-        when(orderDao.findOrder(ORDER_ID)).thenReturn(order);
+        when(orderDao.findById(ORDER_ID)).thenReturn(order);
         Order actual = service.update(order, ORDER_ID);
         assertThat(actual, is(equalTo(order)));
-        verify(orderDao).findOrder(ORDER_ID);
+        verify(orderDao).findById(ORDER_ID);
         verify(orderDao).update(order);
     }
 
     @Test
     void updateOrderTestThrows(){
-        when(orderDao.findOrder(ORDER_ID)).thenReturn(null);
+        when(orderDao.findById(ORDER_ID)).thenReturn(null);
         EntityException actualException = assertThrows(EntityException.class, () -> service.update(order, ORDER_ID));
         assertThat(actualException.getErrorCode(), is(equalTo(EXPECTED_ERROR_CODE_ORDER_NOT_FOUND)));
-        verify(orderDao).findOrder(ORDER_ID);
+        verify(orderDao).findById(ORDER_ID);
     }
 }

@@ -36,8 +36,8 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Tag findTag(Long id) {
-        Tag tag = tagDao.findTag(id);
+    public Tag findById(Long id) {
+        Tag tag = tagDao.findById(id);
         if (tag == null){
             throw new EntityException(TAG_NOT_FOUND.getErrorCode());
         }
@@ -64,7 +64,7 @@ public class TagServiceImpl implements TagService {
     @Override
     @Transactional
     public void delete(Long id) {
-        if (tagDao.findTag(id) != null){
+        if (tagDao.findById(id) != null){
             tagDao.delete(id);
         }
         else throw new EntityException(TAG_NOT_FOUND.getErrorCode());

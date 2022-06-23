@@ -50,7 +50,7 @@ class TagServiceImplTest {
     void createTest() {
         when(tagDao.findTagByName(TAG_NAME)).thenReturn(null);
         when(tagDao.create(tag)).thenReturn(tag);
-        when(tagDao.findTag(TAG_ID)).thenReturn(tag);
+        when(tagDao.findById(TAG_ID)).thenReturn(tag);
         Tag result = tagService.create(tag);
         assertThat(result, is(equalTo(tag)));
         verify(tagDao).findTagByName(TAG_NAME);
@@ -59,26 +59,26 @@ class TagServiceImplTest {
 
     @Test
     void findTagTest() {
-        when(tagDao.findTag(TAG_ID)).thenReturn(tag);
-        Tag result = tagService.findTag(TAG_ID);
+        when(tagDao.findById(TAG_ID)).thenReturn(tag);
+        Tag result = tagService.findById(TAG_ID);
         assertThat(result, is(equalTo(tag)));
-        verify(tagDao).findTag(TAG_ID);
+        verify(tagDao).findById(TAG_ID);
     }
 
     @Test
     void findTagThrowExceptionTest() {
-        when(tagDao.findTag(TAG_ID)).thenReturn(null);
-        EntityException actualException = assertThrows(EntityException.class, () -> tagService.findTag(TAG_ID));
+        when(tagDao.findById(TAG_ID)).thenReturn(null);
+        EntityException actualException = assertThrows(EntityException.class, () -> tagService.findById(TAG_ID));
         assertThat(actualException.getErrorCode(), is(equalTo(expectedErrorCode)));
-        verify(tagDao).findTag(TAG_ID);
+        verify(tagDao).findById(TAG_ID);
     }
 
     @Test
     void deleteThrowExceptionTest() {
-        when(tagDao.findTag(TAG_ID)).thenReturn(null);
+        when(tagDao.findById(TAG_ID)).thenReturn(null);
         EntityException actualException = assertThrows(EntityException.class, () -> tagService.delete(TAG_ID));
         assertThat(actualException.getErrorCode(), is(equalTo(expectedErrorCode)));
-        verify(tagDao).findTag(TAG_ID);
+        verify(tagDao).findById(TAG_ID);
     }
 
 }

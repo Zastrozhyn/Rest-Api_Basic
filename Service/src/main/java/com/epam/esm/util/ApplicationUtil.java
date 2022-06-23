@@ -3,6 +3,7 @@ package com.epam.esm.util;
 public class ApplicationUtil {
     private static final Integer DEFAULT_PAGE_SIZE = 10;
     private static final Integer DEFAULT_PAGE = 1;
+
     public static Integer calculateOffset(Integer pageSize, Integer page){
         return pageSize*(page - 1);
     }

@@ -1,6 +1,6 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.converter.impl.GiftCertificateModelAssembler;
+import com.epam.esm.assembler.GiftCertificateModelAssembler;
 import com.epam.esm.dto.GiftCertificateModel;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;

@@ -33,15 +33,15 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public Order create(Long userId, List<Long> certificates) {
         Order order = new Order();
-        User user = userService.findUser(userId);
+        User user = userService.findById(userId);
         userService.isUserExist(user);
         certificates.forEach(certificateService::isGiftCertificateExist);
         return orderDao.create(order);
     }
 
     @Override
-    public Order findOrder(Long id) {
-        Order order = orderDao.findOrder(id);
+    public Order findById(Long id) {
+        Order order = orderDao.findById(id);
         isOrderExist(order);
         return order;
     }
@@ -64,7 +64,7 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> findAllUsersOrder(Long id, Integer page, Integer pageSize) {
         page = checkPage(page);
         pageSize = checkPageSize(pageSize);
-        User user = userService.findUser(id);
+        User user = userService.findById(id);
         userService.isUserExist(user);
         return orderDao.findAllUsersOrder(user, calculateOffset(pageSize,page), pageSize);
     }
@@ -72,15 +72,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public Order update(Order order, Long id) {
-        isOrderExist(findOrder(id));
+        isOrderExist(findById(id));
         order.setId(id);
         return orderDao.update(order);
     }
 
-    private boolean isOrderExist (Order order){
+    private void isOrderExist (Order order){
         if (order == null){
             throw new EntityException(ExceptionCode.ORDER_NOT_FOUND.getErrorCode());
         }
-        return true;
     }
 }

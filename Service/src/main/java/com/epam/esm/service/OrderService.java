@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface OrderService {
     Order create(Long userId, List<Long> certificates);
-    Order findOrder(Long id);
+    Order findById(Long id);
     void delete(Long id);
     List<Order> findAllUsersOrder(Long id, Integer page, Integer pageSize);
     Order update(Order order, Long id);

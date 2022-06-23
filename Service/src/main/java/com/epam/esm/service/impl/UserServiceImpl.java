@@ -36,8 +36,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUser(Long id) {
-        User user = userDao.findUser(id);
+    public User findById(Long id) {
+        User user = userDao.findById(id);
         isUserExist(user);
         return user;
     }
@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void delete(Long id) {
-        if (isUserExist(userDao.findUser(id))){
+        if (isUserExist(userDao.findById(id))){
             userDao.delete(id);
         }
     }
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User update(User user, Long id) {
-        if (isUserExist(userDao.findUser(id)) && isUserNameValid(user)){
+        if (isUserExist(userDao.findById(id)) && isUserNameValid(user)){
             user.setId(id);
         }
         return userDao.update(user);

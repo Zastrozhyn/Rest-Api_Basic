@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface OrderDao {
     Order create(Order order);
-    Order findOrder(Long id);
+    Order findById(Long id);
     void delete(Long id);
     Order update(Order order);
     List<Order> findAllUsersOrder(User user, Integer offset, Integer limit);

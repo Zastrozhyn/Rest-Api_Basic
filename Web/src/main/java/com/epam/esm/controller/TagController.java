@@ -1,6 +1,6 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.converter.impl.TagModelAssembler;
+import com.epam.esm.assembler.TagModelAssembler;
 import com.epam.esm.dto.TagModel;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.TagService;
@@ -45,7 +45,7 @@ public class TagController {
 
     @GetMapping("/{id}")
     public TagModel findById(@PathVariable Long id) {
-        TagModel tag = assembler.toModel(tagService.findTag(id));
+        TagModel tag = assembler.toModel(tagService.findById(id));
         linkBuilder.buildLinks(tag);
         return tag;
     }

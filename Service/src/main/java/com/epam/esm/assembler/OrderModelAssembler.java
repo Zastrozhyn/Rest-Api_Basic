@@ -1,4 +1,4 @@
-package com.epam.esm.converter.impl;
+package com.epam.esm.assembler;
 
 import com.epam.esm.dto.GiftCertificateModel;
 import com.epam.esm.dto.OrderModel;

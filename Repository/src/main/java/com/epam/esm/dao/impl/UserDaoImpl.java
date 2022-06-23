@@ -16,10 +16,10 @@ import javax.persistence.criteria.Root;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static com.epam.esm.constant.StringConstant.ID;
 
 @Repository
 public class UserDaoImpl implements UserDao {
+    public static final String USER_ID = "id";
     private static final String GET_MOST_POPULAR_TAG_OF_RICHEST_USER = """
         SELECT t.id, t.name, count(t.id) FROM tag as t
                 JOIN tag_certificate as tc ON tc.tag_id=t.id
@@ -59,7 +59,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User findUser(Long id) {
+    public User findById(Long id) {
         return entityManager.find(User.class, id);
     }
 
@@ -67,13 +67,13 @@ public class UserDaoImpl implements UserDao {
     public List<User> findAll(Integer offset, Integer limit) {
         CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
         Root<User> root = query.from(User.class);
-        query.orderBy(criteriaBuilder.asc(root.get(ID)));
+        query.orderBy(criteriaBuilder.asc(root.get(USER_ID)));
         return entityManager.createQuery(query).setFirstResult(offset).setMaxResults(limit).getResultList();
     }
 
     @Override
     public void delete(Long id) {
-        entityManager.remove(findUser(id));
+        entityManager.remove(findById(id));
     }
 
     @Override

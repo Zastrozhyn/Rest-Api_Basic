@@ -16,12 +16,12 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
-
-import static com.epam.esm.constant.StringConstant.ID;
+;
 
 @Log4j2
 @Repository
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
+    public static final String CERTIFICATE_ID = "id";
     private static final String ADD_TAG_TO_CERTIFICATE_QUERY = "INSERT INTO tag_certificate (tag_id, certificate_id) VALUES (?,?)";
     @PersistenceContext
     private EntityManager entityManager;
@@ -49,7 +49,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         CriteriaQuery<GiftCertificate> query = criteriaBuilder.createQuery(GiftCertificate.class);
         Root<GiftCertificate> root = query.from(GiftCertificate.class);
         query.select(root);
-        query.orderBy(criteriaBuilder.asc(root.get(ID)));
+        query.orderBy(criteriaBuilder.asc(root.get(CERTIFICATE_ID)));
         return entityManager.createQuery(query).setFirstResult(offset).setMaxResults(limit).getResultList();
     }
 

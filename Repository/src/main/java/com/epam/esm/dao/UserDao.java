@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface UserDao {
     User create(User user);
-    User findUser(Long id);
+    User findById(Long id);
     List<User> findAll(Integer offset, Integer limit);
     void delete(Long id);
     User update(User user);

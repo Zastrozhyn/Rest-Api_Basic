@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface TagService {
     Tag create(Tag tag);
-    Tag findTag(Long id);
+    Tag findById(Long id);
     void delete(Long id);
     boolean isTagValid(Tag tag);
     boolean isTagExist(Tag tag);

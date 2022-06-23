@@ -67,7 +67,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if(isGiftCertificateExist(idCertificate) && isTagReadyToCreate(tag)) {
             tagService.create(tag);
         }
-
         giftCertificateDao.addTagToCertificate(tagService.findTagByName(tag.getName()),idCertificate);
         return findById(idCertificate);
     }
