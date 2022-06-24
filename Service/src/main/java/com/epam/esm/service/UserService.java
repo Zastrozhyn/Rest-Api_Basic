@@ -13,9 +13,8 @@ public interface UserService {
     List<User> findAll(Integer pageSize, Integer page);
     void delete(Long id);
     User update(User user, Long id);
-    boolean isUserExist(User user);
+    boolean isUserExist(Long userId);
     List<Tag> getMostPopularTag();
     BigDecimal findTotalCost(Long id);
     List<UserWithTotalCost> getUsersWithTotalCost();
-    void create1000();
 }

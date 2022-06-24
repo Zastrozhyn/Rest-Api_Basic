@@ -53,16 +53,6 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional
-    public void create1000() {
-        for (int i = 1; i < 1000; i++){
-            Tag tag = new Tag();
-            tag.setName("Tag".concat(String.valueOf(i)));
-            create(tag);
-        }
-    }
-
-    @Override
-    @Transactional
     public void delete(Long id) {
         if (tagDao.findById(id) != null){
             tagDao.delete(id);

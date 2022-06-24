@@ -1,6 +1,6 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.dto.CustomPage;
+import com.epam.esm.exception.model.CustomPage;
 import com.epam.esm.util.HomePageLinkBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

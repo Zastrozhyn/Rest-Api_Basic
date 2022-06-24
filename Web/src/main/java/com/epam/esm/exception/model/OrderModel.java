@@ -1,4 +1,4 @@
-package com.epam.esm.dto;
+package com.epam.esm.exception.model;
 
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;

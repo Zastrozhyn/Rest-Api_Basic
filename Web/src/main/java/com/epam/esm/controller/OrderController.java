@@ -1,10 +1,9 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.assembler.OrderModelAssembler;
-import com.epam.esm.dto.OrderModel;
+import com.epam.esm.exception.model.OrderModel;
 import com.epam.esm.entity.Order;
 import com.epam.esm.service.OrderService;
-import com.epam.esm.util.impl.OrderLinkBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.web.bind.annotation.*;
@@ -13,30 +12,23 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/orders")
 public class OrderController {
     private final OrderService service;
-    private final OrderLinkBuilder linkBuilder;
     private final OrderModelAssembler assembler;
 
     @Autowired
-    public OrderController(OrderService service, OrderLinkBuilder linkBuilder, OrderModelAssembler assembler) {
+    public OrderController(OrderService service, OrderModelAssembler assembler) {
         this.service = service;
-        this.linkBuilder = linkBuilder;
         this.assembler = assembler;
     }
 
     @GetMapping
     public CollectionModel<OrderModel> findAll(@RequestParam(required = false, defaultValue = "10", name = "pageSize") Integer pageSize,
                                                @RequestParam(required = false, defaultValue = "1", name = "page") Integer page){
-        CollectionModel<OrderModel> orders = assembler.toCollectionModel(service.findAll(page, pageSize));
-        orders.forEach(linkBuilder::buildSelfLink);
-        linkBuilder.buildAllLinks(orders);
-        return orders;
+        return assembler.toCollectionModel(service.findAll(page, pageSize));
     }
 
     @GetMapping("/{id}")
     public OrderModel findOrder(@PathVariable Long id){
-        OrderModel order = assembler.toModel(service.findById(id));
-        linkBuilder.buildLinks(order);
-        return order;
+        return assembler.toModelWithAllLinks(service.findById(id));
     }
 
     @DeleteMapping("/{id}")
@@ -45,9 +37,7 @@ public class OrderController {
     }
 
     @PatchMapping("/{id}")
-    public OrderModel update(@PathVariable Long id, @RequestBody Order order){
-        OrderModel orderModel = assembler.toModel(service.update(order, id));
-        linkBuilder.buildLinks(orderModel);
-        return orderModel;
+    public OrderModel update(@PathVariable Long id, @RequestBody Order order){;
+        return assembler.toModelWithAllLinks(service.update(order, id));
     }
 }

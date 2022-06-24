@@ -2,7 +2,6 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.OrderDao;
 import com.epam.esm.entity.Order;
-import com.epam.esm.entity.User;
 import com.epam.esm.exception.EntityException;
 import com.epam.esm.exception.ExceptionCode;
 import com.epam.esm.service.GiftCertificateService;
@@ -32,17 +31,19 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public Order create(Long userId, List<Long> certificates) {
+        userService.isUserExist(userId);
         Order order = new Order();
-        User user = userService.findById(userId);
-        userService.isUserExist(user);
         certificates.forEach(certificateService::isGiftCertificateExist);
+        order.setCertificateList(certificates.stream().map(certificateService::findById).toList());
         return orderDao.create(order);
     }
 
     @Override
     public Order findById(Long id) {
         Order order = orderDao.findById(id);
-        isOrderExist(order);
+        if(order == null){
+            throw new EntityException(ExceptionCode.ORDER_NOT_FOUND.getErrorCode());
+        }
         return order;
     }
 
@@ -54,31 +55,30 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional
     public void delete(Long id) {
+        isOrderExist(id);
         orderDao.delete(id);
     }
 
     @Override
     @Transactional
-    public List<Order> findAllUsersOrder(Long id, Integer page, Integer pageSize) {
+    public List<Order> findAllUsersOrder(Long userId, Integer page, Integer pageSize) {
+        userService.isUserExist(userId);
         page = checkPage(page);
         pageSize = checkPageSize(pageSize);
-        User user = userService.findById(id);
-        userService.isUserExist(user);
-        return orderDao.findAllUsersOrder(user, calculateOffset(pageSize,page), pageSize);
+        return orderDao.findAllUsersOrder(userService.findById(userId), calculateOffset(pageSize,page), pageSize);
     }
 
     @Override
     @Transactional
-    public Order update(Order order, Long id) {
-        isOrderExist(findById(id));
-        order.setId(id);
+    public Order update(Order order, Long orderId) {
+        isOrderExist(orderId);
+        order.setId(orderId);
         return orderDao.update(order);
     }
 
-    private void isOrderExist (Order order){
-        if (order == null){
+    private void isOrderExist (Long orderId){
+        if (findById(orderId) == null){
             throw new EntityException(ExceptionCode.ORDER_NOT_FOUND.getErrorCode());
         }
     }

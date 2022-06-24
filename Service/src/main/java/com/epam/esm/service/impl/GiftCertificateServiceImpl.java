@@ -56,9 +56,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     @Transactional
     public void delete(long id) {
-         if (isGiftCertificateExist(id)){
-             giftCertificateDao.delete(id);
-         }
+         isGiftCertificateExist(id);
+         giftCertificateDao.delete(id);
     }
 
     @Override
@@ -85,9 +84,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     @Transactional
     public GiftCertificate update(Long id, GiftCertificate giftCertificate) {
-        if(isGiftCertificateValid(giftCertificate) && isGiftCertificateExist(id)){
-            giftCertificate.setId(id);
-        }
+        isGiftCertificateValid(giftCertificate);
+        isGiftCertificateExist(id);
+        giftCertificate.setId(id);
         return giftCertificateDao.update(giftCertificate);
     }
 

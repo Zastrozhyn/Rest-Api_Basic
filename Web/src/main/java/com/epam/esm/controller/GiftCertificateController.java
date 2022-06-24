@@ -1,11 +1,10 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.assembler.GiftCertificateModelAssembler;
-import com.epam.esm.dto.GiftCertificateModel;
+import com.epam.esm.exception.model.GiftCertificateModel;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.GiftCertificateService;
-import com.epam.esm.util.impl.GiftCertificateLinkBuilder;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -24,15 +23,13 @@ import java.util.List;
 public class GiftCertificateController {
     private final GiftCertificateService giftCertificateService;
     private final LocaleResolver localeResolver;
-    private final GiftCertificateLinkBuilder linkBuilder;
     private final GiftCertificateModelAssembler assembler;
 
     @Autowired
     public GiftCertificateController(GiftCertificateService giftCertificateService, LocaleResolver localeResolver,
-                                     GiftCertificateLinkBuilder linkBuilder, GiftCertificateModelAssembler assembler) {
+                                     GiftCertificateModelAssembler assembler) {
         this.giftCertificateService = giftCertificateService;
         this.localeResolver = localeResolver;
-        this.linkBuilder = linkBuilder;
         this.assembler = assembler;
     }
 
@@ -44,34 +41,25 @@ public class GiftCertificateController {
                                                                   @RequestParam(required = false, defaultValue = "10", name = "pageSize") Integer pageSize,
                                                                   @RequestParam(required = false, defaultValue = "1", name = "page") Integer page,
                                                                   @RequestParam(required = false, name = "search") String search){
-        CollectionModel<GiftCertificateModel> certificates = assembler.toCollectionModel(giftCertificateService.findByAttributes(tagList, searchPart,
+        return assembler.toCollectionModel(giftCertificateService.findByAttributes(tagList, searchPart,
                 sortingField, orderSort, search, pageSize, page));
-        certificates.forEach(linkBuilder::buildSelfLink);
-        linkBuilder.buildAllLinks(certificates);
-        return certificates;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public GiftCertificateModel create(@RequestBody GiftCertificate giftCertificate) {
-        GiftCertificateModel certificate = assembler.toModel(giftCertificateService.create(giftCertificate));
-        linkBuilder.buildLinks(certificate);
-        return certificate;
+        return assembler.toModelWithAllLinks(giftCertificateService.create(giftCertificate));
     }
 
     @GetMapping("/{id}")
     public GiftCertificateModel findById(@PathVariable Long id) {
-        GiftCertificateModel certificate = assembler.toModel(giftCertificateService.findById(id));
-        linkBuilder.buildLinks(certificate);
-        return certificate;
+        return assembler.toModelWithAllLinks(giftCertificateService.findById(id));
     }
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public GiftCertificateModel update(@PathVariable Long id, @RequestBody GiftCertificate giftCertificate) {
-        GiftCertificateModel certificate = assembler.toModel(giftCertificateService.update(id, giftCertificate));
-        linkBuilder.buildLinks(certificate);
-        return certificate;
+        return assembler.toModelWithAllLinks(giftCertificateService.update(id, giftCertificate));
     }
 
     @DeleteMapping("/{id}")
@@ -82,16 +70,12 @@ public class GiftCertificateController {
 
     @PutMapping("/{id}/tags")
     public GiftCertificateModel addTagToCertificate(@PathVariable Long id, @RequestBody Tag tag){
-        GiftCertificateModel certificate = assembler.toModel(giftCertificateService.addTagToCertificate(tag, id));
-        linkBuilder.buildLinks(certificate);
-        return certificate;
+        return assembler.toModelWithAllLinks(giftCertificateService.addTagToCertificate(tag, id));
     }
 
     @DeleteMapping ("/{id}/tags")
     public GiftCertificateModel deleteTagFromCertificate(@PathVariable Long id, @RequestBody Tag tag){
-        GiftCertificateModel certificate = assembler.toModel(giftCertificateService.deleteTagFromCertificate(tag, id));
-        linkBuilder.buildLinks(certificate);
-        return certificate;
+        return assembler.toModelWithAllLinks(giftCertificateService.deleteTagFromCertificate(tag, id));
     }
 
     @GetMapping("locales")

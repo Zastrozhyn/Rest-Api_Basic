@@ -38,7 +38,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(Long id) {
         User user = userDao.findById(id);
-        isUserExist(user);
+        if(user == null){
+            throw new EntityException(ExceptionCode.USER_NOT_FOUND.getErrorCode());
+        }
         return user;
     }
 
@@ -51,24 +53,24 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void delete(Long id) {
-        if (isUserExist(userDao.findById(id))){
-            userDao.delete(id);
+    public void delete(Long userId) {
+        if (isUserExist(userId)){
+            userDao.delete(userId);
         }
     }
 
     @Override
     @Transactional
-    public User update(User user, Long id) {
-        if (isUserExist(userDao.findById(id)) && isUserNameValid(user)){
-            user.setId(id);
+    public User update(User user, Long userId) {
+        if (isUserExist(userId) && isUserNameValid(user)){
+            user.setId(userId);
         }
         return userDao.update(user);
     }
 
     @Override
-    public boolean isUserExist(User user){
-        if (user ==  null){
+    public boolean isUserExist(Long userId){
+        if (userId ==  null){
             throw new EntityException(ExceptionCode.USER_NOT_FOUND.getErrorCode());
         }
         return true;
@@ -87,16 +89,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserWithTotalCost> getUsersWithTotalCost() {
         return userDao.getUsersWithTotalCost();
-    }
-
-    @Override
-    @Transactional
-    public void create1000() {
-        for (int i = 1; i < 1000; i++){
-            User user = new User();
-            user.setName("User".concat(String.valueOf(i)));
-            create(user);
-        }
     }
 
     private boolean isUserNameValid(User user){
