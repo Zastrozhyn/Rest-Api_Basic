@@ -10,4 +10,6 @@ public interface TagDao {
     Tag findTagByName(String name);
     void delete(Long id);
     List<Tag> findAll(Integer offset, Integer limit);
+
+    boolean exists(Long id);
 }

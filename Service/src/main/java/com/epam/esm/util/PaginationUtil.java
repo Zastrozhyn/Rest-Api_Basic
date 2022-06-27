@@ -1,6 +1,6 @@
 package com.epam.esm.util;
 
-public class ApplicationUtil {
+public class PaginationUtil {
     private static final Integer DEFAULT_PAGE_SIZE = 10;
     private static final Integer DEFAULT_PAGE = 1;
 

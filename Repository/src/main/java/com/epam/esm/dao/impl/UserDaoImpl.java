@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -20,6 +21,7 @@ import java.util.List;
 @Repository
 public class UserDaoImpl implements UserDao {
     public static final String USER_ID = "id";
+    private static final String SELECT_ID_FROM_USERS = "SELECT id FROM users WHERE id=?";
     private static final String GET_MOST_POPULAR_TAG_OF_RICHEST_USER = """
         SELECT t.id, t.name, count(t.id) FROM tag as t
                 JOIN tag_certificate as tc ON tc.tag_id=t.id
@@ -95,5 +97,14 @@ public class UserDaoImpl implements UserDao {
     @Override
     public List<UserWithTotalCost> getUsersWithTotalCost() {
         return entityManager.createNativeQuery(GET_USERS_WITH_TOTAL_COST, UserWithTotalCost.class).getResultList();
+    }
+
+    @Override
+    public boolean exists(Long id) {
+        try {
+            return entityManager.createNativeQuery(SELECT_ID_FROM_USERS).setParameter(1, id).getSingleResult() != null;
+        } catch (NoResultException e) {
+            return false;
+        }
     }
 }

@@ -18,7 +18,7 @@ import java.util.List;
 
 import static com.epam.esm.exception.ExceptionCode.GIFT_CERTIFICATE_NOT_FOUND;
 import static com.epam.esm.exception.ExceptionCode.NOT_VALID_GIFT_CERTIFICATE_DATA;
-import static com.epam.esm.util.ApplicationUtil.*;
+import static com.epam.esm.util.PaginationUtil.*;
 
 @Log4j2
 @Service
@@ -84,8 +84,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     @Transactional
     public GiftCertificate update(Long id, GiftCertificate giftCertificate) {
-        isGiftCertificateValid(giftCertificate);
         isGiftCertificateExist(id);
+        isGiftCertificateValid(giftCertificate);
         giftCertificate.setId(id);
         return giftCertificateDao.update(giftCertificate);
     }
@@ -116,7 +116,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public boolean isGiftCertificateExist(Long id){
-        if(giftCertificateDao.findById(id) == null){
+        if(!giftCertificateDao.exists(id)){
             throw new EntityException(GIFT_CERTIFICATE_NOT_FOUND.getErrorCode());
         }
         return true;
@@ -134,6 +134,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             Long id = create(certificate).getId();
             addTagToCertificate(new Tag("Tag".concat(String.valueOf(i))), id);
         }
+    }
+
+    @Override
+    public List<GiftCertificate> findAllById(List<Long> idList) {
+        return giftCertificateDao.findAllById(idList);
     }
 
     private boolean isTagReadyToCreate(Tag tag){

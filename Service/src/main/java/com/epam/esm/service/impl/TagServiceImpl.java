@@ -13,7 +13,7 @@ import java.util.List;
 
 import static com.epam.esm.exception.ExceptionCode.NOT_VALID_TAG_DATA;
 import static com.epam.esm.exception.ExceptionCode.TAG_NOT_FOUND;
-import static com.epam.esm.util.ApplicationUtil.*;
+import static com.epam.esm.util.PaginationUtil.*;
 
 @Service
 public class TagServiceImpl implements TagService {
@@ -54,15 +54,20 @@ public class TagServiceImpl implements TagService {
     @Override
     @Transactional
     public void delete(Long id) {
-        if (tagDao.findById(id) != null){
-            tagDao.delete(id);
-        }
-        else throw new EntityException(TAG_NOT_FOUND.getErrorCode());
+        isTagExist(id);
+        tagDao.delete(id);
     }
 
     @Override
     public boolean isTagExist(Tag tag){
         if(tagDao.findTagByName(tag.getName()) == null){
+            throw new EntityException(TAG_NOT_FOUND.getErrorCode());
+        }
+        return true;
+    }
+
+    public boolean isTagExist(Long tagId){
+        if(!tagDao.exists(tagId)){
             throw new EntityException(TAG_NOT_FOUND.getErrorCode());
         }
         return true;

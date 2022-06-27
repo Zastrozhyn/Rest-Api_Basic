@@ -10,9 +10,13 @@ public interface GiftCertificateDao {
     GiftCertificate create(GiftCertificate giftCertificate);
     GiftCertificate update(GiftCertificate giftCertificate);
     List<GiftCertificate> findAll(Integer offset, Integer limit);
+
+    List<GiftCertificate> findAllById(List<Long> idList);
+
     GiftCertificate findById(Long id);
     void delete(Long id);
     List<GiftCertificate> findByAttributes(List<String> tagList, String searchPart, String sortingField,
                                            String orderSort, Integer offset, Integer limit);
     void addTagToCertificate(Tag tag, Long idCertificate);
+    boolean exists(Long id);
 }

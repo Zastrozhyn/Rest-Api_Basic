@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -22,6 +23,7 @@ import java.util.*;
 public class OrderDaoImpl implements OrderDao {
     public static final String ORDER_ID = "id";
     public static final String USER = "user";
+    private static final String SELECT_ID_FROM_ORDER = "SELECT id FROM orders WHERE id=?";
     @PersistenceContext
     private EntityManager entityManager;
     private final CriteriaBuilder criteriaBuilder;
@@ -75,6 +77,15 @@ public class OrderDaoImpl implements OrderDao {
         query.where(criteriaBuilder.equal(root.get(USER), user));
         query.orderBy(criteriaBuilder.asc(root.get(ORDER_ID)));
         return entityManager.createQuery(query).setFirstResult(offset).setMaxResults(limit).getResultList();
+    }
+
+    @Override
+    public boolean exists(Long id) {
+        try {
+            return entityManager.createNativeQuery(SELECT_ID_FROM_ORDER).setParameter(1, id).getSingleResult() != null;
+        } catch (NoResultException e) {
+            return false;
+        }
     }
 
     private List<GiftCertificate> setCertificateByRev(List<GiftCertificate> certificates, LocalDateTime date){

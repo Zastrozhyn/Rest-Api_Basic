@@ -12,4 +12,6 @@ public interface OrderDao {
     Order update(Order order);
     List<Order> findAllUsersOrder(User user, Integer offset, Integer limit);
     List<Order> findAll(Integer offset, Integer limit);
+
+    boolean exists(Long id);
 }

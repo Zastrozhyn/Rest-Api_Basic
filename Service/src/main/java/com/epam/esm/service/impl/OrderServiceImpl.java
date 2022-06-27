@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.epam.esm.util.ApplicationUtil.*;
+import static com.epam.esm.util.PaginationUtil.*;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -33,8 +33,7 @@ public class OrderServiceImpl implements OrderService {
     public Order create(Long userId, List<Long> certificates) {
         userService.isUserExist(userId);
         Order order = new Order();
-        certificates.forEach(certificateService::isGiftCertificateExist);
-        order.setCertificateList(certificates.stream().map(certificateService::findById).toList());
+        order.setCertificateList(certificateService.findAllById(certificates));
         return orderDao.create(order);
     }
 
@@ -78,7 +77,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private void isOrderExist (Long orderId){
-        if (findById(orderId) == null){
+        if (!orderDao.exists(orderId)){
             throw new EntityException(ExceptionCode.ORDER_NOT_FOUND.getErrorCode());
         }
     }

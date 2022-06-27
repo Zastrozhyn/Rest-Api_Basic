@@ -16,4 +16,6 @@ public interface UserDao {
     List<Tag> getMostPopularTag();
     BigDecimal findTotalCost(Long id);
     List<UserWithTotalCost> getUsersWithTotalCost();
+
+    boolean exists(Long id);
 }

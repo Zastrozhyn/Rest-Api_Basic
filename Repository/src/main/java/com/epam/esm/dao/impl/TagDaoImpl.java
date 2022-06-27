@@ -19,6 +19,7 @@ import java.util.List;
 @Repository
 public class TagDaoImpl implements TagDao {
     public static final String TAG_ID = "id";
+    private static final String SELECT_ID_FROM_TAG = "SELECT id FROM tag WHERE id=?";
     @PersistenceContext
     private EntityManager entityManager;
     private final CriteriaBuilder criteriaBuilder;
@@ -64,5 +65,14 @@ public class TagDaoImpl implements TagDao {
     @Override
     public void delete(Long id) {
         entityManager.remove(findById(id));
+    }
+
+    @Override
+    public boolean exists(Long id) {
+        try {
+            return entityManager.createNativeQuery(SELECT_ID_FROM_TAG).setParameter(1, id).getSingleResult() != null;
+        } catch (NoResultException e) {
+            return false;
+        }
     }
 }

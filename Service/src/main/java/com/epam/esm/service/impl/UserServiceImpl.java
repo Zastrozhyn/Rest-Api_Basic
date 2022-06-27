@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static com.epam.esm.util.ApplicationUtil.*;
+import static com.epam.esm.util.PaginationUtil.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean isUserExist(Long userId){
-        if (userId ==  null){
+        if (!userDao.exists(userId)){
             throw new EntityException(ExceptionCode.USER_NOT_FOUND.getErrorCode());
         }
         return true;
@@ -97,4 +97,5 @@ public class UserServiceImpl implements UserService {
         }
         return true;
     }
+
 }

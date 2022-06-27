@@ -24,6 +24,7 @@ public class UserServiceImplTest {
     private static final int EXPECTED_ERROR_CODE_WRONG_NAME = ExceptionCode.NOT_VALID_USER_NAME.getErrorCode();
     private static final int EXPECTED_ERROR_CODE_USER_NOT_FOUND = ExceptionCode.USER_NOT_FOUND.getErrorCode();
     private static User user;
+    private static User userWithWrongName;
     private UserServiceImpl service;
     private UserValidator validator;
     private UserDaoImpl userDao;
@@ -38,6 +39,7 @@ public class UserServiceImplTest {
     @BeforeAll
     static void init(){
         user = new User(USER_ID, USER_NAME);
+        userWithWrongName = new User(USER_ID, WRONG_USER_NAME);
     }
 
     @AfterEach
@@ -56,9 +58,8 @@ public class UserServiceImplTest {
 
     @Test
     void createTestThrows(){
-        when(userDao.create(user)).thenReturn(user);
-        user.setName(WRONG_USER_NAME);
-        EntityException actualException = assertThrows(EntityException.class, () -> service.create(user));
+        when(userDao.create(userWithWrongName)).thenReturn(user);
+        EntityException actualException = assertThrows(EntityException.class, () -> service.create(userWithWrongName));
         assertThat(actualException.getErrorCode(), is(equalTo(EXPECTED_ERROR_CODE_WRONG_NAME)));
     }
 
@@ -84,8 +85,8 @@ public class UserServiceImplTest {
         when(userDao.findById(USER_ID)).thenReturn(user);
         User actual = service.update(user, USER_ID);
         assertThat(actual, is(equalTo(user)));
-        verify(userDao).update(user);
         verify(userDao).findById(USER_ID);
+        verify(userDao).update(user);
     }
 
     @Test
