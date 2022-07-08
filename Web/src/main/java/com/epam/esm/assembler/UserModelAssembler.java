@@ -1,7 +1,7 @@
 package com.epam.esm.assembler;
 
 import com.epam.esm.controller.UserController;
-import com.epam.esm.exception.model.UserModel;
+import com.epam.esm.model.UserModel;
 import com.epam.esm.entity.User;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;

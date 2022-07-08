@@ -1,7 +1,7 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.assembler.GiftCertificateModelAssembler;
-import com.epam.esm.exception.model.GiftCertificateModel;
+import com.epam.esm.model.GiftCertificateModel;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.GiftCertificateService;

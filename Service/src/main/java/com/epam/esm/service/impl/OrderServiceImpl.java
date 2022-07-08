@@ -33,6 +33,7 @@ public class OrderServiceImpl implements OrderService {
     public Order create(Long userId, List<Long> certificates) {
         userService.isUserExist(userId);
         Order order = new Order();
+        order.setUser(userService.findById(userId));
         order.setCertificateList(certificateService.findAllById(certificates));
         return orderDao.create(order);
     }

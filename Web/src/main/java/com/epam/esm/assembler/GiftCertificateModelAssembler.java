@@ -1,8 +1,8 @@
 package com.epam.esm.assembler;
 
 import com.epam.esm.controller.GiftCertificateController;
-import com.epam.esm.exception.model.GiftCertificateModel;
-import com.epam.esm.exception.model.TagModel;
+import com.epam.esm.model.GiftCertificateModel;
+import com.epam.esm.model.TagModel;
 import com.epam.esm.entity.GiftCertificate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;

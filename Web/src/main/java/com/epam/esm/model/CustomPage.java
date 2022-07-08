@@ -1,4 +1,4 @@
-package com.epam.esm.exception.model;
+package com.epam.esm.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

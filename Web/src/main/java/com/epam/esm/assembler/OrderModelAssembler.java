@@ -1,8 +1,8 @@
 package com.epam.esm.assembler;
 
 import com.epam.esm.controller.OrderController;
-import com.epam.esm.exception.model.GiftCertificateModel;
-import com.epam.esm.exception.model.OrderModel;
+import com.epam.esm.model.GiftCertificateModel;
+import com.epam.esm.model.OrderModel;
 import com.epam.esm.entity.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;

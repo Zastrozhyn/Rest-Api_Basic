@@ -1,4 +1,4 @@
-package com.epam.esm.exception.model;
+package com.epam.esm.model;
 
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
@@ -8,7 +8,7 @@ import org.springframework.hateoas.RepresentationModel;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserModel extends RepresentationModel<UserModel> {
+public class TagModel extends RepresentationModel<TagModel> {
     private Long id;
     private String name;
 }

@@ -1,7 +1,7 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.assembler.OrderModelAssembler;
-import com.epam.esm.exception.model.OrderModel;
+import com.epam.esm.model.OrderModel;
 import com.epam.esm.entity.Order;
 import com.epam.esm.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;

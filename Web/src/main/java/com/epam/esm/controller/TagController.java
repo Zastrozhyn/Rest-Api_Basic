@@ -1,7 +1,7 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.assembler.TagModelAssembler;
-import com.epam.esm.exception.model.TagModel;
+import com.epam.esm.model.TagModel;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.TagService;
 import lombok.extern.log4j.Log4j2;

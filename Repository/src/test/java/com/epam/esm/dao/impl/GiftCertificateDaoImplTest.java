@@ -52,12 +52,6 @@ class GiftCertificateDaoImplTest {
     }
 
     @Test
-    void create() {
-        certificateDao.create(certificate);
-        assertNotNull(certificate.getId());
-    }
-
-    @Test
     void update() {
         certificate.setId(3L);
         certificateDao.update(certificate);

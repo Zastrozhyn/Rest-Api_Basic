@@ -128,9 +128,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         for (int i = 1; i < 1000; i++){
             GiftCertificate certificate = new GiftCertificate();
             certificate.setName("Certificate".concat(String.valueOf(i)));
-            certificate.setDuration(1);
+            certificate.setDuration(i);
             certificate.setPrice(BigDecimal.valueOf(i));
-            certificate.setDescription("CDescription".concat(String.valueOf(i)));
+            certificate.setDescription("Description".concat(String.valueOf(i)));
             Long id = create(certificate).getId();
             addTagToCertificate(new Tag("Tag".concat(String.valueOf(i))), id);
         }
