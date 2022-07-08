@@ -1,5 +1,6 @@
 package com.epam.esm.validator;
 
+import com.epam.esm.exception.EntityException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -7,8 +8,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class GiftCertificateValidatorTest {
     private static GiftCertificateValidator validator;
@@ -39,7 +39,7 @@ class GiftCertificateValidatorTest {
     @ParameterizedTest
     @ValueSource(doubles = {-100,  1000000, 0})
     void isPriceNotValidTest(double price) {
-        assertFalse(validator.isPriceValid(BigDecimal.valueOf(price)));
+        assertThrows(EntityException.class, () -> validator.isPriceValid(BigDecimal.valueOf(price)));
     }
 
     @ParameterizedTest
@@ -51,8 +51,7 @@ class GiftCertificateValidatorTest {
     @Test
     void isDescriptionValidReturnsFalseWithUpdatedMoreThen301SymbolsDescription() {
         String MoreThen301Description = "D".repeat(301);
-        boolean condition = validator.isDescriptionValid(MoreThen301Description);
-        assertFalse(condition);
+        assertThrows(EntityException.class, () -> validator.isDescriptionValid(MoreThen301Description));
     }
 
     @ParameterizedTest

@@ -11,9 +11,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -42,41 +42,43 @@ class TagServiceImplTest {
     }
 
     @AfterEach
-    public void afterEachTest(){
-        verify(tagDao).findTag(TAG_ID);
+    void afterEachTest(){
         verifyNoMoreInteractions(tagDao);
     }
 
     @Test
     void createTest() {
         when(tagDao.findTagByName(TAG_NAME)).thenReturn(null);
-        when(tagDao.create(tag)).thenReturn(tag.getId());
-        when(tagDao.findTag(TAG_ID)).thenReturn(tag);
+        when(tagDao.create(tag)).thenReturn(tag);
+        when(tagDao.findById(TAG_ID)).thenReturn(tag);
         Tag result = tagService.create(tag);
         assertThat(result, is(equalTo(tag)));
-
         verify(tagDao).findTagByName(TAG_NAME);
         verify(tagDao).create(tag);
     }
 
     @Test
     void findTagTest() {
-        when(tagDao.findTag(TAG_ID)).thenReturn(tag);
-        Tag result = tagService.findTag(TAG_ID);
+        when(tagDao.findById(TAG_ID)).thenReturn(tag);
+        Tag result = tagService.findById(TAG_ID);
         assertThat(result, is(equalTo(tag)));
+        verify(tagDao).findById(TAG_ID);
     }
 
     @Test
     void findTagThrowExceptionTest() {
-        when(tagDao.findTag(TAG_ID)).thenReturn(null);
-        EntityException actualException = assertThrows(EntityException.class, () -> tagService.findTag(TAG_ID));
+        when(tagDao.findById(TAG_ID)).thenReturn(null);
+        EntityException actualException = assertThrows(EntityException.class, () -> tagService.findById(TAG_ID));
         assertThat(actualException.getErrorCode(), is(equalTo(expectedErrorCode)));
+        verify(tagDao).findById(TAG_ID);
     }
 
     @Test
     void deleteThrowExceptionTest() {
-        when(tagDao.findTag(TAG_ID)).thenReturn(null);
+        when(tagDao.findById(TAG_ID)).thenReturn(null);
         EntityException actualException = assertThrows(EntityException.class, () -> tagService.delete(TAG_ID));
         assertThat(actualException.getErrorCode(), is(equalTo(expectedErrorCode)));
+        verify(tagDao).findById(TAG_ID);
     }
+
 }

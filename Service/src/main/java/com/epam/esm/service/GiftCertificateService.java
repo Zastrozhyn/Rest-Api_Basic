@@ -5,16 +5,18 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 
 import java.util.List;
-import java.util.Set;
 
 public interface GiftCertificateService {
     GiftCertificate create(GiftCertificate giftCertificate);
-    List<GiftCertificate> findAll();
     GiftCertificate findById(Long id);
     void delete(long id);
     GiftCertificate addTagToCertificate(Tag tag, long idCertificate);
-    void addTagsToCertificate(Set<Tag> tags, long idCertificate);
     GiftCertificate deleteTagFromCertificate(Tag tag, long idCertificate);
     GiftCertificate update(Long id, GiftCertificate giftCertificate);
-    List<GiftCertificate> findByAttributes(String tagName, String searchPart, String sortingField, String orderSort, String search);
+    List<GiftCertificate> findByAttributes(List<String> tagList, String searchPart, String sortingField,
+                                           String orderSort, String search, Integer pageSize, Integer page);
+    boolean isGiftCertificateExist(Long id);
+    void create1000();
+
+    List<GiftCertificate> findAllById(List<Long> idList);
 }

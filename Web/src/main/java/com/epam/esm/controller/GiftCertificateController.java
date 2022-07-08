@@ -1,10 +1,13 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.assembler.GiftCertificateModelAssembler;
+import com.epam.esm.model.GiftCertificateModel;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.GiftCertificateService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -20,28 +23,43 @@ import java.util.List;
 public class GiftCertificateController {
     private final GiftCertificateService giftCertificateService;
     private final LocaleResolver localeResolver;
+    private final GiftCertificateModelAssembler assembler;
 
     @Autowired
-    public GiftCertificateController(GiftCertificateService giftCertificateService, LocaleResolver localeResolver) {
+    public GiftCertificateController(GiftCertificateService giftCertificateService, LocaleResolver localeResolver,
+                                     GiftCertificateModelAssembler assembler) {
         this.giftCertificateService = giftCertificateService;
         this.localeResolver = localeResolver;
+        this.assembler = assembler;
+    }
+
+    @GetMapping()
+    public CollectionModel<GiftCertificateModel> findByAttributes(@RequestParam(required = false, name = "tagList") List<String> tagList,
+                                                                  @RequestParam(required = false, name = "searchPart") String searchPart,
+                                                                  @RequestParam(required = false, name = "sortingField") String sortingField,
+                                                                  @RequestParam(required = false, name = "orderSort") String orderSort,
+                                                                  @RequestParam(required = false, defaultValue = "10", name = "pageSize") Integer pageSize,
+                                                                  @RequestParam(required = false, defaultValue = "1", name = "page") Integer page,
+                                                                  @RequestParam(required = false, name = "search") String search){
+        return assembler.toCollectionModel(giftCertificateService.findByAttributes(tagList, searchPart,
+                sortingField, orderSort, search, pageSize, page));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public GiftCertificate insert(@RequestBody GiftCertificate giftCertificate) {
-        return giftCertificateService.create(giftCertificate);
+    public GiftCertificateModel create(@RequestBody GiftCertificate giftCertificate) {
+        return assembler.toModelWithAllLinks(giftCertificateService.create(giftCertificate));
     }
 
     @GetMapping("/{id}")
-    public GiftCertificate findById(@PathVariable Long id) {
-        return giftCertificateService.findById(id);
+    public GiftCertificateModel findById(@PathVariable Long id) {
+        return assembler.toModelWithAllLinks(giftCertificateService.findById(id));
     }
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public GiftCertificate update(@PathVariable Long id, @RequestBody GiftCertificate giftCertificate) {
-        return giftCertificateService.update(id, giftCertificate);
+    public GiftCertificateModel update(@PathVariable Long id, @RequestBody GiftCertificate giftCertificate) {
+        return assembler.toModelWithAllLinks(giftCertificateService.update(id, giftCertificate));
     }
 
     @DeleteMapping("/{id}")
@@ -50,29 +68,24 @@ public class GiftCertificateController {
         giftCertificateService.delete(id);
     }
 
-    @GetMapping()
-    public List<GiftCertificate> findByAttributes(@RequestParam(required = false, name = "tagName") String tagName,
-                                                     @RequestParam(required = false, name = "searchPart") String searchPart,
-                                                     @RequestParam(required = false, name = "sortingField") String sortingField,
-                                                     @RequestParam(required = false, name = "orderSort") String orderSort,
-                                                     @RequestParam(required = false, name = "search") String search){
-        return giftCertificateService.findByAttributes(tagName, searchPart, sortingField, orderSort, search);
-    }
-
     @PutMapping("/{id}/tags")
-    public GiftCertificate addTagToCertificate(@PathVariable Long id, @RequestBody Tag tag){
-        return giftCertificateService.addTagToCertificate(tag, id);
+    public GiftCertificateModel addTagToCertificate(@PathVariable Long id, @RequestBody Tag tag){
+        return assembler.toModelWithAllLinks(giftCertificateService.addTagToCertificate(tag, id));
     }
 
     @DeleteMapping ("/{id}/tags")
-    public GiftCertificate deleteTagFromCertificate(@PathVariable Long id, @RequestBody Tag tag){
-        return giftCertificateService.deleteTagFromCertificate(tag, id);
+    public GiftCertificateModel deleteTagFromCertificate(@PathVariable Long id, @RequestBody Tag tag){
+        return assembler.toModelWithAllLinks(giftCertificateService.deleteTagFromCertificate(tag, id));
     }
 
     @GetMapping("locales")
-    public void changeLocale (@RequestParam(required = true, name = "locale") String locale ,
+    public void changeLocale (@RequestParam(name = "locale") String locale ,
                               HttpServletRequest request, HttpServletResponse response){
         localeResolver.setLocale(request, response, StringUtils.parseLocaleString(locale));
     }
 
+    @PostMapping("/create")
+    public void create1000(){
+        giftCertificateService.create1000();
+    }
 }

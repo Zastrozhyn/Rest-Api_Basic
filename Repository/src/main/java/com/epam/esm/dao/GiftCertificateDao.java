@@ -2,17 +2,21 @@ package com.epam.esm.dao;
 
 
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.Tag;
 
 import java.util.List;
-import java.util.Map;
 
 public interface GiftCertificateDao {
-    Long create(GiftCertificate giftCertificate);
-    void update(Long id, Map<String, Object> updatedFields);
-    List<GiftCertificate> findAll();
+    GiftCertificate create(GiftCertificate giftCertificate);
+    GiftCertificate update(GiftCertificate giftCertificate);
+    List<GiftCertificate> findAll(Integer offset, Integer limit);
+
+    List<GiftCertificate> findAllById(List<Long> idList);
+
     GiftCertificate findById(Long id);
     void delete(Long id);
-    List<GiftCertificate> findByAttributes(String tagName, String searchPart, String sortingField, String orderSort);
-
-    void updateDate(Long id);
+    List<GiftCertificate> findByAttributes(List<String> tagList, String searchPart, String sortingField,
+                                           String orderSort, Integer offset, Integer limit);
+    void addTagToCertificate(Tag tag, Long idCertificate);
+    boolean exists(Long id);
 }

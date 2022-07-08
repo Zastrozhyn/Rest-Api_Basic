@@ -2,102 +2,99 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.mapper.GiftCertificateExtractor;
-import com.epam.esm.mapper.GiftCertificateMapper;
-import com.epam.esm.mapper.IdMapper;
+import com.epam.esm.entity.Tag;
 import com.epam.esm.util.SqlQueryBuilder;
 import lombok.extern.log4j.Log4j2;
+import org.hibernate.Session;
+import org.hibernate.jpa.TypedParameterValue;
+import org.hibernate.type.LongType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
-import java.util.Map;
+
+;
 
 @Log4j2
 @Repository
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
-    private final JdbcTemplate jdbcTemplate;
-    private final GiftCertificateExtractor extractor;
-    private final IdMapper idMapper;
-    private final GiftCertificateMapper mapper;
-    private final static String CREATE_GIFT_CERTIFICATE_QUERY = "INSERT INTO gift_certificate (name, description, price, " +
-            "duration, create_date, last_update_date) VALUES(?,?,?,?,?,?) RETURNING id AS new_id";
-    private final static  String DELETE_CERTIFICATE_QUERY = "DELETE FROM gift_certificate WHERE id=?";
-    private final static String FIND_GIFT_CERTIFICATE_BY_ID_QUERY =
-            "SELECT certificate.id,  certificate.name, certificate.description, certificate.price," +
-            "certificate.duration, certificate.create_date, certificate.last_update_date," +
-            "tag.id AS tag_id, tag.name AS tag_name " +
-            "FROM gift_certificate AS certificate " +
-            "LEFT JOIN tag_certificate AS tag_map ON tag_map.certificate_id=certificate.id " +
-            "LEFT JOIN tag ON tag_map.tag_id=tag.id " +
-            "WHERE certificate.id=? ";
-    private final static String FIND_ALL_GIFT_CERTIFICATE_QUERY =
-            "SELECT certificate.id,  certificate.name, certificate.description, certificate.price," +
-            "certificate.duration, certificate.create_date, certificate.last_update_date," +
-            "tag.id AS tag_id, tag.name AS tag_name " +
-            "FROM gift_certificate AS certificate " +
-            "LEFT JOIN tag_certificate AS tag_map ON tag_map.certificate_id=certificate.id " +
-            "LEFT JOIN tag ON tag_map.tag_id=tag.id ";
-    private final static String UPDATE_LAST_UPDATE_DATE_QUERY = "UPDATE gift_certificate SET last_update_date=? WHERE id=? ";
-    private final static String LAST_UPDATE_DATE_FIELD = "last_update_date";
+    public static final String CERTIFICATE_ID = "id";
+    private static final String ADD_TAG_TO_CERTIFICATE_QUERY = "INSERT INTO tag_certificate (tag_id, certificate_id) VALUES (?,?)";
+    private static final String SELECT_ID_FROM_CERTIFICATE = "SELECT id FROM gift_certificate WHERE id=?";
+    @PersistenceContext
+    private EntityManager entityManager;
+    private final CriteriaBuilder criteriaBuilder;
 
     @Autowired
-    public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate, GiftCertificateExtractor extractor,
-                                  IdMapper idMapper, GiftCertificateMapper mapper) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.extractor = extractor;
-        this.idMapper = idMapper;
-        this.mapper = mapper;
+    public GiftCertificateDaoImpl(EntityManager entityManager) {
+        this.entityManager = entityManager;
+        this.criteriaBuilder = entityManager.getCriteriaBuilder();
     }
 
     @Override
-    public Long create(GiftCertificate giftCertificate) {
-        return jdbcTemplate.queryForObject(CREATE_GIFT_CERTIFICATE_QUERY, idMapper, giftCertificate.getName(),giftCertificate.getDescription(),
-                giftCertificate.getPrice(), giftCertificate.getDuration(), LocalDateTime.now(), LocalDateTime.now());
+    public GiftCertificate create(GiftCertificate giftCertificate) {
+        entityManager.persist(giftCertificate);
+        return giftCertificate;
     }
 
     @Override
-    public void update(Long id, Map<String, Object> updatedFields) {
-        updatedFields.put(LAST_UPDATE_DATE_FIELD, LocalDateTime.now());
-        String query = SqlQueryBuilder.buildCertificateQueryForUpdate(updatedFields.keySet());
-        List<Object> fields = new ArrayList<>(updatedFields.values());
-        fields.add(id);
-        jdbcTemplate.update(query, fields.toArray());
+    public GiftCertificate update(GiftCertificate giftCertificate) {
+        return entityManager.merge(giftCertificate);
     }
 
     @Override
-    public List<GiftCertificate> findAll() {
-        return jdbcTemplate.query(FIND_ALL_GIFT_CERTIFICATE_QUERY, extractor);
+    public List<GiftCertificate> findAll(Integer offset, Integer limit) {
+        CriteriaQuery<GiftCertificate> query = criteriaBuilder.createQuery(GiftCertificate.class);
+        Root<GiftCertificate> root = query.from(GiftCertificate.class);
+        query.select(root);
+        query.orderBy(criteriaBuilder.asc(root.get(CERTIFICATE_ID)));
+        return entityManager.createQuery(query).setFirstResult(offset).setMaxResults(limit).getResultList();
+    }
+
+    @Override
+    public List<GiftCertificate> findAllById(List<Long> idList) {
+        Session session = entityManager.unwrap(Session.class);
+        return session.byMultipleIds(GiftCertificate.class).withBatchSize(idList.size()).multiLoad(idList);
     }
 
     @Override
     public GiftCertificate findById(Long id) {
-        GiftCertificate certificate = null;
-        try{
-            certificate = jdbcTemplate.queryForObject(FIND_GIFT_CERTIFICATE_BY_ID_QUERY, mapper , id);
-        }catch (EmptyResultDataAccessException e) {
-            log.info(e.getMessage());
-        }
-        return certificate;
+        return entityManager.find(GiftCertificate.class, id);
     }
 
     @Override
     public void delete(Long id) {
-        jdbcTemplate.update(DELETE_CERTIFICATE_QUERY, id);
+        entityManager.remove(findById(id));
     }
 
 
     @Override
-    public List<GiftCertificate> findByAttributes(String tagName, String searchPart, String sortingField, String orderSort) {
-        String query = SqlQueryBuilder.buildCertificateQueryForSearchAndSort(tagName, searchPart, sortingField, orderSort);
-        return jdbcTemplate.query(query, extractor);
+    public List<GiftCertificate> findByAttributes(List<String> tagList, String searchPart, String sortingField, String orderSort,
+                                                  Integer offset, Integer limit) {
+        String sqlQuery = SqlQueryBuilder.buildCertificateQueryForSearchAndSort(tagList, searchPart, sortingField, orderSort);
+        return entityManager.createNativeQuery(sqlQuery, GiftCertificate.class).setFirstResult(offset).setMaxResults(limit).getResultList();
     }
+
     @Override
-    public void updateDate(Long id) {
-        jdbcTemplate.update(UPDATE_LAST_UPDATE_DATE_QUERY, LocalDateTime.now(), id);
+    public void addTagToCertificate(Tag tag, Long idCertificate){
+        entityManager.createNativeQuery(ADD_TAG_TO_CERTIFICATE_QUERY)
+                .setParameter(1, new TypedParameterValue(LongType.INSTANCE, tag.getId()))
+                .setParameter(2, new TypedParameterValue(LongType.INSTANCE, idCertificate))
+                .executeUpdate();
+    }
+
+    @Override
+    public boolean exists(Long id) {
+        try {
+            return entityManager.createNativeQuery(SELECT_ID_FROM_CERTIFICATE).setParameter(1, id).getSingleResult() != null;
+        } catch (NoResultException e) {
+            return false;
+        }
     }
 }

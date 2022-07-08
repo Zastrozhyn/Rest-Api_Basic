@@ -7,12 +7,13 @@ import com.epam.esm.service.TagService;
 import com.epam.esm.validator.TagValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
 
 import static com.epam.esm.exception.ExceptionCode.NOT_VALID_TAG_DATA;
 import static com.epam.esm.exception.ExceptionCode.TAG_NOT_FOUND;
+import static com.epam.esm.util.PaginationUtil.*;
 
 @Service
 public class TagServiceImpl implements TagService {
@@ -26,17 +27,17 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @Transactional
     public Tag create(Tag tag) {
         if(isTagValid(tag) && tagDao.findTagByName(tag.getName()) == null){
-            Long idCreatedTag = tagDao.create(tag);
-            return findTag(idCreatedTag);
+            return tagDao.create(tag);
         }
         return findTagByName(tag.getName());
     }
 
     @Override
-    public Tag findTag(Long id) {
-        Tag tag = tagDao.findTag(id);
+    public Tag findById(Long id) {
+        Tag tag = tagDao.findById(id);
         if (tag == null){
             throw new EntityException(TAG_NOT_FOUND.getErrorCode());
         }
@@ -44,16 +45,17 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<Tag> findAll() {
-        return tagDao.findAll();
+    public List<Tag> findAll(Integer pageSize, Integer page) {
+        page = checkPage(page);
+        pageSize = checkPageSize(pageSize);
+        return tagDao.findAll(calculateOffset(pageSize,page), pageSize);
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
-        if (tagDao.findTag(id) != null){
-            tagDao.delete(id);
-        }
-        else throw new EntityException(TAG_NOT_FOUND.getErrorCode());
+        isTagExist(id);
+        tagDao.delete(id);
     }
 
     @Override
@@ -64,34 +66,16 @@ public class TagServiceImpl implements TagService {
         return true;
     }
 
-    @Override
-    public void addTagToCertificate(Tag tag, Long idCertificate) {
-        tagDao.addTagToCertificate(tag,idCertificate);
+    public boolean isTagExist(Long tagId){
+        if(!tagDao.exists(tagId)){
+            throw new EntityException(TAG_NOT_FOUND.getErrorCode());
+        }
+        return true;
     }
 
     @Override
     public Tag findTagByName(String name) {
         return tagDao.findTagByName(name);
-    }
-
-    @Override
-    public void deleteTagFromCertificate(Tag tag, Long idCertificate) {
-        tagDao.deleteTagFromCertificate(tag, idCertificate);
-    }
-
-    @Override
-    public List<Tag> findTagsByName(Set<Tag> tags) {
-        return tagDao.findTagsByName(tags);
-    }
-
-    @Override
-    public void createTags(Set<Tag> tags) {
-        tagDao.createTags(tags);
-    }
-
-    @Override
-    public void addTagSToCertificate(List<Tag> tags, Long idCertificate) {
-        tagDao.addTagSToCertificate(tags, idCertificate);
     }
 
     @Override
