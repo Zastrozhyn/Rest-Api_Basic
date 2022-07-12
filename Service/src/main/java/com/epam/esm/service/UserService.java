@@ -10,6 +10,9 @@ import java.util.List;
 public interface UserService {
     User create(User user);
     User findById(Long id);
+
+    User findByName(String name);
+
     List<User> findAll(Integer pageSize, Integer page);
     void delete(Long id);
     User update(User user, Long id);

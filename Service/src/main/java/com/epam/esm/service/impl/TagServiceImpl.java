@@ -6,6 +6,7 @@ import com.epam.esm.exception.EntityException;
 import com.epam.esm.service.TagService;
 import com.epam.esm.validator.TagValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Tag create(Tag tag) {
         if(isTagValid(tag) && tagDao.findTagByName(tag.getName()) == null){
             return tagDao.create(tag);
@@ -36,6 +38,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public Tag findById(Long id) {
         Tag tag = tagDao.findById(id);
         if (tag == null){
@@ -45,6 +48,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public List<Tag> findAll(Integer pageSize, Integer page) {
         page = checkPage(page);
         pageSize = checkPageSize(pageSize);
@@ -53,6 +57,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void delete(Long id) {
         isTagExist(id);
         tagDao.delete(id);

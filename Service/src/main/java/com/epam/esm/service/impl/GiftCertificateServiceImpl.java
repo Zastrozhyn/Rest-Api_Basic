@@ -9,10 +9,10 @@ import com.epam.esm.service.TagService;
 import com.epam.esm.validator.GiftCertificateValidator;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +37,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public GiftCertificate create(GiftCertificate giftCertificate) {
         if (!giftCertificateValidator.isValid(giftCertificate)){
             throw new EntityException(NOT_VALID_GIFT_CERTIFICATE_DATA.getErrorCode());
@@ -45,6 +46,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public GiftCertificate findById(Long id) {
         GiftCertificate giftCertificate = giftCertificateDao.findById(id);
         if (giftCertificate == null){
@@ -55,6 +57,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void delete(long id) {
          isGiftCertificateExist(id);
          giftCertificateDao.delete(id);
@@ -62,6 +65,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public GiftCertificate addTagToCertificate(Tag tag, long idCertificate){
         if(isGiftCertificateExist(idCertificate) && isTagReadyToCreate(tag)) {
             tagService.create(tag);
@@ -72,6 +76,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public GiftCertificate deleteTagFromCertificate(Tag tag, long idCertificate){
         GiftCertificate certificate = giftCertificateDao.findById(idCertificate);
         if(isTagCanBeDeletedFromCertificate(tag, idCertificate)){
@@ -83,6 +88,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public GiftCertificate update(Long id, GiftCertificate giftCertificate) {
         isGiftCertificateExist(id);
         isGiftCertificateValid(giftCertificate);
@@ -91,6 +97,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public List<GiftCertificate> findByAttributes(List<String> tagList, String searchPart, String sortingField,
                                                   String orderSort, String search, Integer pageSize, Integer page) {
         page = checkPage(page);
@@ -123,20 +130,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    @Transactional
-    public void create1000() {
-        for (int i = 1; i < 1000; i++){
-            GiftCertificate certificate = new GiftCertificate();
-            certificate.setName("Certificate".concat(String.valueOf(i)));
-            certificate.setDuration(i);
-            certificate.setPrice(BigDecimal.valueOf(i));
-            certificate.setDescription("Description".concat(String.valueOf(i)));
-            Long id = create(certificate).getId();
-            addTagToCertificate(new Tag("Tag".concat(String.valueOf(i))), id);
-        }
-    }
-
-    @Override
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public List<GiftCertificate> findAllById(List<Long> idList) {
         return giftCertificateDao.findAllById(idList);
     }

@@ -16,7 +16,5 @@ public interface GiftCertificateService {
     List<GiftCertificate> findByAttributes(List<String> tagList, String searchPart, String sortingField,
                                            String orderSort, String search, Integer pageSize, Integer page);
     boolean isGiftCertificateExist(Long id);
-    void create1000();
-
     List<GiftCertificate> findAllById(List<Long> idList);
 }

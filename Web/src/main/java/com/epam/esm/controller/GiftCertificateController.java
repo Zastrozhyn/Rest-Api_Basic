@@ -84,8 +84,4 @@ public class GiftCertificateController {
         localeResolver.setLocale(request, response, StringUtils.parseLocaleString(locale));
     }
 
-    @PostMapping("/create")
-    public void create1000(){
-        giftCertificateService.create1000();
-    }
 }

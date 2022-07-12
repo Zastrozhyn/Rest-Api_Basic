@@ -8,6 +8,7 @@ import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public Order create(Long userId, List<Long> certificates) {
         userService.isUserExist(userId);
         Order order = new Order();
@@ -39,6 +41,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public Order findById(Long id) {
         Order order = orderDao.findById(id);
         if(order == null){
@@ -48,6 +51,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public List<Order> findAll(Integer page, Integer pageSize) {
         page = checkPage(page);
         pageSize = checkPageSize(pageSize);
@@ -55,6 +59,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void delete(Long id) {
         isOrderExist(id);
         orderDao.delete(id);
@@ -62,6 +67,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<Order> findAllUsersOrder(Long userId, Integer page, Integer pageSize) {
         userService.isUserExist(userId);
         page = checkPage(page);
@@ -71,6 +77,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public Order update(Order order, Long orderId) {
         isOrderExist(orderId);
         order.setId(orderId);
