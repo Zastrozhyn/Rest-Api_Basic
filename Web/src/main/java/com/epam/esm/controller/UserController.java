@@ -1,12 +1,9 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.assembler.OrderModelAssembler;
-import com.epam.esm.assembler.TagModelAssembler;
 import com.epam.esm.assembler.UserModelAssembler;
 import com.epam.esm.entity.User;
-import com.epam.esm.entity.UserWithTotalCost;
 import com.epam.esm.model.OrderModel;
-import com.epam.esm.model.TagModel;
 import com.epam.esm.model.UserModel;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.UserService;
@@ -15,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Log4j2
@@ -26,16 +22,14 @@ public class UserController {
     private final OrderService orderService;
     private final UserModelAssembler assembler;
     private final OrderModelAssembler orderModelAssembler;
-    private final TagModelAssembler tagModelAssembler;
 
     @Autowired
     public UserController(UserService service, OrderService orderService, UserModelAssembler assembler,
-                          OrderModelAssembler orderModelAssembler, TagModelAssembler tagModelAssembler) {
+                          OrderModelAssembler orderModelAssembler) {
         this.service = service;
         this.orderService = orderService;
         this.assembler = assembler;
         this.orderModelAssembler = orderModelAssembler;
-        this.tagModelAssembler = tagModelAssembler;
     }
 
     @GetMapping
@@ -75,20 +69,4 @@ public class UserController {
                                                     @RequestParam(required = false, defaultValue = "1", name = "page") Integer page){
         return orderModelAssembler.toCollectionModel(orderService.findAllUsersOrder(id, page, pageSize));
     }
-
-    @GetMapping("/tags")
-    public CollectionModel<TagModel>  getMostPopularTag() {
-        return tagModelAssembler.toCollectionModel(service.getMostPopularTag());
-    }
-
-    @GetMapping("{id}/total")
-    public BigDecimal totalCostOfUserOrders(@PathVariable Long id) {
-        return service.findTotalCost(id);
-    }
-
-    @GetMapping("/total")
-    public List<UserWithTotalCost> getRichestUser() {
-        return service.getUsersWithTotalCost();
-    }
-
 }
