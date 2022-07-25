@@ -18,4 +18,16 @@ public class User{
 
     @Column(name = "name", nullable = false, length = 30)
     private String name;
+
+    @Column(name = "password")
+    private String password;
+
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+
+    public User(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

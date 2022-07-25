@@ -1,5 +1,6 @@
 package com.epam.esm.exception;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -33,13 +34,18 @@ public class ExceptionControllerAdviser {
     @ExceptionHandler({HttpMessageNotReadableException.class, NumberFormatException.class})
     public ResponseEntity<ExceptionResponse> handleMessageNotReadableException(Locale locale) {
         int errorCode = ExceptionCode.ERROR_INPUT_DATA.getErrorCode();
-        return buildErrorResponse(resolveResourceBundle(getMessageByCode(errorCode), locale), errorCode
-        );
+        return buildErrorResponse(resolveResourceBundle(getMessageByCode(errorCode), locale), errorCode);
     }
 
     @ExceptionHandler({PSQLException.class, ConnectException.class})
     public ResponseEntity<ExceptionResponse> handleDataBaseException(Locale locale) {
         int errorCode = ExceptionCode.CONNECTION_DATABASE_ERROR.getErrorCode();
+        return buildErrorResponse(resolveResourceBundle(getMessageByCode(errorCode), locale), errorCode);
+    }
+
+    @ExceptionHandler(JWTVerificationException.class)
+    public ResponseEntity<ExceptionResponse> handleAccessDeniedException(Locale locale) {
+        int errorCode = ExceptionCode.INVALID_JWT_TOKEN.getErrorCode();
         return buildErrorResponse(resolveResourceBundle(getMessageByCode(errorCode), locale), errorCode
         );
     }

@@ -3,7 +3,6 @@ package com.epam.esm.dao.impl;
 import com.epam.esm.dao.UserDao;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.entity.User;
-import com.epam.esm.entity.UserWithTotalCost;
 import com.epam.esm.util.SqlQueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -66,6 +65,19 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public User findByName(String name){
+        CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
+        Root<User> root = query.from(User.class);
+        query.where(criteriaBuilder.equal(root.get("name"), name));
+        try{
+            return entityManager.createQuery(query).getSingleResult();
+        }
+        catch (NoResultException e){
+            return null;
+        }
+    }
+
+    @Override
     public List<User> findAll(Integer offset, Integer limit) {
         CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
         Root<User> root = query.from(User.class);
@@ -92,11 +104,6 @@ public class UserDaoImpl implements UserDao {
     @Override
     public BigDecimal findTotalCost(Long id) {
         return (BigDecimal) entityManager.createNativeQuery(SqlQueryBuilder.buildTotalCostQuery(id)).getSingleResult();
-    }
-
-    @Override
-    public List<UserWithTotalCost> getUsersWithTotalCost() {
-        return entityManager.createNativeQuery(GET_USERS_WITH_TOTAL_COST, UserWithTotalCost.class).getResultList();
     }
 
     @Override

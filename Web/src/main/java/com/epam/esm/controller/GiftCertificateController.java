@@ -39,7 +39,7 @@ public class GiftCertificateController {
                                                                   @RequestParam(required = false, name = "sortingField") String sortingField,
                                                                   @RequestParam(required = false, name = "orderSort") String orderSort,
                                                                   @RequestParam(required = false, defaultValue = "10", name = "pageSize") Integer pageSize,
-                                                                  @RequestParam(required = false, defaultValue = "1", name = "page") Integer page,
+                                                                  @RequestParam(required = false, defaultValue = "0", name = "page") Integer page,
                                                                   @RequestParam(required = false, name = "search") String search){
         return assembler.toCollectionModel(giftCertificateService.findByAttributes(tagList, searchPart,
                 sortingField, orderSort, search, pageSize, page));
@@ -84,8 +84,4 @@ public class GiftCertificateController {
         localeResolver.setLocale(request, response, StringUtils.parseLocaleString(locale));
     }
 
-    @PostMapping("/create")
-    public void create1000(){
-        giftCertificateService.create1000();
-    }
 }

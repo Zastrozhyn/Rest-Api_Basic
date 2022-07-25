@@ -45,4 +45,9 @@ public class TagController {
     public void deleteTag(@PathVariable(name = "tagId") Long id) {
         tagService.delete(id);
     }
+
+    @GetMapping("/tags")
+    public CollectionModel<TagModel>  getMostPopularTag() {
+        return assembler.toCollectionModel(tagService.getMostPopularTag());
+    }
 }

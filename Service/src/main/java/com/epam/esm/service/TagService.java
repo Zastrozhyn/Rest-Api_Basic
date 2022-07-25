@@ -2,6 +2,7 @@ package com.epam.esm.service;
 
 
 import com.epam.esm.entity.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -13,4 +14,7 @@ public interface TagService {
     boolean isTagExist(Tag tag);
     Tag findTagByName(String name);
     List<Tag> findAll(Integer pageSize, Integer page);
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    List<Tag> getMostPopularTag();
 }
