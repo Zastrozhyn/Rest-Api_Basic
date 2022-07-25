@@ -70,7 +70,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         }
         GiftCertificate certificate = findById(idCertificate);
         certificate.addTag(tag);
-        return daoJpa.save(certificate);
+        return certificate;
     }
 
     @Override
@@ -82,7 +82,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             Tag deletedTag = tagService.findTagByName(tag.getName());
             certificate.deleteTagFromCertificate(deletedTag);
         }
-        return daoJpa.save(certificate);
+        return certificate;
     }
 
     @Override

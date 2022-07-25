@@ -51,7 +51,6 @@ public class AuthController {
         } catch (BadCredentialsException e) {
             throw new EntityException(ExceptionCode.BAD_CREDENTIALS.getErrorCode());
         }
-
         String token = jwtUtil.generateToken(authenticationDTO.getName());
         return Map.of("jwt-token", token);
     }

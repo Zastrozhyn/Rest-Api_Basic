@@ -21,6 +21,7 @@ import java.io.IOException;
 public class JWTFilter extends OncePerRequestFilter {
     private final JWTUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
+    private static final String EMPTY_PASSWORD = "";
 
     @Autowired
     public JWTFilter(JWTUtil jwtUtil, UserDetailsServiceImpl userDetailsService) {
@@ -31,16 +32,15 @@ public class JWTFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         String authHeader = httpServletRequest.getHeader("Authorization");
-
         if (authHeader != null && !authHeader.isBlank() && authHeader.startsWith("Bearer ")) {
             String jwt = authHeader.substring(7);
             try {
-                String username = jwtUtil.validateTokenAndRetrieveClaim(jwt);
+                String username = jwtUtil.validateTokenAndRetrieveUserName(jwt);
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(userDetails,
-                                userDetails.getPassword(),
+                                EMPTY_PASSWORD,
                                 userDetails.getAuthorities());
 
                 if (SecurityContextHolder.getContext().getAuthentication() == null) {

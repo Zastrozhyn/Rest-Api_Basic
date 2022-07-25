@@ -1,5 +1,6 @@
 package com.epam.esm.config;
 
+import com.epam.esm.security.FilterChainExceptionHandler;
 import com.epam.esm.security.JWTFilter;
 import com.epam.esm.security.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -23,12 +25,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsServiceImpl userService;
     private final JWTFilter jwtFilter;
+    private final FilterChainExceptionHandler filterChainExceptionHandler;
 
     @Autowired
-    public SecurityConfig(UserDetailsServiceImpl userService, JWTFilter jwtFilter) {
+    public SecurityConfig(UserDetailsServiceImpl userService, JWTFilter jwtFilter,
+                          FilterChainExceptionHandler filterChainExceptionHandler) {
         this.userService = userService;
         this.jwtFilter = jwtFilter;
+        this.filterChainExceptionHandler = filterChainExceptionHandler;
     }
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -42,7 +48,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .oauth2Login();
 
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        http
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(filterChainExceptionHandler, LogoutFilter.class);
     }
 
     @Override

@@ -36,7 +36,7 @@ public class JWTUtil {
                 .sign(Algorithm.HMAC256(secretKey));
     }
 
-    public String validateTokenAndRetrieveClaim (String token){
+    public String validateTokenAndRetrieveUserName(String token){
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secretKey))
                 .withSubject("UserDetails")
                 .withIssuer(issuer)
